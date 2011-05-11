@@ -1,0 +1,18 @@
+syntax: glob
+
+*.suo
+*.sln.cache
+*.csproj.user
+
+bin/*.dll
+bin/*.pdb
+bin/*.exe
+bin/*.config
+
+src/NRoles.VisualState.xml
+src/TestResult.xml
+
+syntax: regexp
+
+^src/.*/bin/.*
+^src/.*/obj/.*
