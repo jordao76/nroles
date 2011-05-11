@@ -1,0 +1,18 @@
+Migration 
+Between the versions 0.6 and 0.9 of Mono.Cecil, the API evolved in a few directions:
+
+•Make the API easier to use.
+•Reflect better the content of an assembly.
+•Use .net features of .net 2.0 such as generics.
+Porting applications to the new Mono.Cecil is easy. We suggest you branch your project using Cecil the time to stabilize it on the new version of Mono.Cecil. For most projects I’ve personally ported, half a day was enough to get it running and enjoy the speed of the new version of Cecil.
+
+Changes to take care of:
+
+•AssemblyFactory is no more, you can use the ModuleDefinition.ReadModule and AssemblyDefinition.ReadAssembly static methods, and call Write on them to write them back.
+•ModuleDefinition.Types now only returns top level (not nested) types. If you want to iterate over all the types defined in an assembly, you can use the extension method Mono.Cecil.Rocks.ModuleDefinitionRocks.GetAllTypes (this ModuleDefinition self).
+•ParameterDefinition.Sequence was a 1 based index of the parameter. It has been replaced by ParameterDefinition.Index which is 0 based. To help porting your application, you can replace your usage of the Sequence property to use the extension method Mono.Cecil.Rocks.ParameterReferenceRocks.GetSequence (this ParameterReference self).
+•IMethodSignature.ReturnType (which impacts types such as MethodReference or MethodDefinition now returns directly a TypeReference. It avoids the recurring pattern: method.ReturnType.ReturnType that was often found in previous Cecil code. If you still want to have access to the custom attributes or the marshal informations specified on the return type, you can use method.MethodReturnType. Actually, method.ReturnType is just a fast path for method.MethodReturnType.ReturnType.
+•There was an string indexer property on the TypeDefinitionCollection that was used to retrieve a TypeDefinition based on its full name. It has been replaced by the ModuleDefinition.GetType method.
+•The custom attribute API changed quite a bit. The old model was somewhat more direct, but didn’t provide enough information for all cases. Most of the code using the old cecil looks like (string) attribute.ConstructorParameters [0]. It has to be replaced with (string) attribute.ConstructorArguments [0].Value. .ConstructorArgument [0] returns a CustomAttributeArgument that has both a TypeReference Type property and a object Value property.
+•CilWorker is no more, it has been renamed to ILProcessor, and you get one by calling GetILProcessor on a MethodBody.
+•You now have to call TypeReference.GetElementType and MethodReference.GetElementMethod instead of TypeReference.GetOriginalType and MethodReference.GetOriginalMethod.

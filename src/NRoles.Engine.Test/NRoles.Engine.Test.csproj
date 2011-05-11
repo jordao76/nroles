@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{AAF1EDBF-6F6C-4366-949C-6208F6193DF9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>NRoles.Engine.Test</RootNamespace>
+    <AssemblyName>NRoles.Engine.Test</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Mono.Cecil, Version=0.6.9.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Mono.Cecil-0.9.3\Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Rocks">
+      <HintPath>..\..\lib\Mono.Cecil-0.9.3\Mono.Cecil.Rocks.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.5.3.9345, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\NUnit-2.5.7\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AssemblyAssert.cs" />
+    <Compile Include="AssemblyAccessor.cs" />
+    <Compile Include="Class_Member_Container_Fixture.cs" />
+    <Compile Include="Conflict_Detection_Fixture.cs" />
+    <Compile Include="CompositionTestAttribute.cs" />
+    <Compile Include="MethodMatcherFixture.cs" />
+    <Compile Include="MutationTestAttribute.cs" />
+    <Compile Include="ReflectionAssert.cs" />
+    <Compile Include="RoleTestAttribute.cs" />
+    <Compile Include="Role_And_Composition_Fixture.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StringExtensions.cs" />
+    <Compile Include="Support_Types.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NRoles.App\NRoles.App.csproj">
+      <Project>{385C3B5D-1624-4C30-8926-6263215E028F}</Project>
+      <Name>NRoles.App</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NRoles.Engine.Test.Support\NRoles.Engine.Test.Support.csproj">
+      <Project>{BA0CCFE5-8769-44F9-8E2C-D8EEAA8AA678}</Project>
+      <Name>NRoles.Engine.Test.Support</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NRoles.Engine\NRoles.Engine.csproj">
+      <Project>{CF44EC2E-D85A-4415-809B-954EBE10C1A0}</Project>
+      <Name>NRoles.Engine</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NRoles\NRoles.csproj">
+      <Project>{40A323EB-2064-4CAA-9944-D385F296E8F6}</Project>
+      <Name>NRoles</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

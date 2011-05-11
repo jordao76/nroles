@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{CF44EC2E-D85A-4415-809B-954EBE10C1A0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>NRoles.Engine</RootNamespace>
+    <AssemblyName>NRoles.Engine</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Mono.Cecil, Version=0.6.9.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\lib\Mono.Cecil-0.9.3\Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Mdb">
+      <HintPath>..\..\lib\Mono.Cecil-0.9.3\Mono.Cecil.Mdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Pdb">
+      <HintPath>..\..\lib\Mono.Cecil-0.9.3\Mono.Cecil.Pdb.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil.Rocks">
+      <HintPath>..\..\lib\Mono.Cecil-0.9.3\Mono.Cecil.Rocks.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="CodeVisitors\ChangeCallToCallVirtVisitor.cs" />
+    <Compile Include="CodeVisitors\ChangeFieldReferencesToPropertyVisitor.cs" />
+    <Compile Include="CodeVisitors\ChangeMethodReferenceVisitor.cs" />
+    <Compile Include="CodeVisitors\ChangeFieldReferencesVisitor.cs" />
+    <Compile Include="CodeVisitors\CompositeCodeVisitor.cs" />
+    <Compile Include="CodeVisitors\CompositeCodeVisitorBase.cs" />
+    <Compile Include="CodeVisitors\ScopingCodeVisitor.cs" />
+    <Compile Include="CodeVisitors\ICodeVisitorRegistry.cs" />
+    <Compile Include="Composition\RoleComposerAssemblyMutator.cs" />
+    <Compile Include="ConflictDetection\ClassMember.cs" />
+    <Compile Include="ConflictDetection\ClassMemberContainer.cs" />
+    <Compile Include="ConflictDetection\ConflictClassifier.cs" />
+    <Compile Include="ConflictDetection\ConflictGroupBase.cs" />
+    <Compile Include="ConflictDetection\IConflictDetector.cs" />
+    <Compile Include="ConflictDetection\IConflictGroup.cs" />
+    <Compile Include="ConflictDetection\NameConflictGroup.cs" />
+    <Compile Include="ConflictDetection\RoleMember.cs" />
+    <Compile Include="ConflictDetection\RoleViewMember.cs" />
+    <Compile Include="ConflictDetection\MethodSignatureConflictGroup.cs" />
+    <Compile Include="ConflictDetection\TypeMember.cs" />
+    <Compile Include="Core\MutationRunner.cs" />
+    <Compile Include="Core\IMutator.cs" />
+    <Compile Include="Messages\Warning.cs" />
+    <Compile Include="Messages\IMessageContainer.cs" />
+    <Compile Include="Core\MutationContext.cs" />
+    <Compile Include="Roles\BaseClassCallsMutator.cs" />
+    <Compile Include="Roles\GlobalRoleChecks.cs" />
+    <Compile Include="Roles\ExtractCodeClassMutator.cs" />
+    <Compile Include="Roles\ExtractStateClassMutator.cs" />
+    <Compile Include="Roles\ExtractTypeParameters.cs" />
+    <Compile Include="Roles\FieldToPropertyMutator.cs" />
+    <Compile Include="Roles\FindRoleInheritance.cs" />
+    <Compile Include="Roles\FindRolesImplementations.cs" />
+    <Compile Include="Support\AssemblyVerifier.cs" />
+    <Compile Include="Support\DefaultConstructorGenerator.cs" />
+    <Compile Include="Support\InstanceArgumentNullException.cs" />
+    <Compile Include="Support\MemberResolver.cs" />
+    <Compile Include="Support\matchers.cs" />
+    <Compile Include="Messages\Error.cs" />
+    <Compile Include="Roles\FindRoleInstantiation.cs" />
+    <Compile Include="Roles\MorphIntoRoleMutator.cs" />
+    <Compile Include="Support\NameProvider.cs" />
+    <Compile Include="Support\Pair.cs" />
+    <Compile Include="Support\CecilExtensions.cs" />
+    <Compile Include="CodeVisitors\CodeVisitorBase.cs" />
+    <Compile Include="Support\EnumerableExtensions.cs" />
+    <Compile Include="ConflictDetection\ConflictDetector.cs" />
+    <Compile Include="Roles\MorphIntoInterfaceMutator.cs" />
+    <Compile Include="Roles\ExtractTypeMutator.cs" />
+    <Compile Include="Core\MutationParameters.cs" />
+    <Compile Include="Roles\ExtractTypeResult.cs" />
+    <Compile Include="TypeVisitors\CompositeAssemblyTypesVisitor.cs" />
+    <Compile Include="TypeVisitors\IAssemblyTypesVisitor.cs" />
+    <Compile Include="TypeVisitors\IAssemblyTypesVisitorRegistry.cs" />
+    <Compile Include="TypeVisitors\ITypeVisitor.cs" />
+    <Compile Include="Composition\RoleComposer.cs" />
+    <Compile Include="Composition\RoleComposer.MemberComposer.cs" />
+    <Compile Include="Composition\RoleComposer.MethodComposer.cs" />
+    <Compile Include="Composition\RoleComposer.PropertyComposer.cs" />
+    <Compile Include="Core\RoleEngine.cs" />
+    <Compile Include="ConflictDetection\ContributedConflictGroup.cs" />
+    <Compile Include="TypeVisitors\MemberReaderVisitor.cs" />
+    <Compile Include="Messages\Message.cs" />
+    <Compile Include="Messages\MessageType.cs" />
+    <Compile Include="Core\operation_result.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Composition\RoleComposerMutator.cs" />
+    <Compile Include="ConflictDetection\RoleCompositionMember.cs" />
+    <Compile Include="ConflictDetection\RoleCompositionMemberContainer.cs" />
+    <Compile Include="ConflictDetection\RoleMemberDefinitionExtensions.cs" />
+    <Compile Include="Roles\RoleConstraintsValidator.cs" />
+    <Compile Include="Support\RoleUtils.cs" />
+    <Compile Include="Support\TemporaryFile.cs" />
+    <Compile Include="Support\Tracer.cs" />
+    <Compile Include="TypeVisitors\TypeCrawler.cs" />
+    <Compile Include="CodeVisitors\VisitableCollectionExtensions.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NRoles\NRoles.csproj">
+      <Project>{40A323EB-2064-4CAA-9944-D385F296E8F6}</Project>
+      <Name>NRoles</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,9 @@
+syntax: glob
+
+*.suo
+*.csproj.user
+
+syntax: regexp
+
+^src/.*/bin/.*
+^src/.*/obj/.*
