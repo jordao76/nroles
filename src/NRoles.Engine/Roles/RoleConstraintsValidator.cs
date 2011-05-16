@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using Mono.Cecil;
 using Mono.Cecil.Rocks;
-using System.Runtime.InteropServices;
 
 namespace NRoles.Engine {
 
@@ -38,10 +37,6 @@ namespace NRoles.Engine {
 
       CheckRoleDoesntImplementInterfacesExplicitly(result);
 
-      CheckRoleHasNoPInvokeMethods(result);
-
-      CheckRoleHasNoPlaceholders(result);
-
       /* TODO Checks:
         * a role can't be a struct
         * static members? right now it's being checked in the wrong class!
@@ -60,7 +55,6 @@ namespace NRoles.Engine {
     }
 
     private void CheckNoInstancesAreCreatedForRole(MutationContext context, OperationResult result) {
-      if (_roleType.IsAbstract) return;
       var codeVisitor = new FindRoleInstantiation(_roleType, context);
       context.CodeVisitorsRegistry.Register(codeVisitor);
     }
@@ -73,24 +67,8 @@ namespace NRoles.Engine {
     private void CheckRoleDoesntImplementInterfacesExplicitly(OperationResult result) {
       var hasOverrides = _roleType.Methods.Any(m => m.HasOverrides);
       if (hasOverrides) {
-        // Note: overrides can also be used in other languages that don't have the concept of explicit interface implementations.
-        // TODO: This message is too specific for C#
         result.AddMessage(Error.RoleHasExplicitInterfaceImplementation(_roleType));
       }
-    }
-
-    private void CheckRoleHasNoPInvokeMethods(OperationResult result) {
-      _roleType.Methods.Where(m => m.IsPInvokeImpl).
-        ForEach(m => result.AddMessage(Error.RoleHasPInvokeMethod(m)));
-    }
-
-    private void CheckRoleHasNoPlaceholders(OperationResult result) {
-      var members = new List<IMemberDefinition>();
-      _roleType.Properties.ForEach(m => members.Add(m));
-      _roleType.Events.ForEach(m => members.Add(m));
-      _roleType.Methods.ForEach(m => members.Add(m));
-      members.Where(m => m.IsMarkedAsPlaceholder()).
-        ForEach(m => result.AddMessage(Error.RoleHasPlaceholder(m)));
     }
 
   }
