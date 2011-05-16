@@ -723,9 +723,24 @@ namespace NRoles.Engine.Test.Support {
     ExpectedCompositionError = Error.Code.CompositionWithTypeParameter)]
   public class Composition_With_Generic_Role<T> : Does<T> where T : Role { }
 
-  // TODO:
+  [RoleTest(
+    ExpectedRoleError = Error.Code.RoleHasExplicitInterfaceImplementation)] // TODO: support this scenario and remove this error
+    //CompositionType = typeof(Role_With_Explicit_Interface_Implemetation_Composition),
+    //TestType = typeof(Role_With_Explicit_Interface_Implemetation_Composition_Test))]
+  public class Role_With_Explicit_Interface_Implemetation : IDisposable, Role {
+    void IDisposable.Dispose() { }
+  }
+  public class Role_With_Explicit_Interface_Implemetation_Composition : Does<Role_With_Explicit_Interface_Implemetation> {
+  }
+  public class Role_With_Explicit_Interface_Implemetation_Composition_Test {
+    public static void Test() {
+      var disposable = new Role_With_Explicit_Interface_Implemetation_Composition().As<Role_With_Explicit_Interface_Implemetation>() as IDisposable;
+      Assert.NotNull(disposable);
+    }
+  }
 
-  // TODO: create a role that explicitly implements an interface
+
+  // TODO:
 
   public class Base_Composition : Does<Empty_Role> { }
   public class Derived_Composition : Base_Composition, Does<Empty_Role> { }
