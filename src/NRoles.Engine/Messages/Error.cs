@@ -15,12 +15,6 @@ namespace NRoles.Engine {
     public enum Code {
 
       /// <summary>
-      /// Occurs when an uncaught exception is thrown from NRoles.
-      /// This is probably a bug in NRoles.
-      /// </summary>
-      InternalError = 1,
-
-      /// <summary>
       /// Occurs when a role has a parameterized constructor.
       /// </summary>
       RoleCannotContainParameterizedConstructor = 40,
@@ -118,23 +112,7 @@ namespace NRoles.Engine {
       /// defined as interfaces.
       /// </summary>
       RoleViewIsNotAnInterface = 58,
-
-      /// <summary>
-      /// Occurs when a method in a role is a platform invoke method. This is the case with extern methods marked with the DllImport attribute. This is not supported.
-      /// </summary>
-      RoleHasPInvokeMethod = 59,
-
-      /// <summary>
-      /// Occurs when a composition does not provide its type to a role's self type constraint.
-      /// </summary>
-      SelfTypeConstraintNotSetToCompositionType = 60,
-
-      /// <summary>
-      /// Occurs when a role has a member marked as a placeholder.
-      /// This is not allowed since roles can have abstract members instead.
-      /// </summary>
-      RoleHasPlaceholder = 61,
-
+      
       /// <summary>
       /// Occurs when a role explicitly implements interface members. This scenario is not supported.
       /// </summary>
@@ -146,11 +124,6 @@ namespace NRoles.Engine {
     private Error(Code number, string text, params object[] parameters) :
       this(number, string.Format(text, parameters)) { }
 
-    public static Message InternalError() {
-      return new Error(
-        Code.InternalError,
-        "Oops, an internal error occurred.");
-    }
     internal static Error RoleCannotContainParameterizedConstructor(object role, object constructor) {
       return new Error(
         Code.RoleCannotContainParameterizedConstructor,
@@ -240,7 +213,7 @@ namespace NRoles.Engine {
         Code.ErrorFromWarnings,
         "Error generated from the presence of warnings.");
     }
-    internal static Message RoleViewWithMultipleRoles(object roleView, List<TypeReference> allRolesForView) {
+    internal static Message RoleViewWithMultipleRoles(object roleView, List<TypeDefinition> allRolesForView) {
       return new Error(
         Code.RoleViewWithMultipleRoles,
         "The role view '{0}' adapts multiple roles. Use a single role per role view.",
@@ -252,33 +225,12 @@ namespace NRoles.Engine {
         "The role view '{0}' must be declared as an interface.",
         roleView);
     }
-    internal static Error RoleHasPInvokeMethod(object method) {
-      return new Error(
-        Code.RoleHasPInvokeMethod,
-        "The role method '{0}' is a PInvoke method. This is not supported.",
-        method);
-    }
-    internal static Error SelfTypeConstraintNotSetToCompositionType(object composition, object role, object selfType) {
-      return new Error(
-        Code.SelfTypeConstraintNotSetToCompositionType,
-        "Composition '{0}' doesn't provide itself as the self-type parameter to role '{1}'. It uses '{2}' instead.",
-        composition,
-        role,
-        selfType);
-    }
-    internal static Error RoleHasPlaceholder(object member) {
-      return new Error(
-        Code.RoleHasPlaceholder,
-        "Role member '{0}' is marked as a placeholder. Roles cannot have placeholders, use an abstract member not marked as a placeholder instead.",
-        member);
-    }
     internal static Message RoleHasExplicitInterfaceImplementation(object role) {
       return new Error(
         Code.RoleHasExplicitInterfaceImplementation,
         "The role '{0}' explicitly implements interface members. This is not supported.",
         role);
     }
-  
   }
 
 }
