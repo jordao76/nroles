@@ -35,6 +35,8 @@ namespace NRoles.Engine {
 
       CheckRoleDoesntComposeItself(result);
 
+      CheckRoleDoesntImplementInterfacesExplicitly(result);
+
       /* TODO Checks:
         * a role can't be a struct
         * static members? right now it's being checked in the wrong class!
@@ -60,6 +62,13 @@ namespace NRoles.Engine {
     private void CheckNoClassesInheritFromRole(MutationContext context, OperationResult result) {
       if (_roleType.IsInterface) return;
       context.TypeVisitorsRegistry.Register(new FindRoleInheritance(_roleType, context));
+    }
+
+    private void CheckRoleDoesntImplementInterfacesExplicitly(OperationResult result) {
+      var hasOverrides = _roleType.Methods.Any(m => m.HasOverrides);
+      if (hasOverrides) {
+        result.AddMessage(Error.RoleHasExplicitInterfaceImplementation(_roleType));
+      }
     }
 
   }
