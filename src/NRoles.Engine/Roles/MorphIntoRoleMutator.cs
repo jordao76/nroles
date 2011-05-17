@@ -16,7 +16,7 @@ namespace NRoles.Engine {
       var assembly = parameters.Assembly;
       var result = new CompositeOperationResult();
       assembly.MainModule.GetAllTypes().
-        Where(type => type.IsRole()).
+        Where(type => type.IsRole() && !type.IsRoleView()).
         ForEach(role => {
           var singleResult = MorphType(
             new MutationParameters { 
