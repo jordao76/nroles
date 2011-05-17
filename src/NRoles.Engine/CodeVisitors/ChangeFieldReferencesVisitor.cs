@@ -50,7 +50,7 @@ namespace NRoles.Engine {
             instructionAfterGetter = ProcessFieldStore(instruction, field);
           }
           _il.InsertBefore(instructionAfterGetter,
-            _il.Create(OpCodes.Callvirt, _stateGetter));
+          _il.Create(OpCodes.Callvirt, _stateGetter));
 
         }
 

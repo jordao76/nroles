@@ -106,12 +106,17 @@ namespace NRoles.Engine {
       /// single role.
       /// </summary>
       RoleViewWithMultipleRoles = 57,
-      
+
       /// <summary>
       /// Occurs when a role view is not defined as an interface. Role view must be 
       /// defined as interfaces.
       /// </summary>
-      RoleViewIsNotAnInterface = 58
+      RoleViewIsNotAnInterface = 58,
+      
+      /// <summary>
+      /// Occurs when a role explicitly implements interface members. This scenario is not supported.
+      /// </summary>
+      RoleHasExplicitInterfaceImplementation = 666
 
     }
 
@@ -219,6 +224,12 @@ namespace NRoles.Engine {
         Code.RoleViewIsNotAnInterface,
         "The role view '{0}' must be declared as an interface.",
         roleView);
+    }
+    internal static Message RoleHasExplicitInterfaceImplementation(object role) {
+      return new Error(
+        Code.RoleHasExplicitInterfaceImplementation,
+        "The role '{0}' explicitly implements interface members. This is not supported.",
+        role);
     }
   }
 
