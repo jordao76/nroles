@@ -61,6 +61,10 @@
       <Project>{CF44EC2E-D85A-4415-809B-954EBE10C1A0}</Project>
       <Name>NRoles.Engine</Name>
     </ProjectReference>
+    <ProjectReference Include="..\NRoles\NRoles.csproj">
+      <Project>{40A323EB-2064-4CAA-9944-D385F296E8F6}</Project>
+      <Name>NRoles</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
