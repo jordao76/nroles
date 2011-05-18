@@ -182,6 +182,8 @@ namespace NRoles.Engine.Test.Support {
     public T Method2() { return _field; }
   }
 
+  // TODO: role with protected field!
+
   [RoleTest(CompositionType = typeof(Simple_Role_With_Generic_Method_Composition))]
   public class Simple_Role_With_Generic_Method : Role {
     public void Method<T>(T arg) { }

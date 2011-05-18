@@ -12,9 +12,6 @@ namespace NRoles.App {
 
     static int Main(string[] args) {
 
-      var timer = new Stopwatch();
-      timer.Start();
-
       bool trace = false;
       bool quiet = false;
       bool warningsAsErrors = false;
@@ -64,23 +61,27 @@ namespace NRoles.App {
       }
       input = unnamed[0];
 
-      IOperationResult result;
       try {
-        result = new RoleEngine().Execute(
+        var result = new RoleEngine().Execute(
           new RoleEngineParameters(input, output) { 
             TreatWarningsAsErrors = warningsAsErrors,
             RunPEVerify = !noPEVerify,
             PEVerifyTimeout = peVerifyTimeout
           });
+        result.Messages.ForEach(message => Console.WriteLine(message));
+        if (!quiet) {
+          Console.WriteLine("Done"); // TODO: print statistics? timing, number of roles, number of compositions, etc... <= these would be like info messages...
+        }
+        if (!result.Success) return -1;
       }
       catch (Exception ex) {
         // TODO: generate a message!
-        result = new OperationResult();
-        result.AddMessage(Error.InternalError());
+        Console.WriteLine("Failed!");
+        Console.WriteLine();
+        Console.WriteLine(ex.Message);
+        Console.WriteLine();
         if (trace) {
-          Console.WriteLine("Failed!");
-          Console.WriteLine();
-          Console.WriteLine(ex.ToString());
+          Console.WriteLine(ex.StackTrace);
           Console.WriteLine();
           if (ex.InnerException != null) {
             Console.WriteLine("INNER " + ex.InnerException.Message);
@@ -88,15 +89,9 @@ namespace NRoles.App {
           var hresult = Marshal.GetHRForException(ex);
           Console.WriteLine("HRESULT 0x{0:x}", hresult);
         }
+        return -1;
       }
 
-      timer.Stop();
-      result.Messages.ForEach(message => Console.WriteLine(message));
-      if (!quiet) {
-        // TODO: print statistics? timing, number of roles, number of compositions, etc... <= these would be like info messages...
-        Console.WriteLine("Done, took {0}s", (timer.ElapsedMilliseconds / 1000f)); 
-      }
-      if (!result.Success) return -1;
       return 0;
     }
 
