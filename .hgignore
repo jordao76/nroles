@@ -3,6 +3,11 @@ syntax: glob
 *.suo
 *.csproj.user
 
+bin/*.dll
+bin/*.pdb
+bin/*.exe
+bin/*.config
+
 syntax: regexp
 
 ^src/.*/bin/.*
