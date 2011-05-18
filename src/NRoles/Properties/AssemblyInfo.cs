@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("NRoles")]
-[assembly: AssemblyCopyright("Copyright © Rodrigo Santana Jordão 2010-2011")]
+[assembly: AssemblyCopyright(NRoles._Metadata.Copyright)]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -32,4 +32,12 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.1.1.*")]
+[assembly: AssemblyVersion(NRoles._Metadata.AssemblyVersion)]
+
+namespace NRoles {
+  public static class _Metadata {
+    public const string Version = "0.1.1";
+    public const string AssemblyVersion = Version + ".*";
+    public const string Copyright = "Copyright © Rodrigo Jordão 2010-2011";
+  }
+}

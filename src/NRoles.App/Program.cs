@@ -46,7 +46,7 @@ namespace NRoles.App {
       }
 
       if (!quiet) {
-        Console.WriteLine("NRoles v0.1.0");
+        Console.WriteLine("NRoles v" + _Metadata.Version);
       }
 
       if (trace) {
