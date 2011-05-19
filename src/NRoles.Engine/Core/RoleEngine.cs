@@ -108,14 +108,15 @@ namespace NRoles.Engine {
     }
 
     bool ShouldMutate(AssemblyDefinition assembly) {
-      return 
-        !assembly.CustomAttributes.Any(ca => 
-          ca.Is<DontMutateAttribute>());
+      return !assembly.CustomAttributes.Any(ca => 
+        ca.AttributeType.Resolve() == assembly.MainModule.Import(typeof(DontMutateAttribute)).Resolve());
     }
 
     void MarkAsMutated(AssemblyDefinition assembly) {
       assembly.CustomAttributes.Add(
-        assembly.MainModule.Create<DontMutateAttribute>());
+        new CustomAttribute(
+          assembly.MainModule.Import(
+            typeof(DontMutateAttribute).GetConstructor(Type.EmptyTypes))));
     }
 
     IOperationResult VerifyAssembly(AssemblyDefinition assembly, int timeoutInSeconds) {
