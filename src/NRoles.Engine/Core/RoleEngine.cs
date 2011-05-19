@@ -35,14 +35,20 @@ namespace NRoles.Engine {
     AssemblyDefinition ReadAssembly(RoleEngineParameters parameters) {
       var assemblyPath = parameters.AssemblyPath;
       var assembly = AssemblyDefinition.ReadAssembly(assemblyPath,
-        new ReaderParameters() { ReadSymbols = true } // read debugging information
+        new ReaderParameters() { 
+          ReadSymbols = true,
+          SymbolReaderProvider = new Mono.Cecil.Pdb.PdbReaderProvider() // Microsoft centric
+        }
       );
       return assembly;
     }
 
     void WriteAssembly(RoleEngineParameters parameters, AssemblyDefinition assembly) {
       assembly.Write(parameters.OutputAssemblyPath,
-        new WriterParameters() { WriteSymbols = true } // write debugging information
+        new WriterParameters() { 
+          WriteSymbols = true,
+          SymbolWriterProvider = new Mono.Cecil.Pdb.PdbWriterProvider() // Microsoft centric
+        }
       );
     }
 
