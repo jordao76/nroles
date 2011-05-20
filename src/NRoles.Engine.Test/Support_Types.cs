@@ -1140,6 +1140,18 @@ namespace NRoles.Engine.Test.Support {
 
   #endregion
 
+  [RoleTest]
+  public abstract class RComparable<T> : Role {
+    public abstract bool Smaller(T other);
+    public bool Greater(T other) {
+      // this is actually GreaterOrEquals
+      return !Smaller(other);
+    }
+    public bool Between(T min, T max) {
+      return this.Greater(min) && this.Smaller(max);
+    }
+  }
+
   // "composite" tests
 
   class Test_Class { // NOTE: maintain in synch with Test_With_Nested_Class.TestClass

@@ -20,7 +20,7 @@ namespace NRoles.Engine {
     protected bool ShouldChangeToCallVirt(MethodReference method) {
       var methodDefinition = method.Resolve();
       return
-        method.DeclaringType == _sourceType &&
+        method.DeclaringType.Resolve() == _sourceType &&
         // private and static methods should not change to callvirt
         !methodDefinition.IsPrivate && !methodDefinition.IsStatic;
     }
