@@ -36,21 +36,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Mono.Cecil, Version=0.9.5.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+    <Reference Include="Mono.Cecil, Version=0.6.9.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\Mono.Cecil-0.9.5\Mono.Cecil.dll</HintPath>
+      <HintPath>..\..\lib\Mono.Cecil-0.9.3\Mono.Cecil.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Cecil.Mdb, Version=0.9.5.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+    <Reference Include="Mono.Cecil.Mdb, Version=0.9.3.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\Mono.Cecil-0.9.5\Mono.Cecil.Mdb.dll</HintPath>
+      <HintPath>..\..\lib\Mono.Cecil-0.9.3\Mono.Cecil.Mdb.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Cecil.Pdb, Version=0.9.5.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+    <Reference Include="Mono.Cecil.Pdb, Version=0.9.3.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\Mono.Cecil-0.9.5\Mono.Cecil.Pdb.dll</HintPath>
+      <HintPath>..\..\lib\Mono.Cecil-0.9.3\Mono.Cecil.Pdb.dll</HintPath>
     </Reference>
-    <Reference Include="Mono.Cecil.Rocks, Version=0.9.5.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\lib\Mono.Cecil-0.9.5\Mono.Cecil.Rocks.dll</HintPath>
+    <Reference Include="Mono.Cecil.Rocks">
+      <HintPath>..\..\lib\Mono.Cecil-0.9.3\Mono.Cecil.Rocks.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -74,19 +73,13 @@
     <Compile Include="CodeVisitors\CompositeCodeVisitorBase.cs" />
     <Compile Include="CodeVisitors\ScopingCodeVisitor.cs" />
     <Compile Include="CodeVisitors\ICodeVisitorRegistry.cs" />
-    <Compile Include="Composition\MemberComposer.EventComposer.cs" />
-    <Compile Include="Composition\RoleComposer.Initialization.cs" />
     <Compile Include="Composition\RoleComposerAssemblyMutator.cs" />
-    <Compile Include="Composition\SelfTypeChecker.cs" />
-    <Compile Include="Composition\SelfTypeExtractor.cs" />
     <Compile Include="ConflictDetection\ClassMember.cs" />
     <Compile Include="ConflictDetection\ClassMemberContainer.cs" />
     <Compile Include="ConflictDetection\ConflictClassifier.cs" />
     <Compile Include="ConflictDetection\ConflictGroupBase.cs" />
-    <Compile Include="ConflictDetection\GroupConflictResolver.cs" />
     <Compile Include="ConflictDetection\IConflictDetector.cs" />
     <Compile Include="ConflictDetection\IConflictGroup.cs" />
-    <Compile Include="ConflictDetection\MemberConflictResolver.cs" />
     <Compile Include="ConflictDetection\NameConflictGroup.cs" />
     <Compile Include="ConflictDetection\RoleMember.cs" />
     <Compile Include="ConflictDetection\RoleViewMember.cs" />
@@ -128,9 +121,9 @@
     <Compile Include="TypeVisitors\IAssemblyTypesVisitorRegistry.cs" />
     <Compile Include="TypeVisitors\ITypeVisitor.cs" />
     <Compile Include="Composition\RoleComposer.cs" />
-    <Compile Include="Composition\MemberComposer.cs" />
-    <Compile Include="Composition\MemberComposer.MethodComposer.cs" />
-    <Compile Include="Composition\MemberComposer.PropertyComposer.cs" />
+    <Compile Include="Composition\RoleComposer.MemberComposer.cs" />
+    <Compile Include="Composition\RoleComposer.MethodComposer.cs" />
+    <Compile Include="Composition\RoleComposer.PropertyComposer.cs" />
     <Compile Include="Core\RoleEngine.cs" />
     <Compile Include="ConflictDetection\ContributedConflictGroup.cs" />
     <Compile Include="TypeVisitors\MemberReaderVisitor.cs" />
@@ -155,16 +148,11 @@
       <Name>NRoles</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Composition\MemberComposer.Roles.cs" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent>"$(SolutionDir)..\lib\nroles\nutate.exe" "$(TargetPath)"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
