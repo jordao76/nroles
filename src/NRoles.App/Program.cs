@@ -61,27 +61,23 @@ namespace NRoles.App {
       }
       input = unnamed[0];
 
+      IOperationResult result;
       try {
-        var result = new RoleEngine().Execute(
+        result = new RoleEngine().Execute(
           new RoleEngineParameters(input, output) { 
             TreatWarningsAsErrors = warningsAsErrors,
             RunPEVerify = !noPEVerify,
             PEVerifyTimeout = peVerifyTimeout
           });
-        result.Messages.ForEach(message => Console.WriteLine(message));
-        if (!quiet) {
-          Console.WriteLine("Done"); // TODO: print statistics? timing, number of roles, number of compositions, etc... <= these would be like info messages...
-        }
-        if (!result.Success) return -1;
       }
       catch (Exception ex) {
         // TODO: generate a message!
-        Console.WriteLine("Failed!");
-        Console.WriteLine();
-        Console.WriteLine(ex.Message);
-        Console.WriteLine();
+        result = new OperationResult();
+        result.AddMessage(Error.InternalError());
         if (trace) {
-          Console.WriteLine(ex.StackTrace);
+          Console.WriteLine("Failed!");
+          Console.WriteLine();
+          Console.WriteLine(ex.ToString());
           Console.WriteLine();
           if (ex.InnerException != null) {
             Console.WriteLine("INNER " + ex.InnerException.Message);
@@ -89,9 +85,13 @@ namespace NRoles.App {
           var hresult = Marshal.GetHRForException(ex);
           Console.WriteLine("HRESULT 0x{0:x}", hresult);
         }
-        return -1;
       }
 
+      result.Messages.ForEach(message => Console.WriteLine(message));
+      if (!quiet) {
+        Console.WriteLine("Done"); // TODO: print statistics? timing, number of roles, number of compositions, etc... <= these would be like info messages...
+      }
+      if (!result.Success) return -1;
       return 0;
     }
 
