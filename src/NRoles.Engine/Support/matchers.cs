@@ -9,6 +9,8 @@ namespace NRoles.Engine {
   public static class TypeMatcher {
 
     public static bool IsMatch(TypeReference a, TypeReference b) {
+      if (a is GenericParameter) return true; // TODO: is this right? b might be Void or something not intended!
+
       if (a is TypeSpecification || b is TypeSpecification) {
         if (a.GetType() != b.GetType()) {
           return false;
@@ -16,19 +18,25 @@ namespace NRoles.Engine {
         return IsMatch((TypeSpecification)a, (TypeSpecification)b);
       }
 
-      if (a is GenericParameter || b is GenericParameter) {
-        if (a.GetType() != b.GetType()) {
-          return false;
-        }
-      }
-
       return a.FullName == b.FullName;
     }
+
+    // TODO: what has become of ModType in Cecil 0.9?
+    /*static bool IsMatch(ModType a, ModType b) {
+      if (!IsMatch(a.ModifierType, b.ModifierType)) {
+        return false;
+      }
+      return IsMatch(a.ElementType, b.ElementType);
+    }*/
 
     static bool IsMatch(TypeSpecification a, TypeSpecification b) {
       if (a is GenericInstanceType) {
         return IsMatch((GenericInstanceType)a, (GenericInstanceType)b);
       }
+
+      /*if (a is ModType) {
+        return IsMatch((ModType)a, (ModType)b);
+      }*/
 
       return IsMatch(a.ElementType, b.ElementType);
     }
@@ -168,34 +176,30 @@ namespace NRoles.Engine {
 
   public class MemberFinder {
 
-    public readonly TypeReference SearchType;
+    public readonly TypeDefinition SearchType;
     private IList<IMemberDefinition> _members;
-    private MemberResolver _resolver;
 
-    public MemberFinder(TypeReference searchType) {
+    public MemberFinder(TypeDefinition searchType) {
       if (searchType == null) throw new ArgumentNullException("searchType");
       SearchType = searchType;
-      _resolver = new MemberResolver(SearchType);
       ResolveMembers();
     }
 
     private void ResolveMembers() {
       var visitor = new MemberReaderVisitor();
-      SearchType.Resolve().Accept(visitor);
+      SearchType.Accept(visitor);
       _members = visitor.Members;
     }
 
-    public IMemberDefinition FindMatchFor(IMemberDefinition memberToMatch, string aliasing = null) {
+    public IMemberDefinition FindMatchFor(IMemberDefinition memberToMatch) { 
+      return FindMatchFor(memberToMatch, memberToMatch.Name);
+    }
+    public IMemberDefinition FindMatchFor(IMemberDefinition memberToMatch, string aliasing) {
       if (memberToMatch == null) throw new ArgumentNullException("memberToMatch");
-      aliasing = aliasing ?? memberToMatch.Name;
+      if (aliasing == null) throw new ArgumentNullException("aliasing");
 
       var matchedMember = _members.SingleOrDefault(
-        targetMember => 
-          IsMatch(
-            _resolver.ResolveMemberDefinition(targetMember), 
-            memberToMatch, 
-            aliasing)
-      );
+        targetMember => IsMatch(targetMember, memberToMatch, aliasing));
       return matchedMember;
     }
 
@@ -203,7 +207,7 @@ namespace NRoles.Engine {
       var oldName = targetMember.Name;
       if (aliasing == targetMember.Name) {
         // the memberToMatch is an alias for the targetMember
-        // so match against the alias name
+        // so we'll match against the alias name
         targetMember.Name = memberToMatch.Name;
       }
       var isMatch = MemberMatcher.IsMatch(memberToMatch, targetMember);
