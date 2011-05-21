@@ -138,6 +138,23 @@ namespace NRoles.Engine.Test {
       Assert.AreEqual(2, methods.Count);
     }
 
+    class Class_With_Field { public string Field = "test"; }
+    [Test]
+    public void Test_Field_Should_Be_Present() { 
+      var container = new ClassMemberContainer(GetType<Class_With_Field>());
+      var members = container.Members;
+      Assert.That(members.Any(member => member.Definition.Name == "Field" && !member.IsInherited));
+    }
+
+    class Derived_Class_With_Field : Class_With_Field { public string Field2 = "test"; }
+    [Test]
+    public void Test_Fields_Should_Be_Present_On_Inheritance() {
+      var container = new ClassMemberContainer(GetType<Derived_Class_With_Field>());
+      var members = container.Members;
+      Assert.That(members.Any(member => member.Definition.Name == "Field" && member.IsInherited));
+      Assert.That(members.Any(member => member.Definition.Name == "Field2" && !member.IsInherited));
+    }
+
     // TODO: 
     // static => conflicts with other members in C#
     // generics methods, 

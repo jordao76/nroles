@@ -80,7 +80,9 @@ namespace NRoles.Engine {
       if (member1 is EventDefinition) { 
         return EventMatcher.IsMatch((EventDefinition)member1, (EventDefinition)member2);
       }
-      // Note: fields are not used
+      if (member1 is FieldDefinition) {
+        return FieldMatcher.IsMatch((FieldDefinition)member1, (FieldDefinition)member2);
+      }
       throw new InvalidOperationException();
     }
 
@@ -150,6 +152,22 @@ namespace NRoles.Engine {
       }
 
       // TODO: event accessors comparison??
+
+      return true;
+    }
+
+  }
+
+  public static class FieldMatcher {
+
+    public static bool IsMatch(FieldDefinition field1, FieldDefinition field2) {
+      if (field1.Name != field2.Name) {
+        return false;
+      }
+
+      if (!TypeMatcher.IsMatch(field1.FieldType, field2.FieldType)) {
+        return false;
+      }
 
       return true;
     }
