@@ -15,6 +15,12 @@ namespace NRoles.Engine {
     public enum Code {
 
       /// <summary>
+      /// Occurs when an uncaught exception is thrown from NRoles.
+      /// This is probably a bug in NRoles.
+      /// </summary>
+      InternalError = 1,
+
+      /// <summary>
       /// Occurs when a role has a parameterized constructor.
       /// </summary>
       RoleCannotContainParameterizedConstructor = 40,
@@ -124,6 +130,11 @@ namespace NRoles.Engine {
     private Error(Code number, string text, params object[] parameters) :
       this(number, string.Format(text, parameters)) { }
 
+    public static Message InternalError() {
+      return new Error(
+        Code.InternalError,
+        "Oops, an internal error occurred.");
+    }
     internal static Error RoleCannotContainParameterizedConstructor(object role, object constructor) {
       return new Error(
         Code.RoleCannotContainParameterizedConstructor,
