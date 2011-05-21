@@ -22,14 +22,16 @@ namespace NRoles.Engine.Test.Support {
     }
   }
   public class Circle3 : Does<REquality<Circle3>>, Does<RMagnitude<Circle3>> {
+    // NOTE: this inheritance gave strange results:
+    //   Does<REquality<Circle>>, Does<RMagnitude<Circle>>; and use Circle everywhere Circle3 is used below
     public int Center { get; set; }
     public int Radius { get; set; }
     public double Area { get { return Math.PI * (Radius * Radius); } }
-    public bool Equals(Circle other) {
+    public bool Equals(Circle3 other) {
       if (other == null) return false;
       return other.Center == Center && other.Radius == Radius;
     }
-    public bool Smaller(Circle other) {
+    public bool Smaller(Circle3 other) {
       if (other == null) return false;
       return Radius < other.Radius;
     }
