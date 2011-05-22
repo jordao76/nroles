@@ -111,7 +111,7 @@ namespace NRoles.Engine.Test {
       Assert.IsFalse(result.Success);
       var messages = result.Messages.ToList();
       Assert.AreEqual(1, messages.Count);
-      Assert.AreEqual(45, messages[0].Number);
+      Assert.AreEqual((int)Error.Code.MethodsWithConflictingSignatures, messages[0].Number);
       // TODO: add the class' members to the groups
       // TODO: this message is also valid for when the members differ in accessibility?
     }
@@ -125,7 +125,7 @@ namespace NRoles.Engine.Test {
       Assert.IsFalse(result.Success);
       var messages = result.Messages.ToList();
       Assert.AreEqual(1, messages.Count);
-      Assert.AreEqual(50, messages[0].Number);
+      Assert.AreEqual((int)Error.Code.MembersWithSameName, messages[0].Number);
     }
 
   }
