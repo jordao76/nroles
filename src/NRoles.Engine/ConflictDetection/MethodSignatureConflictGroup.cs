@@ -18,11 +18,12 @@ namespace NRoles.Engine {
     }
 
     protected override bool SpecificMatches(RoleCompositionMember member) {
-      if (!(member.Definition is MethodDefinition)) return false; // non-methods are not grouped
-      var controlMethod = Members[0];
-      return MethodMatcher.IsSignatureMatch(
-        (MethodDefinition)member.ResolveContextualDefinition(),
-        (MethodDefinition)controlMethod.ResolveContextualDefinition());
+      var definition = member.Definition;
+      var method = definition as MethodDefinition;
+      if (method == null) return false; // non-methods are not grouped
+      var controlMethod = Members[0].Definition as MethodDefinition;
+      if (controlMethod == null) return false;
+      return MethodMatcher.IsSignatureMatch(method, controlMethod);
     }
 
     public override ConflictDetectionResult Process() {
