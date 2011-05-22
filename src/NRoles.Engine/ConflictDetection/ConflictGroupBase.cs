@@ -10,16 +10,11 @@ namespace NRoles.Engine {
   /// Base class for conflict grouping strategies.
   /// </summary>
   public abstract class ConflictGroupBase : IConflictGroup {
-
-    /// <summary>
-    /// The target type of the composition.
-    /// </summary>
-    public TypeDefinition TargetType { get; set; }
-
+    
     /// <summary>
     /// The module currently being analyzed.
     /// </summary>
-    public ModuleDefinition Module { get { return TargetType.Module; } }
+    public ModuleDefinition Module { get; set; }
 
     /// <summary>
     /// The members in this group.
@@ -53,8 +48,9 @@ namespace NRoles.Engine {
     public bool Matches(RoleCompositionMember member) { 
       if (member == null) throw new ArgumentNullException("member");
       if (Members.Count == 0) return MatchesEmptyGroup(member);
-      if (MemberMatcher.IsMatch(Members[0].ResolveContextualDefinition(), member.ResolveContextualDefinition())) return true;
-      if (member.Definition.IsHidden(Module)) return false;
+      var definition = member.Definition;
+      if (Members[0].Definition == definition) return true;
+      if (definition.IsHidden(Module)) return false;
       return SpecificMatches(member);
     }
 
