@@ -38,19 +38,31 @@ namespace NRoles.Engine {
     /// Checks if a member matches the condition to be part of this conflict group.
     /// </summary>
     /// <remarks>
-    /// The member will always match an empty group, or a group that it's already part of.
+    /// The member will always match a group that it's already part of.
+    /// For an empty group, the method <see cref="MatchesEmptyGroup"/> is called.
     /// The member won't match if it's a hidden member. Hidden members can't conflict with other members.
-    /// The method <see cref="SpecificMatches"/> is called to check this groups condition.
+    /// The method <see cref="SpecificMatches"/> is called to check this group's condition.
     /// </remarks>
     /// <param name="member">Member to check for a match.</param>
     /// <returns>If the member matches this group's condition.</returns>
     public bool Matches(RoleCompositionMember member) { 
       if (member == null) throw new ArgumentNullException("member");
-      if (Members.Count == 0) return true; // no members in the group, anything matches
+      if (Members.Count == 0) return MatchesEmptyGroup(member);
       var definition = member.Definition;
       if (Members[0].Definition == definition) return true;
       if (definition.IsHidden(Module)) return false;
       return SpecificMatches(member);
+    }
+
+    /// <summary>
+    /// Called to decide if a member can be part of an empty group, that is, 
+    /// without considering other members. This is the initial condition for a
+    /// member to be part of this group. By default returns <c>true</c>.
+    /// </summary>
+    /// <param name="member">Member to check.</param>
+    /// <returns>If the member should be part of an empty group.</returns>
+    protected virtual bool MatchesEmptyGroup(RoleCompositionMember member) {
+      return true;
     }
 
     /// <summary>
@@ -69,7 +81,8 @@ namespace NRoles.Engine {
     public void AddMember(RoleCompositionMember member) {
       if (member == null) throw new ArgumentNullException("member");
       if (Members.Contains(member)) return;
-      if (Members.Count > 0 && !Matches(member)) throw new ArgumentException("member doesn't match group");
+      // TODO: rename matches to accepts?
+      if (!Matches(member)) throw new ArgumentException("member doesn't match group");
       Members.Add(member);
     }
 

@@ -6,10 +6,10 @@ using System.Text;
 using Mono.Cecil;
 using NUnit.Framework;
 
-namespace NRoles.Engine.Test {
+namespace NRoles.Engine.Test.ConflictDetection {
 
   [TestFixture]
-  public class Conflict_Detection_Fixture : AssemblyReadonlyFixture {
+  public class ConflictDetectorFixture : AssemblyReadonlyFixture {
 
     class Empty { }
     [Test]
