@@ -7,10 +7,15 @@ using Mono.Cecil;
 namespace NRoles.Engine {
 
   /// <summary>
-  /// Groups methods that have matching parameters but different return types. 
-  /// This is considered a signature conflict.
+  /// Groups methods that have the same name and matching parameter types.
+  /// Detects signature conflicts by looking at return types in the group,
+  /// checking if they are different.
   /// </summary>
   public class MethodSignatureConflictGroup : ConflictGroupBase {
+
+    protected override bool MatchesEmptyGroup(RoleCompositionMember member) {
+      return member.Definition is MethodDefinition;
+    }
 
     protected override bool SpecificMatches(RoleCompositionMember member) {
       var definition = member.Definition;

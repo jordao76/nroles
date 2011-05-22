@@ -26,12 +26,18 @@ namespace NRoles.Engine {
 
     private void Classify(RoleCompositionMember member) {
       if (member == null) throw new ArgumentNullException("member");
+      var newGroup = false;
       var group = ResolveGroup(member);
       if (group == null) {
         group = new TConflictGroup() { Module = Module };
-        _groups.Add(group);
+        newGroup = true;
       }
-      group.AddMember(member);
+      if (group.Matches(member)) {
+        group.AddMember(member);
+        if (newGroup) {
+          _groups.Add(group);
+        }
+      }
     }
 
     public IConflictGroup ResolveGroup(RoleCompositionMember member) {
