@@ -21,7 +21,7 @@ namespace NRoles.Engine.Test.Support {
       return !Smaller(other) && this.As<REquality<T>>().Differs(other);
     }
   }
-  public class Circle3 : Does<REquality<Circle3>>, Does<RMagnitude<Circle3>> {
+  public class Circle3 : Does<REquality<Circle3>> /*, Does<RMagnitude<Circle3>>*/ {
     // NOTE: this inheritance gave strange results:
     //   Does<REquality<Circle>>, Does<RMagnitude<Circle>>; and use Circle everywhere Circle3 is used below
     public int Center { get; set; }
