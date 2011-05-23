@@ -71,7 +71,7 @@ namespace NRoles.Engine {
 
     // TODO: this code is now in ConflictClassifier
     private void GroupMember(RoleCompositionMember memberToGroup) {
-      var memberGroup = ResolveGroup(memberToGroup.Definition);
+      var memberGroup = ResolveGroup(memberToGroup);
       if (memberGroup == null) {
         memberGroup = new ContributedConflictGroup(this);
         _conflictGroups.Add(memberGroup);
@@ -87,14 +87,15 @@ namespace NRoles.Engine {
     private void ProcessTargetTypeMember(ClassMember classMember) {
       var member = classMember.Definition;
 
-      var memberGroup = ResolveGroup(member);
+      //var memberGroup = ResolveGroup(member);
+      var memberGroup = ResolveGroup(classMember.ResolveContextualDefinition(), classMember.Class);
       if (memberGroup == null) return; // no clash
 
       // if there's a match, there's a conflict in the target type itself
       // it must be explicitly marked as [Supercede] to resolve the conflict,
       // or else a warning is created
 
-      // TODO: the supercede must be public or protected!
+      // TODO: the supercede can have any accessibility?
       // TODO: what if there's a clash and the supercede is NOT public?
 
       if (classMember.IsInherited) {
@@ -130,8 +131,16 @@ namespace NRoles.Engine {
       }
     }
 
-    public ContributedConflictGroup ResolveGroup(IMemberDefinition memberDefinition) {
-      return _conflictGroups.SingleOrDefault(group => group.Matches(new RoleMember(memberDefinition.DeclaringType, memberDefinition)));
+    [Obsolete]
+    public ContributedConflictGroup ResolveGroup(IMemberDefinition memberDefinition, TypeReference type = null) {
+      type = type ?? memberDefinition.DeclaringType;
+      return _conflictGroups.SingleOrDefault(
+        group => group.Matches(
+          new RoleMember(type, memberDefinition))); // TODO: RoleMember?
+    }
+
+    public ContributedConflictGroup ResolveGroup(RoleCompositionMember member) {
+      return _conflictGroups.SingleOrDefault(group => group.Matches(member));
     }
 
     public IList<ContributedConflictGroup> RetrieveMemberGroups() {
