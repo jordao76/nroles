@@ -65,6 +65,7 @@ namespace NRoles.Engine {
 
   }
 
+  // TODO: the matchers must work with MemberReferences because of generics!
   public static class MemberMatcher {
 
     public static bool IsMatch(IMemberDefinition member1, IMemberDefinition member2) {

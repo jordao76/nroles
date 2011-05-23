@@ -33,17 +33,6 @@ namespace NRoles.Engine {
       IsInherited = isInherited;
     }
 
-    /// <summary>
-    /// Resolves the definition of the encapsulated member in the context of 
-    /// the member's class. This will only be different from the direct class
-    /// member if the class is generic and type arguments are provided for it.
-    /// So, e.g., <c>void Add(T p)</c> in <c>List&lt;T&gt;</c> will become
-    /// <c>void Add(int p)</c> if the actual class is <c>List&lt;int&gt;</c>.
-    /// </summary>
-    public IMemberDefinition ResolveContextualDefinition() {
-      return new MemberResolver(Class, Class.Module).ResolveMemberDefinition(Definition);
-    }
-
   }
 
 }
