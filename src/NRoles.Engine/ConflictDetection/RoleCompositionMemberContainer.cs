@@ -73,7 +73,7 @@ namespace NRoles.Engine {
     private void GroupMember(RoleCompositionMember memberToGroup) {
       var memberGroup = ResolveGroup(memberToGroup);
       if (memberGroup == null) {
-        memberGroup = new ContributedConflictGroup(this);
+        memberGroup = new ContributedConflictGroup(TargetType);
         _conflictGroups.Add(memberGroup);
       }
       memberGroup.AddMember(memberToGroup);
@@ -87,8 +87,7 @@ namespace NRoles.Engine {
     private void ProcessTargetTypeMember(ClassMember classMember) {
       var member = classMember.Definition;
 
-      //var memberGroup = ResolveGroup(member);
-      var memberGroup = ResolveGroup(classMember.ResolveContextualDefinition(), classMember.Class);
+      var memberGroup = ResolveGroup(member, classMember.Class);
       if (memberGroup == null) return; // no clash
 
       // if there's a match, there's a conflict in the target type itself

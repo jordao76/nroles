@@ -15,7 +15,7 @@ namespace NRoles.Engine {
     ModuleDefinition Module { get; set; }
 
     /// <summary>
-    /// Checks if a member matches the condition to be part of this conflict group.
+    /// Checks if a member matches the condition to be part of this group.
     /// </summary>
     /// <param name="member">Member to check for a match.</param>
     /// <returns>If the member matches this group's condition.</returns>

@@ -284,10 +284,12 @@ namespace NRoles.Engine {
 
   class GenericParametersMap {
 
+    private IGenericParameterProvider _source;
     private Dictionary<string, TypeReference> _map = new Dictionary<string, TypeReference>();
 
     public GenericParametersMap(IGenericParameterProvider source, IGenericInstance target) {
       if (source == null) throw new ArgumentNullException("source");
+      _source = source;
       if (target == null) return;
       if (!target.HasGenericArguments) return;
       if (source.GenericParameters.Count != target.GenericArguments.Count) throw new ArgumentException();
@@ -302,6 +304,7 @@ namespace NRoles.Engine {
 
     public GenericParametersMap(IGenericParameterProvider source) {
       if (source == null) throw new ArgumentNullException("source");
+      _source = source;
       if (!source.HasGenericParameters) return;
 
       foreach (GenericParameter parameter in source.GenericParameters) {
@@ -320,7 +323,8 @@ namespace NRoles.Engine {
         if (Next != null) {
           return Next[genericParameterName];
         }
-        throw new KeyNotFoundException();
+        // the parameter was not found, return a generic type reference
+        return new GenericParameter(genericParameterName, _source);
       }
     }
 

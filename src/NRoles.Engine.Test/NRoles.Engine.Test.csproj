@@ -57,10 +57,12 @@
   <ItemGroup>
     <Compile Include="AssemblyAssert.cs" />
     <Compile Include="AssemblyAccessor.cs" />
+    <Compile Include="AssemblyReadonlyFixture.cs" />
     <Compile Include="Class_Member_Container_Fixture.cs" />
     <Compile Include="ConflictDetection\ConflictDetectorFixture.cs" />
     <Compile Include="CompositionTestAttribute.cs" />
-    <Compile Include="ConflictDetection\MethodSignatureConflictGroupFixture.cs" />
+    <Compile Include="ConflictDetection\ContributedConflictGroup_Generic_Methods_Fixture.cs" />
+    <Compile Include="ConflictDetection\MethodSignatureConflictGroup_Simple_Property_Fixture.cs" />
     <Compile Include="MethodMatcherFixture.cs" />
     <Compile Include="MutationTestAttribute.cs" />
     <Compile Include="ReflectionAssert.cs" />
