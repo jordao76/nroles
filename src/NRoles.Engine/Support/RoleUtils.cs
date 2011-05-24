@@ -43,13 +43,15 @@ namespace NRoles.Engine {
     private static void RetrieveRoles(this TypeReference self, Dictionary<TypeReference, int> roleCollector, int sortOrder = 1) {
       // Note: the roles from the base types are already implemented, so there's no need to reimplement them
       var directRoles = self.RetrieveDirectRoles();
+      // get the roles from the direct roles
       directRoles.ForEach(role => {
         if (!(self is TypeDefinition)) {
           role = new MemberResolver(self).ResolveConstituentType(role);
         }
-        if (roleCollector.ContainsKey(role)) {
-          if (roleCollector[role] < sortOrder) {
-            roleCollector[role] = sortOrder;
+        var roleInCollector = roleCollector.Keys.SingleOrDefault(type => TypeMatcher.IsMatch(type, role));
+        if (roleInCollector != null) {
+          if (roleCollector[roleInCollector] < sortOrder) {
+            roleCollector[roleInCollector] = sortOrder;
             role.RetrieveRoles(roleCollector, sortOrder + 1); // have to recurse to adjust the parents' sort order
           }
         }

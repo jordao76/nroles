@@ -97,7 +97,9 @@ namespace NRoles.Engine {
       }
 
       if (resolvedMembers.All(roleMember => roleMember.IsAbstract)) {
-        result.AddMessage(Error.DoesNotImplementAbstractRoleMember(_targetType, ResolveRepresentation()));
+        if (!_targetType.IsRole()) {
+          result.AddMessage(Error.DoesNotImplementAbstractRoleMember(_targetType, ResolveRepresentation()));
+        }
         return result;
       }
 
