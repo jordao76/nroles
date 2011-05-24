@@ -8,20 +8,6 @@ using NUnit.Framework;
 
 namespace NRoles.Engine.Test {
 
-  // TODO: move to its own file
-  public abstract class AssemblyReadonlyFixture {
-    static AssemblyAccessor _assembly = new AssemblyAccessor();
-    static AssemblyReadonlyFixture() {
-      new MutationContext(((AssemblyDefinition)_assembly).MainModule);
-    }
-    protected TypeDefinition GetType<T>() {
-      return _assembly.GetType<T>();
-    }
-    protected TypeDefinition GetType(Type type) {
-      return _assembly.GetType(type);
-    }
-  }
-
   [TestFixture]
   public class Class_Member_Container_Fixture : AssemblyReadonlyFixture {
 
