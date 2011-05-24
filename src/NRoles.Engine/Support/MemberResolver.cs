@@ -53,9 +53,7 @@ namespace NRoles.Engine {
     public MethodDefinition ResolveMethodDefinition(MethodDefinition sourceMethod, string name, MethodAttributes methodAttributes) {
       if (sourceMethod == null) throw new ArgumentNullException("sourceMethod");
 
-      bool createdMap = false;
       if (sourceMethod.HasGenericParameters) {
-        createdMap = true;
         _map = new GenericParametersMap(sourceMethod) { Next = _map };
       }
 
@@ -69,7 +67,7 @@ namespace NRoles.Engine {
       ResolveGenericParameters(sourceMethod, targetMethod);
       ResolveParameters(sourceMethod, targetMethod);
 
-      if (createdMap) {
+      if (_map.Next != null) {
         _map = _map.Next;
       }
 
@@ -133,7 +131,9 @@ namespace NRoles.Engine {
       if (source.HasGenericParameters) {
         foreach (GenericParameter parameter in source.GenericParameters) {
           target.GenericParameters.Add(
-            new GenericParameter("!!" + parameter.Position, target));
+            new GenericParameter(
+              "!!" + parameter.Position,
+              target));
         }
       }
     }
@@ -156,7 +156,7 @@ namespace NRoles.Engine {
       }
 
       var declaringType = ResolveMatchingType(sourceMethod.DeclaringType);
-      var returnType = ResolveMatchingType(sourceMethod.ReturnType);
+      var returnType = sourceMethod.ReturnType; // TODO: resolve?
       var targetMethod = new MethodReference(
         sourceMethod.Name,
         returnType) {
@@ -190,7 +190,7 @@ namespace NRoles.Engine {
         };
     }
 
-    public TypeReference ResolveMatchingType(TypeReference sourceType) {
+    private TypeReference ResolveMatchingType(TypeReference sourceType) {
       if (sourceType == null) throw new ArgumentNullException("sourceType");
 
       if (!sourceType.HasGenericParameters) {

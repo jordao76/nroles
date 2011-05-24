@@ -25,7 +25,7 @@ namespace NRoles.Engine.Test.ConflictDetection {
     [SetUp]
     public void SetUp() {
       var targetType = GetType(typeof(Empty));
-      _group = new ContributedConflictGroup { TargetType = targetType };
+      _group = new ContributedConflictGroup(targetType);
     }
 
     [Test]
@@ -37,11 +37,11 @@ namespace NRoles.Engine.Test.ConflictDetection {
     }
 
     [Test]
-    public void Generic_Method_Should_Not_Match_Generic_Method_With_Type_Argument() {
+    public void Generic_Method_Should_Match_Generic_Method_With_Type_Argument() {
       var roleMethod1 = GetMethodByName(typeof(Generic<>), "Method");
       _group.AddMember(roleMethod1);
       var roleMethod2 = GetMethodByName(typeof(Inherited), "Method");
-      Assert.AreEqual(false, _group.Matches(roleMethod2));
+      Assert.AreEqual(true, _group.Matches(roleMethod2));
     }
   
   }
