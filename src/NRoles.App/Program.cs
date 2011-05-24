@@ -12,6 +12,9 @@ namespace NRoles.App {
 
     static int Main(string[] args) {
 
+      var timer = new Stopwatch();
+      timer.Start();
+
       bool trace = false;
       bool quiet = false;
       bool warningsAsErrors = false;
@@ -87,9 +90,11 @@ namespace NRoles.App {
         }
       }
 
+      timer.Stop();
       result.Messages.ForEach(message => Console.WriteLine(message));
       if (!quiet) {
-        Console.WriteLine("Done"); // TODO: print statistics? timing, number of roles, number of compositions, etc... <= these would be like info messages...
+        // TODO: print statistics? timing, number of roles, number of compositions, etc... <= these would be like info messages...
+        Console.WriteLine("Done, took {0}s", (timer.ElapsedMilliseconds / 1000f)); 
       }
       if (!result.Success) return -1;
       return 0;
