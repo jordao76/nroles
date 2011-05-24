@@ -10,7 +10,7 @@ namespace NRoles.Engine {
   // based on the WHOLE signature (that is, including the return type)
   // TODO: separate conflict detection from member resolution? create an IConflictResolver?
   public class ContributedConflictGroup : ConflictGroupBase { 
-    RoleCompositionMemberContainer _container;
+    TypeDefinition _targetType;
     ClassMember _supercedingMember;
     bool _hasConflict;
 
@@ -18,10 +18,10 @@ namespace NRoles.Engine {
     public IMemberDefinition ImplementedMember { get; set; }
     public bool DontImplement { get; set; }
 
-    public ContributedConflictGroup(RoleCompositionMemberContainer container) {
-      if (container == null) throw new ArgumentNullException("container");
-      _container = container;
-      Module = _container.TargetType.Module;
+    public ContributedConflictGroup(TypeDefinition targetType) {
+      if (targetType == null) throw new ArgumentNullException("targetType");
+      _targetType = targetType;
+      Module = _targetType.Module;
     }
 
     public IEnumerable<RoleCompositionMember> ResolveOverridingMembers() {
@@ -40,7 +40,7 @@ namespace NRoles.Engine {
 
     protected override bool SpecificMatches(RoleCompositionMember member) {
       // TODO: other things that don't match anything: constructors?
-      return MemberMatcher.IsMatch(Members[0].Definition, member.Definition);
+      return MemberMatcher.IsMatch(Members[0].ResolveContextualDefinition(), member.ResolveContextualDefinition());
     }
 
     // marks the member as superceded in the target type
@@ -73,7 +73,7 @@ namespace NRoles.Engine {
       // process excluded members
       var resolvedMembers = Members.Where(roleMember => !roleMember.IsExcluded).ToList();
       if (resolvedMembers.Count == 0) {
-        result.AddMessage(Error.AllMembersExcluded(_container.TargetType, ResolveRepresentation()));
+        result.AddMessage(Error.AllMembersExcluded(_targetType, ResolveRepresentation()));
         return result;
       }
 
@@ -97,7 +97,7 @@ namespace NRoles.Engine {
       }
 
       if (resolvedMembers.All(roleMember => roleMember.IsAbstract)) {
-        result.AddMessage(Error.DoesNotImplementAbstractRoleMember(_container.TargetType, ResolveRepresentation()));
+        result.AddMessage(Error.DoesNotImplementAbstractRoleMember(_targetType, ResolveRepresentation()));
         return result;
       }
 
@@ -105,7 +105,7 @@ namespace NRoles.Engine {
       resolvedMembers = resolvedMembers.Where(roleMember => !roleMember.IsAbstract).ToList();
       if (resolvedMembers.Count > 1) {
         _hasConflict = true;
-        result.AddMessage(Error.Conflict(_container.TargetType, ResolveRepresentation(), resolvedMembers));
+        result.AddMessage(Error.Conflict(_targetType, ResolveRepresentation(), resolvedMembers));
         return result;
       }
 

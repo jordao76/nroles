@@ -5,9 +5,9 @@ using System.Text;
 
 namespace NRoles.Engine.Test.Support {
 
-  //[RoleTest(
-    //OtherRoles = new Type[] { typeof(RMagnitude<>) },
-    //CompositionType = typeof(Circle3))]
+  [RoleTest(
+    OtherRoles = new Type[] { typeof(RMagnitude<>) },
+    CompositionType = typeof(Circle3))]
   public abstract class REquality<T> : IEquatable<T>, Role {
     public abstract bool Equals(T other);
     public bool Differs(T other) { return !Equals(other); }
@@ -21,9 +21,7 @@ namespace NRoles.Engine.Test.Support {
       return !Smaller(other) && this.As<REquality<T>>().Differs(other);
     }
   }
-  public class Circle3 : Does<REquality<Circle3>> /*, Does<RMagnitude<Circle3>>*/ {
-    // NOTE: this inheritance gave strange results:
-    //   Does<REquality<Circle>>, Does<RMagnitude<Circle>>; and use Circle everywhere Circle3 is used below
+  public class Circle3 : /*TODO: Does<REquality<Circle3>>,*/ Does<RMagnitude<Circle3>> {
     public int Center { get; set; }
     public int Radius { get; set; }
     public double Area { get { return Math.PI * (Radius * Radius); } }
