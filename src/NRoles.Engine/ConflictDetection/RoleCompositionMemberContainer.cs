@@ -130,7 +130,6 @@ namespace NRoles.Engine {
       }
     }
 
-    [Obsolete]
     public ContributedConflictGroup ResolveGroup(IMemberDefinition memberDefinition, TypeReference type = null) {
       type = type ?? memberDefinition.DeclaringType;
       return _conflictGroups.SingleOrDefault(
