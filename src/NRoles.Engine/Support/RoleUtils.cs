@@ -3,30 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Mono.Cecil;
-using System.Text.RegularExpressions;
 
 namespace NRoles.Engine {
   
   static class RoleUtils {
 
+    // TODO: create a class that encapsulates all type references to types in NRoles.dll
+    private static Type GetRoleType() {
+      return typeof(Role);
+    }
+
     public static bool IsRole(this TypeDefinition self) {
       return self.Interfaces.Cast<TypeReference>().Any(
-        type => type.Resolve().FullName == typeof(Role).FullName);
+        type => type.Resolve() == self.Module.Import(GetRoleType()).Resolve());
     }
 
     public static bool IsRoleView(this TypeReference role) {
       var interfaces = role.Resolve().Interfaces;
       if (interfaces != null && interfaces.Count > 0) {
-        return interfaces.Any(IsRoleViewInterface);
-        }
+        return interfaces
+          .Any(type => type.Resolve() == role.Module.Import(typeof(RoleView<>)).Resolve());
+      }
       return false;
     }
-
-    public static bool IsRoleViewInterface(this TypeReference interfaceReference) {
-      return interfaceReference.Resolve().FullName == typeof(RoleView<>).FullName;
-    }
-
-    #region Retrieve roles
 
     public static IEnumerable<TypeReference> RetrieveDirectRoles(this TypeReference self) {
       return
@@ -64,15 +63,13 @@ namespace NRoles.Engine {
     }
 
     public static bool DoesRole(this TypeReference declaredInterface) {
-      return declaredInterface.Resolve().FullName == typeof(Does<>).FullName;
+      return declaredInterface.Resolve() == declaredInterface.Module.Import(typeof(Does<>)).Resolve();
     }
 
     private static TypeReference RetrieveRole(this TypeReference doesReference) {
       var does = (GenericInstanceType)doesReference;
       return does.GenericArguments[0];
     }
-
-    #endregion
 
     public static bool IsBaseMethod(this IMemberDefinition self) {
       return self is MethodDefinition &&
@@ -81,24 +78,15 @@ namespace NRoles.Engine {
 
     // code class
 
-    public static TypeDefinition ResolveCodeClass(this TypeReference roleReference) {
-      // TODO: create separate strategies!
-      var role = roleReference.Resolve();
-      var codeClassName = role.FullName + "/" + NameProvider.GetCodeClassName(role.Name);
-      var codeClass = role.NestedTypes.SingleOrDefault(nt => nt.FullName == codeClassName);
-      if (codeClass == null) {
-        // NOTE, TODO: the alternative strategy is only used for testing!
-        codeClassName = new Regex(role.Name + "$").Replace(role.FullName, "") + NameProvider.GetAlternativeCodeClassName(role.Name);
-        codeClass = role.Module.GetType(codeClassName);
-      }
-      if (codeClass == null) throw new InvalidOperationException("No code class for role " + role); // TODO:assert
-      return codeClass;
+    public static TypeDefinition ResolveCodeClass(this TypeDefinition role) {
+      var companionClassName = role.FullName + "/" + NameProvider.GetCodeClassName(role.Name);
+      return role.NestedTypes.Cast<TypeDefinition>().Single(nt => nt.FullName == companionClassName);
     }
 
     public static MethodDefinition ResolveCorrespondingMethod(this TypeDefinition role, MethodDefinition roleMethod) {
-      var codeClass = role.ResolveCodeClass();
-      if (codeClass == null) throw new InvalidOperationException();
-      var correspondingMethod = new CorrespondingMethodFinder(codeClass).FindMatchFor(roleMethod);
+      var companionClass = role.ResolveCodeClass();
+      if (companionClass == null) throw new InvalidOperationException();
+      var correspondingMethod = new CorrespondingMethodFinder(companionClass).FindMatchFor(roleMethod);
       return correspondingMethod;
     }
 
@@ -114,8 +102,9 @@ namespace NRoles.Engine {
     // state class
 
     public static TypeDefinition ResolveStateClass(this TypeReference role) {
-      var stateClassName = role.Resolve().FullName + "/" + NameProvider.GetStateClassName(role.Name);
-      return role.Resolve().NestedTypes.Single(nt => nt.FullName == stateClassName);
+      return role.Resolve().NestedTypes.Cast<TypeDefinition>().
+        Where(type => type.Name.Contains(NameProvider.GetStateClassName(role.Name))).
+        Single();
     }
 
     public static MethodReference ResolveStateClassCtor(this TypeReference role) {
