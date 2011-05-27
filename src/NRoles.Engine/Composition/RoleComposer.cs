@@ -98,10 +98,14 @@ namespace NRoles.Engine {
     }
 
     private FieldReference ResolveStateClassField(TypeReference role) {
+      var stateTypeDefinition = role.ResolveStateClass();
+      var stateTypeReference = new MemberResolver(role).ResolveMatchingType(stateTypeDefinition);
       var fieldDefinition = _targetType.Fields.
-        Where(fd => fd.FieldType.Resolve() == role.ResolveStateClass()).
+        Where(fd => TypeMatcher.IsMatch(fd.FieldType, stateTypeReference)).
         SingleOrDefault();
-      if (fieldDefinition == null) return null; // TODO: this is because the role was already implemented in a base class; it should be checked before, possibly in the conflict resolution stage
+      if (fieldDefinition == null) {
+        return null; // TODO: this is because the role was already implemented in a base class; it should be checked before, possibly in the conflict resolution stage
+      }
       return new FieldReference(
         fieldDefinition.Name,
         fieldDefinition.FieldType) {

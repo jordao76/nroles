@@ -34,22 +34,22 @@ namespace NRoles.Engine {
 
       private void ImplementPropertyAccessorMethods(PropertyDefinition implementedProperty, MemberComposer propertyAccessorComposer) {
         if (RoleProperty.GetMethod != null) {
-          var getterRoleGroup = Container.ResolveGroup(RoleProperty.GetMethod);
+          var getterRoleGroup = Container.ResolveGroup(Role, RoleProperty.GetMethod);
           implementedProperty.GetMethod = (MethodDefinition)propertyAccessorComposer.Compose(getterRoleGroup, _accessSpecifier);
         }
         if (RoleProperty.SetMethod != null) {
-          var setterRoleGroup = Container.ResolveGroup(RoleProperty.SetMethod);
+          var setterRoleGroup = Container.ResolveGroup(Role, RoleProperty.SetMethod);
           implementedProperty.SetMethod = (MethodDefinition)propertyAccessorComposer.Compose(setterRoleGroup, _accessSpecifier);
         }
       }
 
       private void DontImplementPropertyAccessorMethods() {
         if (RoleProperty.GetMethod != null) {
-          var getterRoleGroup = Container.ResolveGroup(RoleProperty.GetMethod);
+          var getterRoleGroup = Container.ResolveGroup(Role, RoleProperty.GetMethod);
           getterRoleGroup.DontImplement = true;
         }
         if (RoleProperty.SetMethod != null) {
-          var setterRoleGroup = Container.ResolveGroup(RoleProperty.SetMethod);
+          var setterRoleGroup = Container.ResolveGroup(Role, RoleProperty.SetMethod);
           setterRoleGroup.DontImplement = true;
         }
       }

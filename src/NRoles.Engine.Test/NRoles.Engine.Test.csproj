@@ -73,7 +73,10 @@
     <Compile Include="Support\Circle.cs" />
     <Compile Include="Support\Circle2.cs" />
     <Compile Include="Support\Circle3.cs" />
-    <Compile Include="Support\RComparable.cs" />
+    <Compile Include="Support\ColoredCircle.cs" />
+    <Compile Include="Support\RCircle.cs" />
+    <Compile Include="Support\RColor.cs" />
+    <Compile Include="Support\Rgb.cs" />
     <Compile Include="Support\Support_Types.cs" />
   </ItemGroup>
   <ItemGroup>
