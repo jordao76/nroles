@@ -73,6 +73,7 @@
     <Compile Include="CodeVisitors\CompositeCodeVisitorBase.cs" />
     <Compile Include="CodeVisitors\ScopingCodeVisitor.cs" />
     <Compile Include="CodeVisitors\ICodeVisitorRegistry.cs" />
+    <Compile Include="Composition\RoleComposer.Initialization.cs" />
     <Compile Include="Composition\RoleComposerAssemblyMutator.cs" />
     <Compile Include="ConflictDetection\ClassMember.cs" />
     <Compile Include="ConflictDetection\ClassMemberContainer.cs" />
