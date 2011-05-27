@@ -1,0 +1,8 @@
+﻿<NUnitProject>
+  <Settings activeconfig="Release" />
+  <Config name="Debug" binpathtype="Auto" />
+  <Config name="Release" binpathtype="Auto">
+    <assembly path="NRoles.Engine.Test\bin\Release\NRoles.Engine.Test.dll" />
+    <assembly path="NRoles.Engine.Test.Acceptance\bin\Release\NRoles.Engine.Test.Acceptance.dll" />
+  </Config>
+</NUnitProject>
