@@ -87,7 +87,7 @@ namespace NRoles.Engine {
     private void ProcessTargetTypeMember(ClassMember classMember) {
       var member = classMember.Definition;
 
-      var memberGroup = ResolveGroup(member, classMember.Class);
+      var memberGroup = ResolveGroup(classMember.Class, member);
       if (memberGroup == null) return; // no clash
 
       // if there's a match, there's a conflict in the target type itself
@@ -130,11 +130,10 @@ namespace NRoles.Engine {
       }
     }
 
-    public ContributedConflictGroup ResolveGroup(IMemberDefinition memberDefinition, TypeReference type = null) {
+    public ContributedConflictGroup ResolveGroup(TypeReference type, IMemberDefinition memberDefinition) {
       type = type ?? memberDefinition.DeclaringType;
-      return _conflictGroups.SingleOrDefault(
-        group => group.Matches(
-          new RoleMember(type, memberDefinition))); // TODO: RoleMember?
+      var member = new RoleMember(type, memberDefinition); // TODO: RoleMember?
+      return ResolveGroup(member);
     }
 
     public ContributedConflictGroup ResolveGroup(RoleCompositionMember member) {

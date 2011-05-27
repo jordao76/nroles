@@ -102,9 +102,8 @@ namespace NRoles.Engine {
     // state class
 
     public static TypeDefinition ResolveStateClass(this TypeReference role) {
-      return role.Resolve().NestedTypes.Cast<TypeDefinition>().
-        Where(type => type.Name.Contains(NameProvider.GetStateClassName(role.Name))).
-        Single();
+      return role.Resolve().NestedTypes.
+        Single(type => type.Name.Contains(NameProvider.GetStateClassName(role.Name)));
     }
 
     public static MethodReference ResolveStateClassCtor(this TypeReference role) {

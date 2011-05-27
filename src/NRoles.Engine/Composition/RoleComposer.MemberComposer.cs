@@ -224,15 +224,15 @@ namespace NRoles.Engine {
 
       private void ImplementEventAccessorMethods(EventDefinition implementedEvent, MemberComposer propertyAccessorComposer) {
         if (RoleEvent.AddMethod != null) {
-          var addMethodRoleGroup = Container.ResolveGroup(RoleEvent.AddMethod);
+          var addMethodRoleGroup = Container.ResolveGroup(Role, RoleEvent.AddMethod);
           implementedEvent.AddMethod = (MethodDefinition)propertyAccessorComposer.Compose(addMethodRoleGroup, _accessSpecifier);
         }
         if (RoleEvent.RemoveMethod != null) {
-          var removeMethodRoleGroup = Container.ResolveGroup(RoleEvent.RemoveMethod);
+          var removeMethodRoleGroup = Container.ResolveGroup(Role, RoleEvent.RemoveMethod);
           implementedEvent.RemoveMethod = (MethodDefinition)propertyAccessorComposer.Compose(removeMethodRoleGroup, _accessSpecifier);
         }
         if (RoleEvent.InvokeMethod != null) {
-          var invokeMethodRoleGroup = Container.ResolveGroup(RoleEvent.InvokeMethod);
+          var invokeMethodRoleGroup = Container.ResolveGroup(Role, RoleEvent.InvokeMethod);
           implementedEvent.RemoveMethod = (MethodDefinition)propertyAccessorComposer.Compose(invokeMethodRoleGroup, _accessSpecifier);
         }
       }
