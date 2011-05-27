@@ -1,6 +1,7 @@
 syntax: glob
 
 *.suo
+*.sln.cache
 *.csproj.user
 
 bin/*.dll
