@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Mono.Cecil;
+using System.Text;
 
 namespace NRoles.Engine {
 
@@ -53,7 +54,9 @@ namespace NRoles.Engine {
     public MethodDefinition ResolveMethodDefinition(MethodDefinition sourceMethod, string name, MethodAttributes methodAttributes) {
       if (sourceMethod == null) throw new ArgumentNullException("sourceMethod");
 
+      bool createdMap = false;
       if (sourceMethod.HasGenericParameters) {
+        createdMap = true;
         _map = new GenericParametersMap(sourceMethod) { Next = _map };
       }
 
@@ -67,7 +70,7 @@ namespace NRoles.Engine {
       ResolveGenericParameters(sourceMethod, targetMethod);
       ResolveParameters(sourceMethod, targetMethod);
 
-      if (_map.Next != null) {
+      if (createdMap) {
         _map = _map.Next;
       }
 
@@ -190,7 +193,7 @@ namespace NRoles.Engine {
         };
     }
 
-    private TypeReference ResolveMatchingType(TypeReference sourceType) {
+    public TypeReference ResolveMatchingType(TypeReference sourceType) {
       if (sourceType == null) throw new ArgumentNullException("sourceType");
 
       if (!sourceType.HasGenericParameters) {
@@ -324,8 +327,17 @@ namespace NRoles.Engine {
           return Next[genericParameterName];
         }
         // the parameter was not found, return a generic type reference
+        // TODO: throw?
         return new GenericParameter(genericParameterName, _source);
       }
+    }
+
+    public override string ToString() {
+      var sb = new StringBuilder();
+      foreach (var entry in _map) {
+        sb.AppendFormat("{0} => {1}\n", entry.Key, entry.Value);
+      }
+      return sb.ToString();
     }
 
   }

@@ -37,11 +37,11 @@ namespace NRoles.Engine.Test.ConflictDetection {
     }
 
     [Test]
-    public void Generic_Method_Should_Match_Generic_Method_With_Type_Argument() {
+    public void Generic_Method_Should_Not_Match_Generic_Method_With_Type_Argument() {
       var roleMethod1 = GetMethodByName(typeof(Generic<>), "Method");
       _group.AddMember(roleMethod1);
       var roleMethod2 = GetMethodByName(typeof(Inherited), "Method");
-      Assert.AreEqual(true, _group.Matches(roleMethod2));
+      Assert.AreEqual(false, _group.Matches(roleMethod2));
     }
   
   }
