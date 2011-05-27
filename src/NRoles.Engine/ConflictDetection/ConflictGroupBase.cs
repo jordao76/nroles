@@ -48,9 +48,8 @@ namespace NRoles.Engine {
     public bool Matches(RoleCompositionMember member) { 
       if (member == null) throw new ArgumentNullException("member");
       if (Members.Count == 0) return MatchesEmptyGroup(member);
-      var definition = member.Definition;
-      if (Members[0].Definition == definition) return true;
-      if (definition.IsHidden(Module)) return false;
+      if (MemberMatcher.IsMatch(Members[0].ResolveContextualDefinition(), member.ResolveContextualDefinition())) return true;
+      if (member.Definition.IsHidden(Module)) return false;
       return SpecificMatches(member);
     }
 

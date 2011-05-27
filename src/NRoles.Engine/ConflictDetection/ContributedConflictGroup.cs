@@ -119,7 +119,7 @@ namespace NRoles.Engine {
     public RoleCompositionMember ResolvedMember { get; private set; }
 
     private string ResolveRepresentation() {
-      return Members[0].Definition.ToString().Replace(Members[0].Role.ToString() + "::", "");
+      return Members[0].ResolveContextualDefinition().ToString();
     }
 
     public override string ToString() {
@@ -129,7 +129,9 @@ namespace NRoles.Engine {
         _hasConflict ? " [Conflict]" : "",
         IsSuperceded ?  " [Superceded]" : "");
       Members.ForEach(roleMember => 
-        sb.AppendFormat("  {1}{0}\n", roleMember,
+        sb.AppendFormat("  {2}{0}::{1}\n", 
+          roleMember.Type,
+          roleMember.ResolveContextualDefinition(),
           ResolvedMember == roleMember ? "[Resolved] " : ""
       ));
       sb.Length -= "\n".Length;
