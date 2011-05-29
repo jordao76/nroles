@@ -150,8 +150,8 @@ namespace NRoles.Engine.Test {
 
     private void Assert_Assembly(string assemblyPath) {
       // debug!!
-      ((AssemblyDefinition)_assembly).Write(@"C:\Temp\NRoles.mutated.dll");
-      Console.WriteLine(@"SAVED ASSEMBLY: C:\Temp\NRoles.mutated.dll");
+      //((AssemblyDefinition)_assembly).Write(@"C:\Temp\NRoles.mutated.dll");
+      //Console.WriteLine(@"SAVED ASSEMBLY: C:\Temp\NRoles.mutated.dll");
 
       AssemblyAssert.Verify(assemblyPath);
     }
