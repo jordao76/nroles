@@ -76,9 +76,13 @@ namespace NRoles.Engine {
     }
 
     private MethodReference ResolveInitReference(TypeReference role) {
-      var codeClassDefinition = role.ResolveCodeClass();
+      var codeClassDefinition = ResolveCodeClass(role);
       var initDefinition = codeClassDefinition.Methods.Cast<MethodDefinition>().Single(md => md.Name == NameProvider.GetCodeClassInitMethodName(role.Name));
       return new MemberResolver(role, Module).ResolveMethodReference(initDefinition);
+    }
+
+    private TypeDefinition ResolveCodeClass(TypeReference role) {
+      return role.Resolve().ResolveCodeClass();
     }
 
     private Instruction InsertAfter(ILProcessor il, Instruction target, Instruction instruction) {
