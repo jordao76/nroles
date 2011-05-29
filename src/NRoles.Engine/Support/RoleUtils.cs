@@ -79,14 +79,14 @@ namespace NRoles.Engine {
     // code class
 
     public static TypeDefinition ResolveCodeClass(this TypeDefinition role) {
-      var companionClassName = role.FullName + "/" + NameProvider.GetCodeClassName(role.Name);
-      return role.NestedTypes.Cast<TypeDefinition>().Single(nt => nt.FullName == companionClassName);
+      var codeClassName = role.FullName + "/" + NameProvider.GetCodeClassName(role.Name);
+      return role.NestedTypes.Cast<TypeDefinition>().Single(nt => nt.FullName == codeClassName);
     }
 
     public static MethodDefinition ResolveCorrespondingMethod(this TypeDefinition role, MethodDefinition roleMethod) {
-      var companionClass = role.ResolveCodeClass();
-      if (companionClass == null) throw new InvalidOperationException();
-      var correspondingMethod = new CorrespondingMethodFinder(companionClass).FindMatchFor(roleMethod);
+      var codeClass = role.ResolveCodeClass();
+      if (codeClass == null) throw new InvalidOperationException();
+      var correspondingMethod = new CorrespondingMethodFinder(codeClass).FindMatchFor(roleMethod);
       return correspondingMethod;
     }
 
