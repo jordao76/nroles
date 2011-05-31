@@ -37,23 +37,21 @@ namespace NRoles.Engine {
       }
 
       public IMemberDefinition Compose(ContributedConflictGroup group, MethodAttributes accessSpecifier) {
-        if (group.IsSuperceded) {
-          // the superceding member in the class (or its base class) is the implementing member for the role member
-          // TODO: use the ImplementedMember here?
-          AdjustSupercedingMember(group.Supercede, group.ResolveOverridingMembers());
+        if (group.ImplementedMember != null) {
+          return group.ImplementedMember;
+        }
+        if (group.DontImplement) {
           return null;
+        }
+
+        if (group.IsSuperceded) {
+          // the superceding member in the class is the implementing member for the role member
+          return group.ImplementedMember = AdjustSupercedingMember(group.Supercede, group.ResolveOverridingMembers());
         }
 
         if (group.IsBaseMethod) {
           ImplementBaseMethod(group.Members[0], group.ResolveOverridingMembers()); // any member will do, they all point to the same base method
           // TODO: use the ImplementedMember here?
-          return null;
-        }
-
-        if (group.ImplementedMember != null) {
-          return group.ImplementedMember;
-        }
-        if (group.DontImplement) {
           return null;
         }
 
@@ -146,34 +144,35 @@ namespace NRoles.Engine {
         return false;
       }
 
-      private void AdjustSupercedingMember(ClassMember classMember, IEnumerable<RoleCompositionMember> overrides) {
+      private MethodDefinition AdjustSupercedingMember(ClassMember classMember, IEnumerable<RoleCompositionMember> overrides) {
         var member = classMember.Definition;
         var method = member as MethodDefinition;
-        if (method != null) {
+        if (method == null) return null;
 
-          MethodDefinition targetMethod = null;
-          if (!classMember.IsInherited) {
-            targetMethod = method;
-          }
-          else {
-            // if it's in a base class, create a new method in the target class that calls the base class method
-            targetMethod = new MemberResolver(classMember.Class, Module).ResolveMethodDefinition(method);
-            if (method.IsVirtual && !method.IsFinal) {
-              targetMethod.IsNewSlot = false; // the derived method overrides the base method
-            }
-            CreateCodeToCallBaseClassMethod(targetMethod, classMember);
-            TargetType.Methods.Add(targetMethod);
-          }
-
-          // add the corresponding overrides to the method
-          AddOverrides(targetMethod, overrides);
-
-          if (!(method.IsVirtual || method.IsAbstract)) {
-            // to support polymorphism with regards to the role interface, mark as virtual sealed
-            targetMethod.Attributes |= MethodAttributes.Virtual | MethodAttributes.NewSlot | MethodAttributes.Final;
-          }
+        MethodDefinition targetMethod = null;
+        if (!classMember.IsInherited) {
+          targetMethod = method;
         }
-      }
+        else {
+          // if it's in a base class, create a new method in the target class that calls the base class method
+          targetMethod = new MemberResolver(classMember.Class, Module).ResolveMethodDefinition(method);
+          if (method.IsVirtual && !method.IsFinal) {
+            targetMethod.IsNewSlot = false; // the derived method overrides the base method
+          }
+          CreateCodeToCallBaseClassMethod(targetMethod, classMember);
+          TargetType.Methods.Add(targetMethod);
+        }
+
+        // add the corresponding overrides to the method
+        AddOverrides(targetMethod, overrides);
+
+        if (!(method.IsVirtual || method.IsAbstract)) {
+          // to support polymorphism with regards to the role interface, mark as virtual sealed
+          targetMethod.Attributes |= MethodAttributes.Virtual | MethodAttributes.NewSlot | MethodAttributes.Final;
+        }
+
+        return targetMethod;
+     }
 
       private void ImplementBaseMethod(RoleCompositionMember typeMember, IEnumerable<RoleCompositionMember> overrides) {
         string baseMethodName = NameProvider.GetOriginalBaseMethodName(typeMember.Definition.Name);
