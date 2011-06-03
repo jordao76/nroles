@@ -134,6 +134,8 @@ namespace NRoles.Engine {
           
           ExtractAndAddMethod(sourceMethod);
         }
+
+        AdjustCallsToSourceClass();
       }
 
       private void ExtractAndAddMethod(MethodDefinition methodDefinition) {
@@ -155,22 +157,14 @@ namespace NRoles.Engine {
 
         if (sourceMethod.IsStatic && sourceMethod.IsPublic) {
           Result.AddMessage(Warning.PublicStaticMethodRelocation(sourceMethod));
+          // TODO: internal method relocation warning if the assembly is marked with the InternalsVisibleToAttribute!
         }
 
-        var accessibility =
-          sourceMethod.IsConstructor ||
-          sourceMethod.IsPublic ||
-          sourceMethod.IsFamily || // protected becomes public
-          sourceMethod.IsFamilyOrAssembly // protected internal becomes public
-          ? MethodAttributes.Public
-          : sourceMethod.IsAssembly || sourceMethod.IsFamilyAndAssembly
-            ? MethodAttributes.Family
-            : MethodAttributes.Private;
+        var accessibility = ResolveAccessibility(sourceMethod);
 
         var staticMethod = new MethodDefinition(
           methodName,
-          accessibility |
-            MethodAttributes.HideBySig | MethodAttributes.Static,
+          accessibility | MethodAttributes.HideBySig | MethodAttributes.Static,
           sourceMethod.ReturnType);
 
         if (sourceMethod.IsConstructor && sourceMethod.IsStatic) {
@@ -181,8 +175,26 @@ namespace NRoles.Engine {
         staticMethod.CopyGenericParametersFrom(sourceMethod);
         ExtractMethodParameters(sourceMethod, staticMethod);
         ExtractMethodBody(sourceMethod, staticMethod);
+        AdjustCalls(sourceMethod, staticMethod);
 
         return staticMethod;
+      }
+
+      private static MethodAttributes ResolveAccessibility(MethodDefinition sourceMethod) {
+        if (
+          sourceMethod.IsConstructor ||
+          sourceMethod.IsPublic ||
+          sourceMethod.IsFamily ||
+          sourceMethod.IsFamilyOrAssembly // protected internal
+          ) {
+          return MethodAttributes.Public;
+        }
+
+        if (sourceMethod.IsAssembly || sourceMethod.IsFamilyAndAssembly) {
+          return MethodAttributes.Assem;
+        }
+
+        return MethodAttributes.Private;
       }
 
       private void ExtractMethodParameters(MethodDefinition sourceMethod, MethodDefinition staticMethod) {
@@ -194,13 +206,11 @@ namespace NRoles.Engine {
         }
 
         foreach (ParameterDefinition parameter in sourceMethod.Parameters) {
-          // TODO: parameter custom attributes!
           staticMethod.Parameters.Add(new ParameterDefinition(
             parameter.Name,
             parameter.Attributes,
             parameter.ParameterType));
         }
-        // TODO: what about the method's custom attributes???
       }
 
       private void CreateFirstParameter(MethodDefinition staticMethod) {
@@ -219,16 +229,20 @@ namespace NRoles.Engine {
       private void ExtractMethodBody(MethodDefinition sourceMethod, MethodDefinition staticMethod) {
         // copy the method's body
         staticMethod.Body = sourceMethod.Body; // TODO: clone?
+      }
 
-        if (sourceMethod.IsStatic || sourceMethod.IsPrivate) {
-          // TODO: adjust internal method calls? that depends if we want internal methods on the interface or not. Not in the interface is better!
-          AdjustMethodCalls(sourceMethod, staticMethod);
-        }
-        AdjustCallsToSourceClass(staticMethod.Body);
+      private void AdjustCalls(MethodDefinition sourceMethod, MethodDefinition staticMethod) {
         if (sourceMethod.IsConstructor) {
           // remove base class constructor call ( : base(...) )
+          // other constructor calls ( : this(...) ) are not present because roles cannot have parameterized constructors
           RemoveBaseClassConstructorCall(staticMethod);
-          // TODO: remove other constructor calls ( : this(...) ) ?
+        }
+        else {
+          if (!sourceMethod.RemainsInRoleInterface()) {
+            // methods that are removed from the role interface must have their callees adjusted to call directly the method in the Code class
+            // constructors are an not included because calling a role constructor is an error
+            AdjustMethodCalls(sourceMethod, staticMethod);
+          }
         }
       }
 
@@ -248,8 +262,7 @@ namespace NRoles.Engine {
       }
 
       private void AdjustMethodCalls(MethodDefinition sourceMethod, MethodDefinition staticMethod) {
-        // change private method calls to call their static counterpart
-        // TODO: what about protected and internal (scan the whole assembly to change then)? they can be virtual, and could be overwritten...
+        // change method calls to call their static counterpart
         var codeMutator = new ChangeMethodReferenceVisitor(sourceMethod, staticMethod);
         if (sourceMethod.IsPrivate) {
           Parameters.Context.CodeVisitorsRegistry.Register(codeMutator, TargetType);
@@ -259,9 +272,8 @@ namespace NRoles.Engine {
         }
       }
 
-      private void AdjustCallsToSourceClass(MethodBody body) {
-        // change calls (call) to @this to virtual calls (callvirt), since @this will become an interface type
-        // NOTE: this code has special knowledge about the fact that @this will become an interface!
+      private void AdjustCallsToSourceClass() {
+        // change calls (call) to @this to virtual calls (callvirt), since @this will become an interface
         Parameters.Context.CodeVisitorsRegistry.Register(
           new ChangeCallToCallVirtVisitor(SourceType)); // visit the whole assembly
       }

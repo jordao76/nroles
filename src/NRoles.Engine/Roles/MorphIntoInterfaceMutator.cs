@@ -68,7 +68,7 @@ namespace NRoles.Engine {
       #endregion
 
       bool RemoveAccessor(MethodDefinition accessor) {
-        return !(accessor.IsPublic || accessor.IsFamily || accessor.IsFamilyOrAssembly);
+        return !accessor.RemainsInRoleInterface();
       }
 
       #region Properties
@@ -174,20 +174,12 @@ namespace NRoles.Engine {
       private void MorphMethod(MethodDefinition method) {
         Tracer.TraceVerbose("Morph method: {0}", method.ToString());
 
-        bool isConstructor = method.IsConstructor;
-
-        if (isConstructor && method.HasParameters) {
+        if (method.IsConstructor && method.HasParameters) {
           AddMessage(Error.RoleCannotContainParameterizedConstructor(method.DeclaringType, method));
           return;
         }
 
-        bool remove = 
-          method.IsPrivate || 
-          method.IsAssembly ||
-          method.IsFamilyAndAssembly ||
-          isConstructor || 
-          method.IsStatic; // unfortunately, C# doesn't allow calling static methods in interfaces
-
+        bool remove = !method.RemainsInRoleInterface();
         if (remove) {
           _parameters.Context.RegisterWrapUpAction(mc => method.DeclaringType.Methods.Remove(method));
           return;
