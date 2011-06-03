@@ -146,7 +146,7 @@ namespace NRoles.Engine {
       }
 
       private MethodDefinition ExtractMethod(MethodDefinition sourceMethod) {
-        if (sourceMethod.IsAbstract) return null;
+        if (sourceMethod.IsAbstract) { return null; }
 
         Tracer.TraceVerbose("Extract method: {0}", sourceMethod.ToString());
 
@@ -191,7 +191,7 @@ namespace NRoles.Engine {
         }
 
         if (sourceMethod.IsAssembly || sourceMethod.IsFamilyAndAssembly) {
-          return MethodAttributes.Assembly;
+          return MethodAttributes.Assem;
         }
 
         return MethodAttributes.Private;
@@ -228,7 +228,7 @@ namespace NRoles.Engine {
 
       private void ExtractMethodBody(MethodDefinition sourceMethod, MethodDefinition staticMethod) {
         // copy the method's body
-        staticMethod.Body = sourceMethod.GetBody(); // TODO: clone?
+        staticMethod.Body = sourceMethod.Body; // TODO: clone?
       }
 
       private void AdjustCalls(MethodDefinition sourceMethod, MethodDefinition staticMethod) {
@@ -274,10 +274,8 @@ namespace NRoles.Engine {
 
       private void AdjustCallsToSourceClass() {
         // change calls (call) to @this to virtual calls (callvirt), since @this will become an interface
-        if (SourceType.Methods.Any(m => !m.IsVirtual && m.RemainsInRoleInterface())) {
-          Parameters.Context.CodeVisitorsRegistry.Register(
-            new ChangeCallToCallVirtVisitor(SourceType)); // visit the whole assembly
-        }
+        Parameters.Context.CodeVisitorsRegistry.Register(
+          new ChangeCallToCallVirtVisitor(SourceType)); // visit the whole assembly
       }
 
       #endregion
