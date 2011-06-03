@@ -7,10 +7,6 @@ using NUnit.Framework;
 
 namespace NRoles.Engine.Test.Support {
 
-  public abstract class DynamicTestFixture : MarshalByRefObject {
-    public abstract void Test();
-  }
-
   [RoleTest(
     CompositionType = typeof(Empty_Role_Composition),
     TestType = typeof(Empty_Role_Composition_Test))]

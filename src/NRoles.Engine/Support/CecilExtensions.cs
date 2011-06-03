@@ -39,7 +39,7 @@ namespace NRoles.Engine {
         method.IsAssembly ||
         method.IsFamilyAndAssembly ||
         method.IsConstructor ||
-        method.IsStatic); // C# doesn't allow calling static methods in interfaces
+        method.IsStatic); // unfortunately, C# doesn't allow calling static methods in interfaces
     }
 
     public static InstructionAndProcessor FindBaseCtorCallInstruction(this MethodDefinition ctor) {
@@ -60,23 +60,11 @@ namespace NRoles.Engine {
     }
 
     private static IEnumerable<Instruction> FilterInstructions(this MethodDefinition self, Func<Instruction, bool> predicate) {
-      var body = self.GetBody();
-      if (body == null) yield break;
-      foreach (Instruction instruction in body.Instructions) {
+      if (!self.HasBody) yield break;
+      foreach (Instruction instruction in self.Body.Instructions) {
         if (predicate(instruction)) {
           yield return instruction;
         }
-      }
-    }
-
-    public static MethodBody GetBody(this MethodDefinition self) {
-      try {
-        return self.HasBody ? self.Body : null;
-      }
-      catch (NullReferenceException) {
-        // only happens when the method is NOT abstract and has no implementation -> RVA == 0
-        // (TODO: only seen in the wild with an extern method without the DllImport attribute!)
-        return null;
       }
     }
 
@@ -126,14 +114,6 @@ namespace NRoles.Engine {
 
     #endregion
 
-    public static PropertyDefinition ResolveContainerProperty(this MethodDefinition self) {
-      return self.DeclaringType.Properties.Single(p => p.GetMethod == self || p.SetMethod == self);
-    }
-
-    public static EventDefinition ResolveContainerEvent(this MethodDefinition self) {
-      return self.DeclaringType.Events.Single(e => e.AddMethod == self || e.RemoveMethod == self || e.InvokeMethod == self);
-    }
-  
   }
 
   static class FieldInstructionsExtensions {
@@ -159,14 +139,14 @@ namespace NRoles.Engine {
 
   }
 
-  static class CustomAttributeExtensions {
+  static class CustomAttributeProviderExtensions {
 
     public static IEnumerable<CustomAttribute> RetrieveAttributes<TAttribute>(this ICustomAttributeProvider self) where TAttribute : Attribute {
       if (self == null) throw new InstanceArgumentNullException();
       var attributes = new HashSet<CustomAttribute>();
-      foreach (var ca in self.CustomAttributes) {
-        if (ca.Is<TAttribute>()) {
-          attributes.Add(ca);
+      foreach (var attribute in self.CustomAttributes) {
+        if (attribute.Constructor.DeclaringType.FullName == typeof(TAttribute).FullName) {
+          attributes.Add(attribute);
         }
       }
       return attributes;
@@ -174,18 +154,10 @@ namespace NRoles.Engine {
 
     public static bool IsMarkedWith<TAttribute>(this ICustomAttributeProvider self) {
       if (self == null) throw new InstanceArgumentNullException();
-      return self.CustomAttributes.Any(ca => ca.Is<TAttribute>());
-    }
-
-    public static bool Is<TAttribute>(this CustomAttribute attribute) {
-      return 
-        attribute.AttributeType.Resolve().FullName == 
-        typeof(TAttribute).FullName;
-    }
-
-    public static CustomAttribute Create<TAttribute>(this ModuleDefinition module) {
-      return new CustomAttribute(
-        module.Import(typeof(TAttribute).GetConstructor(Type.EmptyTypes)));
+      return self.CustomAttributes.
+        Any(ca =>
+          ca.Constructor.DeclaringType.Resolve() ==
+          ca.Constructor.DeclaringType.Module.Import(typeof(TAttribute)).Resolve());
     }
 
   }
@@ -251,13 +223,13 @@ namespace NRoles.Engine {
     }
 
     public static TypeReference ResolveGenericArguments(this TypeReference self) {
-      // TODO: move to the MemberResolver class!!
+      // TODO: use the MemberResolver class!!
       if (self == null) throw new InstanceArgumentNullException();
       return self.ResolveGenericArguments(self);
     }
 
     public static TypeReference ResolveGenericArguments(this TypeReference self, TypeReference template) {
-      // TODO: move to the MemberResolver class!!
+      // TODO: use the MemberResolver class!!
       if (self == null) throw new InstanceArgumentNullException();
       if (template == null) throw new ArgumentNullException("template");
 

@@ -22,8 +22,6 @@ namespace NRoles.Engine {
 
     class MorphIntoInterfaceVisitor : TypeVisitorBase {
 
-      // TODO: it seems that the context WrapUpActions are only being used by this class. Can it be encapsulated here?
-
       public readonly OperationResult Result = new OperationResult();
       MutationParameters _parameters;
 
@@ -69,21 +67,7 @@ namespace NRoles.Engine {
 
       #endregion
 
-      private void Defer(Action action) {
-        _parameters.Context.RegisterWrapUpAction(mc => action());
-      }
-
-      // Morphs an accessor and returns whether it still remains in the role
-      private bool MorphAccessor(MethodDefinition accessor) {
-        bool remains = false;
-        if (accessor != null) {
-          MorphMethod(accessor);
-          remains = !RemoveAccessor(accessor);
-        }
-        return remains;
-      }
-
-      private bool RemoveAccessor(MethodDefinition accessor) {
+      bool RemoveAccessor(MethodDefinition accessor) {
         return !accessor.RemainsInRoleInterface();
       }
 
@@ -97,18 +81,23 @@ namespace NRoles.Engine {
       private void MorphProperty(PropertyDefinition property) {
         Tracer.TraceVerbose("Morph property: {0}", property.Name);
 
-        var getterRemains = MorphAccessor(property.GetMethod);
-        if (!getterRemains) {
-          Defer(() => property.GetMethod = null);
+        if (property.GetMethod != null) {
+          bool remove = RemoveAccessor(property.GetMethod);
+          MorphMethod(property.GetMethod);
+          if (remove) {
+            property.GetMethod = null;
+          }
+        }
+        if (property.SetMethod != null) {
+          bool remove = RemoveAccessor(property.SetMethod);
+          MorphMethod(property.SetMethod);
+          if (remove) {
+            property.SetMethod = null;
+          }
         }
 
-        var setterRemains = MorphAccessor(property.SetMethod);
-        if (!setterRemains) {
-          Defer(() => property.SetMethod = null);
-        }
-
-        if (!getterRemains && !setterRemains) {
-          Defer(() => property.DeclaringType.Properties.Remove(property));
+        if (property.GetMethod == null && property.SetMethod == null) {
+          property.DeclaringType.Properties.Remove(property);
         }
       }
 
@@ -117,10 +106,10 @@ namespace NRoles.Engine {
       #region Fields
 
       public override void Visit(Collection<FieldDefinition> fieldDefinitionCollection) {
+        // the fields will be removed in a wrap up action
         var fieldsToBeRemoved = fieldDefinitionCollection.ToList();
-        Defer(() => {
-          fieldsToBeRemoved.ForEach(field => fieldDefinitionCollection.Remove(field));
-        });
+        _parameters.Context.RegisterWrapUpAction(mc => 
+          fieldsToBeRemoved.ForEach(field => fieldDefinitionCollection.Remove(field)));
       }
 
       #endregion
@@ -135,23 +124,30 @@ namespace NRoles.Engine {
       private void MorphEvent(EventDefinition @event) {
         Tracer.TraceVerbose("Morph event: {0}", @event.Name);
 
-        var adderRemains = MorphAccessor(@event.AddMethod);
-        if (!adderRemains) {
-          Defer(() => @event.AddMethod = null);
+        if (@event.AddMethod != null) {
+          bool remove = RemoveAccessor(@event.AddMethod);
+          MorphMethod(@event.AddMethod);
+          if (remove) {
+            @event.AddMethod = null;
+          }
+        }
+        if (@event.RemoveMethod != null) {
+          bool remove = RemoveAccessor(@event.RemoveMethod);
+          MorphMethod(@event.RemoveMethod);
+          if (remove) {
+            @event.RemoveMethod = null;
+          }
+        }
+        if (@event.InvokeMethod != null) {
+          bool remove = RemoveAccessor(@event.InvokeMethod);
+          MorphMethod(@event.InvokeMethod);
+          if (remove) {
+            @event.InvokeMethod = null;
+          }
         }
 
-        var removerRemains = MorphAccessor(@event.RemoveMethod);
-        if (!removerRemains) {
-          Defer(() => @event.RemoveMethod = null);
-        }
-
-        var invokerRemains = MorphAccessor(@event.InvokeMethod);
-        if (!invokerRemains) {
-          Defer(() => @event.InvokeMethod = null);
-        }
-
-        if (!adderRemains && !removerRemains && !invokerRemains) {
-          Defer(() => @event.DeclaringType.Events.Remove(@event));
+        if (@event.AddMethod == null && @event.RemoveMethod == null && @event.InvokeMethod == null) {
+          @event.DeclaringType.Events.Remove(@event);
         }
       }
 
@@ -185,9 +181,7 @@ namespace NRoles.Engine {
 
         bool remove = !method.RemainsInRoleInterface();
         if (remove) {
-          Defer(() => {
-            method.DeclaringType.Methods.Remove(method);
-          });
+          _parameters.Context.RegisterWrapUpAction(mc => method.DeclaringType.Methods.Remove(method));
           return;
         }
 
@@ -208,9 +202,7 @@ namespace NRoles.Engine {
         }
 
         // the method body will be cleared in a wrap-up action
-        Defer(() => {
-          method.Body = null;
-        });
+        _parameters.Context.RegisterWrapUpAction(mc => method.Body = null);
       }
 
       #endregion

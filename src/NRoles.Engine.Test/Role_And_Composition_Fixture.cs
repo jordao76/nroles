@@ -72,7 +72,7 @@ namespace NRoles.Engine.Test {
     }
 
     private static void Assert_Mutate_Into_Role_Result(RoleTestAttribute testParameters, IOperationResult result) {
-      result.Messages.ForEach(m => Console.WriteLine(m));
+      result.Messages.ForEach(Console.WriteLine);
       var expectedError = testParameters != null && testParameters.ExpectedRoleError != 0;
       var expectedWarning = testParameters != null && testParameters.ExpectedRoleWarning != 0;
       if (expectedError) {
