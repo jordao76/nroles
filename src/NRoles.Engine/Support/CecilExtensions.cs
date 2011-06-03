@@ -33,6 +33,15 @@ namespace NRoles.Engine {
 
   static class MethodDefinitionExtensions {
 
+    public static bool RemainsInRoleInterface(this MethodDefinition method) {
+      return !(
+        method.IsPrivate ||
+        method.IsAssembly ||
+        method.IsFamilyAndAssembly ||
+        method.IsConstructor ||
+        method.IsStatic); // unfortunately, C# doesn't allow calling static methods in interfaces
+    }
+
     public static InstructionAndProcessor FindBaseCtorCallInstruction(this MethodDefinition ctor) {
       if (ctor == null) throw new InstanceArgumentNullException();
       return ctor.FilterInstructions(i => 
@@ -60,6 +69,8 @@ namespace NRoles.Engine {
     }
 
     #region Semantic Attributes
+
+    // TODO: Cecil 0.9 has utility methods (eg IsGetter) in MethodDefinition for these
 
     public static bool IsPropertyAccessor(this MethodDefinition self) {
       if (self == null) throw new InstanceArgumentNullException();
