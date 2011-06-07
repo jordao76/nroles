@@ -80,7 +80,7 @@ namespace NRoles.Engine {
 
     public static TypeDefinition ResolveCodeClass(this TypeDefinition role) {
       var codeClassName = role.FullName + "/" + NameProvider.GetCodeClassName(role.Name);
-      return role.NestedTypes.Cast<TypeDefinition>().Single(nt => nt.FullName == codeClassName);
+      return role.NestedTypes.Single(nt => nt.FullName == codeClassName);
     }
 
     public static MethodDefinition ResolveCorrespondingMethod(this TypeDefinition role, MethodDefinition roleMethod) {
