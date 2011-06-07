@@ -83,6 +83,7 @@ namespace NRoles.Engine {
         Definition.ResolveDefinitionInRole(roleForView, Container.Module);
 
       if (_implementingMemberDefinition == null) {
+        // TODO: if there's one, use the Aliasing name instead of the Definition name
         AddMessage(Error.RoleViewMemberNotFoundInRole(roleForView, Definition));
         return null;
       }

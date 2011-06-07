@@ -38,15 +38,15 @@ namespace NRoles {
     }
 
     /// <summary>
-    /// Cast one role to another. Note: this cast can fail.
-    /// Only necessary in the same assembly that the roles
-    /// are defined, because the post-compiler hasn't yet run on them.
+    /// Cast a role to another type. Note: this cast can fail.
+    /// Only necessary when using roles in the same assembly that
+    /// they are defined, because the post-compiler hasn't yet run on them.
     /// </summary>
-    /// <typeparam name="TRole">Target role type.</typeparam>
+    /// <typeparam name="T">Target type.</typeparam>
     /// <param name="self">Role to cast from.</param>
     /// <returns>The input role instance cast to the desired type.</returns>
-    public static TRole Cast<TRole>(this Role self) where TRole : Role {
-      return (TRole)self;
+    public static T Cast<T>(this Role self) {
+      return (T)self;
     }
 
   }

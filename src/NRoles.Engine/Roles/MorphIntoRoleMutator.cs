@@ -42,6 +42,8 @@ namespace NRoles.Engine {
         throw new InvalidOperationException("Cannot morph class into role");
       }
 
+      Tracer.TraceVerbose("Morph role: {0}", roleType);
+
       var result = new MorphIntoRoleResult();
 
       CheckRole(roleType, result);
