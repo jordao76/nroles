@@ -145,6 +145,8 @@ namespace NRoles.Engine {
       }
 
       private MethodDefinition AdjustSupercedingMember(ClassMember classMember, IEnumerable<RoleCompositionMember> overrides) {
+        Tracer.TraceVerbose("Adjust superceding member: {0}", classMember.Definition);
+        
         var member = classMember.Definition;
         var method = member as MethodDefinition;
         if (method == null) return null;
@@ -175,6 +177,8 @@ namespace NRoles.Engine {
      }
 
       private void ImplementBaseMethod(RoleCompositionMember typeMember, IEnumerable<RoleCompositionMember> overrides) {
+        Tracer.TraceVerbose("Implement base method: {0}", typeMember.Definition);
+
         string baseMethodName = NameProvider.GetOriginalBaseMethodName(typeMember.Definition.Name);
         ClassMember baseMember = null;
         var currentType = TargetType.BaseType;

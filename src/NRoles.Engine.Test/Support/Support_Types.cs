@@ -7,6 +7,8 @@ using NUnit.Framework;
 
 namespace NRoles.Engine.Test.Support {
 
+  // TODO: think about using a composition as a Role in another assembly; it will end up "implementing" Role through the roles it composes
+
   [RoleTest(
     CompositionType = typeof(Empty_Role_Composition),
     TestType = typeof(Empty_Role_Composition_Test))]
