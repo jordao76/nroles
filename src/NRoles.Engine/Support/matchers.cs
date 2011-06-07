@@ -177,30 +177,34 @@ namespace NRoles.Engine {
 
   public class MemberFinder {
 
-    public readonly TypeDefinition SearchType;
+    public readonly TypeReference SearchType;
     private IList<IMemberDefinition> _members;
+    private MemberResolver _resolver;
 
-    public MemberFinder(TypeDefinition searchType) {
+    public MemberFinder(TypeReference searchType) {
       if (searchType == null) throw new ArgumentNullException("searchType");
       SearchType = searchType;
+      _resolver = new MemberResolver(SearchType);
       ResolveMembers();
     }
 
     private void ResolveMembers() {
       var visitor = new MemberReaderVisitor();
-      SearchType.Accept(visitor);
+      SearchType.Resolve().Accept(visitor);
       _members = visitor.Members;
     }
 
-    public IMemberDefinition FindMatchFor(IMemberDefinition memberToMatch) { 
-      return FindMatchFor(memberToMatch, memberToMatch.Name);
-    }
-    public IMemberDefinition FindMatchFor(IMemberDefinition memberToMatch, string aliasing) {
+    public IMemberDefinition FindMatchFor(IMemberDefinition memberToMatch, string aliasing = null) {
       if (memberToMatch == null) throw new ArgumentNullException("memberToMatch");
-      if (aliasing == null) throw new ArgumentNullException("aliasing");
+      aliasing = aliasing ?? memberToMatch.Name;
 
       var matchedMember = _members.SingleOrDefault(
-        targetMember => IsMatch(targetMember, memberToMatch, aliasing));
+        targetMember => 
+          IsMatch(
+            _resolver.ResolveMemberDefinition(targetMember), 
+            memberToMatch, 
+            aliasing)
+      );
       return matchedMember;
     }
 
@@ -208,7 +212,7 @@ namespace NRoles.Engine {
       var oldName = targetMember.Name;
       if (aliasing == targetMember.Name) {
         // the memberToMatch is an alias for the targetMember
-        // so we'll match against the alias name
+        // so match against the alias name
         targetMember.Name = memberToMatch.Name;
       }
       var isMatch = MemberMatcher.IsMatch(memberToMatch, targetMember);
