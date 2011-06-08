@@ -60,8 +60,9 @@ namespace NRoles.Engine {
     }
 
     private static IEnumerable<Instruction> FilterInstructions(this MethodDefinition self, Func<Instruction, bool> predicate) {
-      if (!self.HasBody) yield break;
-      foreach (Instruction instruction in self.Body.Instructions) {
+      var body = self.GetBody();
+      if (body == null) yield break;
+      foreach (Instruction instruction in body.Instructions) {
         if (predicate(instruction)) {
           yield return instruction;
         }
@@ -114,6 +115,16 @@ namespace NRoles.Engine {
 
     #endregion
 
+    public static MethodBody GetBody(this MethodDefinition self) {
+      try {
+        return self.HasBody ? self.Body : null;
+      }
+      catch (NullReferenceException) {
+        // only happens when the method is NOT abstract and has no implementation -> RVA == 0
+        // (TODO: only seen in the wild with an extern method without the DllImport attribute!)
+        return null;
+      }
+    }
   }
 
   static class FieldInstructionsExtensions {

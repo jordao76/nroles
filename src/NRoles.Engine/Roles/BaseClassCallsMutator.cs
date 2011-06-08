@@ -110,7 +110,9 @@ namespace NRoles.Engine {
       // this is simpler.
       
       // Look for calls (not callvirt) to methods in Object
-      foreach (Instruction instruction in method.Body.Instructions) {
+      var body = method.GetBody();
+      if (body == null) return;
+      foreach (Instruction instruction in body.Instructions) {
         if (instruction.OpCode == OpCodes.Call) {
           var calleeReference = (MethodReference)instruction.Operand;
           var callee = calleeReference.Resolve();
