@@ -63,8 +63,9 @@ namespace NRoles.Engine {
 
     private void VisitMethods(IEnumerable<MethodDefinition> methods) {
       foreach (MethodDefinition method in methods) {
-        if (method.Body != null) {
-          method.Body.Accept(this);
+        var body = method.GetBody();
+        if (body != null) {
+          body.Accept(this);
         }
       }
     }
