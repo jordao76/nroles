@@ -82,6 +82,7 @@
     <Compile Include="Support\RCircle.cs" />
     <Compile Include="Support\RColor.cs" />
     <Compile Include="Support\Rgb.cs" />
+    <Compile Include="Support\Identity.cs" />
     <Compile Include="Support\Support_Types.cs" />
   </ItemGroup>
   <ItemGroup>
