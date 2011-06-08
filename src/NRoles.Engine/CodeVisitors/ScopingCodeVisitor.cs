@@ -49,19 +49,11 @@ namespace NRoles.Engine {
 
     public void Visit(AssemblyDefinition assembly) {
       if (assembly == null) throw new ArgumentNullException("assembly");
-      if (_visitors.Count == 0) return;
-
       foreach (var type in assembly.MainModule.GetAllTypes()) {
         BeginVisitingType(type);
-        if (HasVisitors()) {
-          Visit(type);
-        }
+        Visit(type);
         EndVisitingType();
       }
-    }
-
-    private bool HasVisitors() {
-      return _currentVisitor != null && _currentVisitor.Count > 0;
     }
 
     public void Visit(TypeDefinition type) {
