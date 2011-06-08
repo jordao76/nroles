@@ -118,7 +118,12 @@ namespace NRoles.Engine {
       /// defined as interfaces.
       /// </summary>
       RoleViewIsNotAnInterface = 58,
-      
+
+      /// <summary>
+      /// Occurs when a method in a role is a platform invoke method. This is the case with extern methods marked with the DllImport attribute. This is not supported.
+      /// </summary>
+      RoleHasPInvokeMethod = 59,
+
       /// <summary>
       /// Occurs when a role explicitly implements interface members. This scenario is not supported.
       /// </summary>
@@ -235,6 +240,12 @@ namespace NRoles.Engine {
         Code.RoleViewIsNotAnInterface,
         "The role view '{0}' must be declared as an interface.",
         roleView);
+    }
+    internal static Error RoleHasPInvokeMethod(object method) {
+      return new Error(
+        Code.RoleHasPInvokeMethod,
+        "The role method '{0}' is a PInvoke method. This is not supported.",
+        method);
     }
     internal static Message RoleHasExplicitInterfaceImplementation(object role) {
       return new Error(

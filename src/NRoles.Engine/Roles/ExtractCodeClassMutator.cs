@@ -228,7 +228,7 @@ namespace NRoles.Engine {
 
       private void ExtractMethodBody(MethodDefinition sourceMethod, MethodDefinition staticMethod) {
         // copy the method's body
-        staticMethod.Body = sourceMethod.Body; // TODO: clone?
+        staticMethod.Body = sourceMethod.GetBody(); // TODO: clone?
       }
 
       private void AdjustCalls(MethodDefinition sourceMethod, MethodDefinition staticMethod) {
