@@ -9,8 +9,6 @@ namespace NRoles.Engine {
   public static class TypeMatcher {
 
     public static bool IsMatch(TypeReference a, TypeReference b) {
-      if (a is GenericParameter) return true; // TODO: is this right? b might be Void or something not intended!
-
       if (a is TypeSpecification || b is TypeSpecification) {
         if (a.GetType() != b.GetType()) {
           return false;
@@ -18,25 +16,19 @@ namespace NRoles.Engine {
         return IsMatch((TypeSpecification)a, (TypeSpecification)b);
       }
 
+      if (a is GenericParameter || b is GenericParameter) {
+        if (a.GetType() != b.GetType()) {
+          return false;
+        }
+      }
+
       return a.FullName == b.FullName;
     }
-
-    // TODO: what has become of ModType in Cecil 0.9?
-    /*static bool IsMatch(ModType a, ModType b) {
-      if (!IsMatch(a.ModifierType, b.ModifierType)) {
-        return false;
-      }
-      return IsMatch(a.ElementType, b.ElementType);
-    }*/
 
     static bool IsMatch(TypeSpecification a, TypeSpecification b) {
       if (a is GenericInstanceType) {
         return IsMatch((GenericInstanceType)a, (GenericInstanceType)b);
       }
-
-      /*if (a is ModType) {
-        return IsMatch((ModType)a, (ModType)b);
-      }*/
 
       return IsMatch(a.ElementType, b.ElementType);
     }
@@ -65,7 +57,6 @@ namespace NRoles.Engine {
 
   }
 
-  // TODO: the matchers must work with MemberReferences because of generics!
   public static class MemberMatcher {
 
     public static bool IsMatch(IMemberDefinition member1, IMemberDefinition member2) {

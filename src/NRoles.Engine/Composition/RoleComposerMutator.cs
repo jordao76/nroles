@@ -19,7 +19,7 @@ namespace NRoles.Engine {
 
       var result = new RoleComposerResult();
 
-      CheckRolesAreNotTypeParameters(result);
+      CheckComposition(result);
       if (!result.Success) { return result; }
 
       var roles = RetrieveRoles();
@@ -50,11 +50,27 @@ namespace NRoles.Engine {
       return result;
     }
 
+    #region Checks
+
+    private void CheckComposition(RoleComposerResult result) {
+      CheckRolesAreNotTypeParameters(result);
+      CheckSelfTypeConstraints(result);
+    }
+
     private void CheckRolesAreNotTypeParameters(RoleComposerResult result) {
+      // TODO: create one error message per occurrence of the problem
       if (_targetType.RetrieveDirectRoles().Any(roleType => roleType is GenericParameter)) {
         result.AddMessage(Error.CompositionWithTypeParameter(_targetType));
       }
     }
+
+    private void CheckSelfTypeConstraints(RoleComposerResult result) {
+      var checker = new SelfTypeChecker(NameProvider.GetSelfTypeParameterName());
+      var selfTypeCheckerResult = checker.CheckComposition(_targetType);
+      result.AddResult(selfTypeCheckerResult);
+    }
+
+    #endregion
 
     private List<TypeReference> RetrieveRoles() {
       return _targetType.RetrieveRoles().ToList();
