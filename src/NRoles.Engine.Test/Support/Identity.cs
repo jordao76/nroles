@@ -6,10 +6,12 @@ using System.Text;
 namespace NRoles.Engine.Test.Support {
 
   [RoleTest(CompositionType = typeof(Identity_Composition))]
+  
   [RoleTest(
-    CompositionType = typeof(Identity_Composition_With_Wrong_Type_Argument))]
-    //ExpectedCompositionError = TODO)]
-  public class Identity<S> : Role { // S is the type of "this"
+    CompositionType = typeof(Identity_Composition_With_Wrong_Type_Argument),
+    ExpectedCompositionError = Error.Code.SelfTypeConstraintNotSetToCompositionType)]
+
+  public class Identity<S> : Role { // S is the type of "this", by default
     public S Self {
       get { return this.Cast<S>(); }
     }

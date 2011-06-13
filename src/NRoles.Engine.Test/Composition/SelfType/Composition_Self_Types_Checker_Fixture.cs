@@ -89,21 +89,6 @@ namespace NRoles.Engine.Test.Composition.SelfType {
     }
     class GlobalTSelfType<T> : Does<RSelfType<GlobalTSelfType<global::T>>> { }
 
-    [Test]
-    public void Test_Self_Type_Should_Flow_Through_Role_Composition_With_Self_Type() {
-      var result = Check(typeof(RFlowSelfType<>));
-      Assert.AreEqual(true, result.Success);
-    }
-    class RFlowSelfType<TSelf> : Does<RSelfType<TSelf>>, Role { }
-
-    [Test]
-    public void Test_Self_Type_That_Doesnt_Flow_Through_Role_Composition_With_Self_Type_Should_Fail() {
-      var result = Check(typeof(RNoFlowSelfType<>));
-      Assert.AreEqual(false, result.Success);
-      Assert.AreEqual(1, result.Messages.Count());
-    }
-    class RNoFlowSelfType<TSelf> : Does<RSelfType<RNoFlowSelfType<TSelf>>>, Role { }
-
   }
 
 }

@@ -23,7 +23,7 @@ namespace NRoles.Engine {
       if (!result.Success) { return result; }
 
       var roles = RetrieveRoles();
-      
+
       var conflictDetector = new ConflictDetector(_targetType);
       {
         var memberProcessResult = conflictDetector.Process(roles);
