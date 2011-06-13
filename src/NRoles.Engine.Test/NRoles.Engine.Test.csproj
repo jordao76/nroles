@@ -59,6 +59,9 @@
     <Compile Include="AssemblyAccessor.cs" />
     <Compile Include="AssemblyReadonlyFixture.cs" />
     <Compile Include="Class_Member_Container_Fixture.cs" />
+    <Compile Include="Composition\SelfType\Composition_Self_Types_Checker_Fixture.cs" />
+    <Compile Include="Composition\SelfType\Retrieve_Self_Types_From_Roles_Fixture.cs" />
+    <Compile Include="Composition\SelfType\Retrieve_Single_Self_Type_Fixture.cs" />
     <Compile Include="ConflictDetection\ConflictDetectorFixture.cs" />
     <Compile Include="CompositionTestAttribute.cs" />
     <Compile Include="ConflictDetection\ContributedConflictGroup_Generic_Methods_Fixture.cs" />
