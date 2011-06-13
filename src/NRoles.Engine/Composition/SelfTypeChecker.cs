@@ -26,7 +26,12 @@ namespace NRoles.Engine {
     }
 
     private bool Matches(TypeReference selfType, TypeDefinition composition) {
-      return TypeMatcher.IsMatch(composition.ResolveGenericArguments(), selfType);
+      var toMatch = composition.ResolveGenericArguments();
+      if (composition.IsRole()) {
+        // if the composition is a role with a self-type, the self-type must flow through it
+        toMatch = _extractor.RetrieveSelfType(toMatch) ?? toMatch;
+      }
+      return TypeMatcher.IsMatch(toMatch, selfType);
     }
 
   }
