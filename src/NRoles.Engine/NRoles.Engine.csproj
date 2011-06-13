@@ -75,6 +75,8 @@
     <Compile Include="CodeVisitors\ICodeVisitorRegistry.cs" />
     <Compile Include="Composition\RoleComposer.Initialization.cs" />
     <Compile Include="Composition\RoleComposerAssemblyMutator.cs" />
+    <Compile Include="Composition\SelfTypeChecker.cs" />
+    <Compile Include="Composition\SelfTypeExtractor.cs" />
     <Compile Include="ConflictDetection\ClassMember.cs" />
     <Compile Include="ConflictDetection\ClassMemberContainer.cs" />
     <Compile Include="ConflictDetection\ConflictClassifier.cs" />

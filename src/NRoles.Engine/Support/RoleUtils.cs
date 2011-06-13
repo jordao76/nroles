@@ -27,6 +27,8 @@ namespace NRoles.Engine {
       return false;
     }
 
+    #region Retrieve roles
+
     public static IEnumerable<TypeReference> RetrieveDirectRoles(this TypeReference self) {
       return
         from @interface in self.Resolve().Interfaces
@@ -70,6 +72,8 @@ namespace NRoles.Engine {
       var does = (GenericInstanceType)doesReference;
       return does.GenericArguments[0];
     }
+
+    #endregion
 
     public static bool IsBaseMethod(this IMemberDefinition self) {
       return self is MethodDefinition &&

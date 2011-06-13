@@ -46,6 +46,10 @@ namespace NRoles.Engine {
       }
       return null;
     }
+
+    public static string GetSelfTypeParameterName() {
+      return "S";
+    }
   }
 
 }

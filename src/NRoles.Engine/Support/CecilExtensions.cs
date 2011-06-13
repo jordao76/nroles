@@ -234,13 +234,13 @@ namespace NRoles.Engine {
     }
 
     public static TypeReference ResolveGenericArguments(this TypeReference self) {
-      // TODO: use the MemberResolver class!!
+      // TODO: move to the MemberResolver class!!
       if (self == null) throw new InstanceArgumentNullException();
       return self.ResolveGenericArguments(self);
     }
 
     public static TypeReference ResolveGenericArguments(this TypeReference self, TypeReference template) {
-      // TODO: use the MemberResolver class!!
+      // TODO: move to the MemberResolver class!!
       if (self == null) throw new InstanceArgumentNullException();
       if (template == null) throw new ArgumentNullException("template");
 

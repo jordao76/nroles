@@ -83,7 +83,7 @@ namespace NRoles.Engine {
         Definition.ResolveDefinitionInRole(roleForView, Container.Module);
 
       if (_implementingMemberDefinition == null) {
-        // TODO: if there's one, use the Aliasing name instead of the Definition name
+        // TODO: if it's being aliased, use the Aliasing name instead of the Definition name
         AddMessage(Error.RoleViewMemberNotFoundInRole(roleForView, Definition));
         return null;
       }
@@ -95,11 +95,11 @@ namespace NRoles.Engine {
       get { return false; }
     }
 
-    private List<TypeDefinition> RetrieveAllRolesForView(TypeDefinition roleView) {
+    private List<TypeReference> RetrieveAllRolesForView(TypeDefinition roleView) {
       var roleViewTypeDefinition = Container.Module.Import(typeof(RoleView<>)).Resolve();
-      var allRolesForView = roleView.Interfaces.Cast<TypeReference>()
+      var allRolesForView = roleView.Interfaces
         .Where(interfaceTypeReference => interfaceTypeReference.Resolve() == roleViewTypeDefinition)
-        .Select(roleViewTypeReference => ((GenericInstanceType)roleViewTypeReference).GenericArguments[0].Resolve())
+        .Select(roleViewTypeReference => ((GenericInstanceType)roleViewTypeReference).GenericArguments[0])
         .ToList();
       return allRolesForView;
     }
