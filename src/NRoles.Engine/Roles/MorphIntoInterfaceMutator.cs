@@ -82,7 +82,7 @@ namespace NRoles.Engine {
         return remove;
       }
 
-      bool RemoveAccessor(MethodDefinition accessor) {
+      private bool RemoveAccessor(MethodDefinition accessor) {
         return !accessor.RemainsInRoleInterface();
       }
 
@@ -137,34 +137,26 @@ namespace NRoles.Engine {
       private void MorphEvent(EventDefinition @event) {
         Tracer.TraceVerbose("Morph event: {0}", @event.Name);
 
-        // TODO: Defer destructing actions as in MorphProperty
-
-        if (@event.AddMethod != null) {
-          bool remove = RemoveAccessor(@event.AddMethod);
-          MorphMethod(@event.AddMethod);
-          if (remove) {
-            @event.AddMethod = null;
-          }
-        }
-        if (@event.RemoveMethod != null) {
-          bool remove = RemoveAccessor(@event.RemoveMethod);
-          MorphMethod(@event.RemoveMethod);
-          if (remove) {
-            @event.RemoveMethod = null;
-          }
-        }
-        if (@event.InvokeMethod != null) {
-          bool remove = RemoveAccessor(@event.InvokeMethod);
-          MorphMethod(@event.InvokeMethod);
-          if (remove) {
-            @event.InvokeMethod = null;
-          }
+        var removeAdder = MorphAccessor(@event.AddMethod);
+        if (removeAdder) {
+          Defer(() => @event.AddMethod = null);
         }
 
-        // TODO: use booleans as in MorphProperty
-        if (@event.AddMethod == null && @event.RemoveMethod == null && @event.InvokeMethod == null) {
-          @event.DeclaringType.Events.Remove(@event);
+        var removeRemover = MorphAccessor(@event.RemoveMethod);
+        if (removeRemover) {
+          Defer(() => @event.RemoveMethod = null);
         }
+
+        var removeInvoker = MorphAccessor(@event.InvokeMethod);
+        if (removeInvoker) {
+          Defer(() => @event.InvokeMethod = null);
+        }
+
+        Defer(() => {
+          if (removeAdder && removeRemover) { // Note: the InvokeMethod is optional, and should not occur alone. So it's not checked here.
+            @event.DeclaringType.Events.Remove(@event);
+          }
+        });
       }
 
       #endregion
