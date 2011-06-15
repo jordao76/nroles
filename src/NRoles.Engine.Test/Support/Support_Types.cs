@@ -896,44 +896,6 @@ namespace NRoles.Engine.Test.Support {
 
   #endregion
 
-  #region Properties
-
-  class Sensing { public string Value = "initial"; }
-  [RoleTest(
-    CompositionType = typeof(Role_With_Public_Property_Composition),
-    TestType = typeof(Role_With_Public_Property_Composition_Test))]
-  class Role_With_Public_Property : Role {
-    public Sensing Property { get { return new Sensing(); } set { value.Value = "set!"; } }
-  }
-  class Role_With_Public_Property_Composition : Does<Role_With_Public_Property> { }
-  class Role_With_Public_Property_Composition_Test : DynamicTestFixture {
-    public override void Test() {
-      var role = new Role_With_Public_Property_Composition().As<Role_With_Public_Property>();
-      Assert.AreEqual("initial", role.Property.Value);
-      var sensing = new Sensing();
-      role.Property = sensing;
-      Assert.AreEqual("set!", sensing.Value);
-    }
-  }
-
-  [RoleTest(
-    CompositionType = typeof(Role_With_Public_Auto_Property_Composition),
-    TestType = typeof(Role_With_Public_Auto_Property_Composition_Test))]
-  class Role_With_Public_Auto_Property : Role {
-    public string Property { get; set; }
-  }
-  class Role_With_Public_Auto_Property_Composition : Does<Role_With_Public_Auto_Property> { }
-  class Role_With_Public_Auto_Property_Composition_Test : DynamicTestFixture {
-    public override void Test() {
-      var role = new Role_With_Public_Auto_Property_Composition().As<Role_With_Public_Auto_Property>();
-      Assert.IsNull(role.Property);
-      role.Property = "test";
-      Assert.AreEqual("test", role.Property);
-    }
-  }
-
-  #endregion
-
   #region Fields
 
   [RoleTest(

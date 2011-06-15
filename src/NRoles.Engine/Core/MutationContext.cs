@@ -43,7 +43,7 @@ namespace NRoles.Engine {
       // TODO: shouldn't they visit the current module?
       _typeVisitors.Visit(Assembly);
       _codeVisitors.Visit(Assembly);
-      _wrapUpActions.ForEach(action => action(this));
+     _wrapUpActions.ForEach(action => action(this));
       result.Slurp(this); // transfer the messages to the result
     }
 
