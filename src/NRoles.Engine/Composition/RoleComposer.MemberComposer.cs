@@ -102,6 +102,7 @@ namespace NRoles.Engine {
           }
           // TODO: if it's an event accessor: ??
           else {
+            if (_backingField != null) throw new InvalidOperationException("The member is a method BUT has a backing field!"); // TODO: assertion!
             return ImplementMethodCallingCodeClass();
           }
         }
