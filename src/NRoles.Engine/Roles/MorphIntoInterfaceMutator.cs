@@ -22,6 +22,8 @@ namespace NRoles.Engine {
 
     class MorphIntoInterfaceVisitor : TypeVisitorBase {
 
+      // TODO: it seems that the context WrapUpActions are only being used by this class. Can it be encapsulated here?
+
       public readonly OperationResult Result = new OperationResult();
       MutationParameters _parameters;
 
@@ -67,6 +69,19 @@ namespace NRoles.Engine {
 
       #endregion
 
+      private void Defer(Action action) {
+        _parameters.Context.RegisterWrapUpAction(mc => action());
+      }
+
+      private bool MorphAccessor(MethodDefinition accessor) {
+        var remove = false;
+        if (accessor != null) {
+          remove = RemoveAccessor(accessor);
+          MorphMethod(accessor);
+        }
+        return remove;
+      }
+
       bool RemoveAccessor(MethodDefinition accessor) {
         return !accessor.RemainsInRoleInterface();
       }
@@ -81,24 +96,22 @@ namespace NRoles.Engine {
       private void MorphProperty(PropertyDefinition property) {
         Tracer.TraceVerbose("Morph property: {0}", property.Name);
 
-        if (property.GetMethod != null) {
-          bool remove = RemoveAccessor(property.GetMethod);
-          MorphMethod(property.GetMethod);
-          if (remove) {
-            property.GetMethod = null;
-          }
-        }
-        if (property.SetMethod != null) {
-          bool remove = RemoveAccessor(property.SetMethod);
-          MorphMethod(property.SetMethod);
-          if (remove) {
-            property.SetMethod = null;
-          }
+        var removeGetter = MorphAccessor(property.GetMethod);
+        if (removeGetter) {
+          Defer(() => property.GetMethod = null);
         }
 
-        if (property.GetMethod == null && property.SetMethod == null) {
-          property.DeclaringType.Properties.Remove(property);
+        var removeSetter = MorphAccessor(property.SetMethod);
+        if (removeSetter) {
+          Defer(() => property.SetMethod = null);
         }
+
+        Defer(() => {
+          //if (property.GetMethod == null && property.SetMethod == null) // TODO: Cecil BUG: this condition was causing get_Smile to lose its SemanticsAttributes
+          if (removeGetter && removeSetter) {
+            property.DeclaringType.Properties.Remove(property);
+          }
+        });
       }
 
       #endregion
@@ -106,10 +119,10 @@ namespace NRoles.Engine {
       #region Fields
 
       public override void Visit(Collection<FieldDefinition> fieldDefinitionCollection) {
-        // the fields will be removed in a wrap up action
         var fieldsToBeRemoved = fieldDefinitionCollection.ToList();
-        _parameters.Context.RegisterWrapUpAction(mc => 
-          fieldsToBeRemoved.ForEach(field => fieldDefinitionCollection.Remove(field)));
+        Defer(() => {
+          fieldsToBeRemoved.ForEach(field => fieldDefinitionCollection.Remove(field));
+        });
       }
 
       #endregion
@@ -123,6 +136,8 @@ namespace NRoles.Engine {
 
       private void MorphEvent(EventDefinition @event) {
         Tracer.TraceVerbose("Morph event: {0}", @event.Name);
+
+        // TODO: Defer destructing actions as in MorphProperty
 
         if (@event.AddMethod != null) {
           bool remove = RemoveAccessor(@event.AddMethod);
@@ -146,6 +161,7 @@ namespace NRoles.Engine {
           }
         }
 
+        // TODO: use booleans as in MorphProperty
         if (@event.AddMethod == null && @event.RemoveMethod == null && @event.InvokeMethod == null) {
           @event.DeclaringType.Events.Remove(@event);
         }
@@ -181,7 +197,9 @@ namespace NRoles.Engine {
 
         bool remove = !method.RemainsInRoleInterface();
         if (remove) {
-          _parameters.Context.RegisterWrapUpAction(mc => method.DeclaringType.Methods.Remove(method));
+          Defer(() => {
+            method.DeclaringType.Methods.Remove(method);
+          });
           return;
         }
 
@@ -202,7 +220,9 @@ namespace NRoles.Engine {
         }
 
         // the method body will be cleared in a wrap-up action
-        _parameters.Context.RegisterWrapUpAction(mc => method.Body = null);
+        Defer(() => {
+          method.Body = null;
+        });
       }
 
       #endregion

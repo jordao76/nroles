@@ -9,7 +9,7 @@ namespace NRoles.Engine {
   /// <summary>
   /// The context for a mutation operation.
   /// </summary>
-  public class MutationContext : IMessageContainer, Does<RMessageContainer> {
+  public class MutationContext : IMessageContainer {
 
     /// <summary>
     /// Creates a new instance of this class.
@@ -17,9 +17,7 @@ namespace NRoles.Engine {
     /// <param name="module">The module being mutated.</param>
     public MutationContext(ModuleDefinition module) {
       if (module == null) throw new ArgumentNullException("module");
-      if (module.Assembly == null) throw new ArgumentException("module has a null Assembly", "module");
       Module = module;
-      Assembly = module.Assembly;
     }
 
     /// <summary>
@@ -31,7 +29,7 @@ namespace NRoles.Engine {
     /// The assembly for the module being mutated.
     /// </summary>
     /// <seealso cref="Module"/>
-    public AssemblyDefinition Assembly { get; private set; }
+    public AssemblyDefinition Assembly { get { return Module.Assembly; } }
 
 
     /// <summary>
@@ -89,10 +87,24 @@ namespace NRoles.Engine {
 
     #endregion
 
-    #region Messages
+    #region Message container
 
-    public extern IEnumerable<Message> Messages { [Placeholder] get; }
-    [Placeholder] public extern void AddMessage(Message message);
+    List<Message> _messages = new List<Message>();
+
+    /// <summary>
+    /// The messages for this context.
+    /// </summary>
+    public IEnumerable<Message> Messages {
+      get { return _messages; }
+    }
+
+    /// <summary>
+    /// Adds a message to this context.
+    /// </summary>
+    /// <param name="message">Message to add.</param>
+    public void AddMessage(Message message) {
+      _messages.Add(message);
+    }
 
     #endregion
 
