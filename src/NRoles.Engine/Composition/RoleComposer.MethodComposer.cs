@@ -54,24 +54,31 @@ namespace NRoles.Engine {
       private MethodDefinition ComposeMethod(Action<MethodDefinition> createMethodCode) {
         Tracer.TraceVerbose("Compose method: {0}", _name);
 
+        var placeholder = ((MethodDefinition)Group.Placeholder);
+
         // TODO: create class field for "new MemberResolver(Role)"
-        var implementedMethod = new MemberResolver(Role, Module).ResolveMethodDefinition(
-          RoleMethod, 
-          _name,
-          _accessSpecifier |
-          MethodAttributes.HideBySig | // TODO: what about HideByName?
-          //MethodAttributes.Strict | // TODO: VB.NET uses this!
-          //MethodAttributes.Final |  // TODO?
-          MethodAttributes.NewSlot |
-          MethodAttributes.Virtual
-        );
+        var implementedMethod = placeholder ?? 
+          new MemberResolver(Role, Module).ResolveMethodDefinition(
+            RoleMethod, 
+            _name,
+            _accessSpecifier);
+
+        implementedMethod.Attributes |=
+            MethodAttributes.HideBySig | // TODO: what about HideByName?
+            //MethodAttributes.Strict | // TODO: VB.NET uses this!
+            //MethodAttributes.Final |  // TODO?
+            MethodAttributes.NewSlot |
+            MethodAttributes.Virtual;
+
         implementedMethod.SemanticsAttributes = RoleMethod.SemanticsAttributes;
 
-        if (!implementedMethod.IsAbstract) {
+        if (placeholder != null || !implementedMethod.IsAbstract) {
           createMethodCode(implementedMethod);
         }
 
-        TargetType.Methods.Add(implementedMethod);
+        if (placeholder == null) {
+          TargetType.Methods.Add(implementedMethod);
+        }
         return implementedMethod;
       }
 
@@ -98,6 +105,7 @@ namespace NRoles.Engine {
         var companionClassMethod = ResolveCompanionMethod();
         if (companionClassMethod == null) return;
 
+        implementedMethod.Body = new MethodBody(implementedMethod);
         PushParameters(implementedMethod);
         EmitCodeToCallMethod(implementedMethod, companionClassMethod);
         implementedMethod.Body.GetILProcessor().Emit(OpCodes.Ret);
