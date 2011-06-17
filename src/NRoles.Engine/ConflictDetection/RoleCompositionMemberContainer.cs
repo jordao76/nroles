@@ -107,18 +107,24 @@ namespace NRoles.Engine {
 
         // if all members in the group are abstract, supercede with the inherited member
         // TODO: what if the inherited member is also abstract?
+        // TODO: very strange to look at the message to decide!
         var messages = memberGroup.Process().Messages;
         if (messages.Count() == 1 && messages.First().Number == (int)Error.Code.DoesNotImplementAbstractRoleMember) {
-          // TODO: issue an info message that the role method is being silently superceded
+          // TODO: issue an info message that the role method is being silently superceded?
           memberGroup.MarkAsSuperceded(classMember);
         }
 
         return;
       }
 
+      if (member.IsPlaceholder()) {
+        memberGroup.Placeholder = member;
+        return;
+      }
+
       // TODO: DECIDE on the spelling: supersede vs supercede!!
       memberGroup.MarkAsSuperceded(classMember);
-      if (!member.IsMarkedAsSupersede(TargetType.Module)) {
+      if (!member.IsSupersede(TargetType.Module)) {
         // TODO: add a warning?
       }
     }
