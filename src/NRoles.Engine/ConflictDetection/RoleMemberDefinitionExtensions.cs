@@ -41,9 +41,12 @@ namespace NRoles.Engine {
       return member.IsMarkedWith<GuardAttribute>();
     }
 
-    public static bool IsMarkedAsSupersede(this IMemberDefinition member, ModuleDefinition module) {
-      if (!member.IsInRoleView()) return false;
+    public static bool IsSupersede(this IMemberDefinition member, ModuleDefinition module) {
       return member.IsMarkedWith<SupersedeAttribute>();
+    }
+
+    public static bool IsPlaceholder(this IMemberDefinition member) {
+      return member.IsMarkedWith<PlaceholderAttribute>();
     }
 
     public static bool IsExcluded(this IMemberDefinition member, ModuleDefinition module) {
