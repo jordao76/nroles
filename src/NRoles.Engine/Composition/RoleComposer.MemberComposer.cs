@@ -36,7 +36,10 @@ namespace NRoles.Engine {
         return Compose(group, MethodAttributes.Public);
       }
 
+      ContributedConflictGroup Group { get; set; }
+
       public IMemberDefinition Compose(ContributedConflictGroup group, MethodAttributes accessSpecifier) {
+        Group = group;
         if (group.ImplementedMember != null) {
           return group.ImplementedMember;
         }

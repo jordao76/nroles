@@ -56,6 +56,8 @@ namespace NRoles.Engine {
       get { return _supercedingMember != null; }
     }
 
+    public IMemberDefinition Placeholder { get; set; }
+
     public bool IsBaseMethod { get; private set; }
 
     public bool ReuseSlot { get; set; }
