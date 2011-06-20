@@ -11,13 +11,9 @@ namespace NRoles.Engine.Test {
       get { return CompositionType; }
       set { CompositionType = value; }
     }
-    public override string ToString() {
-      var sb = new StringBuilder();
-      sb.Append(CompositionType.Name);
-      if (TestType != null) {
-        sb.AppendFormat(" - {0}", TestType.Name);
-      }
-      return sb.ToString();
+    public override Type SupportingType {
+      get { return RoleType; }
+      set { RoleType = value; }
     }
   }
 

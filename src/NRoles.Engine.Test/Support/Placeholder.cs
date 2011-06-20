@@ -7,6 +7,7 @@ using NUnit.Framework;
 namespace NRoles.Engine.Test.Support {
 
   [RoleTest(
+    Description = "Placeholder in composition method should be replaced by concrete role method",
     CompositionType = typeof(DeepThought),
     TestType = typeof(DeepThoughtTest))]
 
@@ -28,9 +29,11 @@ namespace NRoles.Engine.Test.Support {
   // TODO: properties and events
 
   // TODO: think about placeholders in roles that are also compositions
+  //    the placeholders make the method act like an abstract method
 
   // TODO: placeholder in abstract method
 
   // TODO: placeholder in an override of a base-class member
 
+  // TODO: calls to placeholder methods must change to callvirt?
 }
