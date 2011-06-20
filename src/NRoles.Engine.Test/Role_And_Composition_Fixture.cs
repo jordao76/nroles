@@ -25,34 +25,36 @@ namespace NRoles.Engine.Test {
     }
 
     [Test, TestCaseSource(typeof(MutationTestCaseFactory<RoleTestAttribute>), "LoadTestCases")]
-    public void Test_Role_Mutation(RoleTestAttribute testParameters) {
+    public void Test_Role_Mutation(MutationTestAttribute testParameters) {
+      TestMutation(testParameters);
+    }
+
+
+    [Test, TestCaseSource(typeof(MutationTestCaseFactory<CompositionTestAttribute>), "LoadTestCases")]
+    public void Test_Composition_Mutation(CompositionTestAttribute testParameters) {
+      TestMutation(testParameters);
+    }
+
+    private void TestMutation(MutationTestAttribute testParameters) {
       Run_Global_Checks(testParameters);
+
       Mutate_Into_Role(testParameters, testParameters.RoleType);
       if (testParameters.OtherRoles != null) {
         testParameters.OtherRoles.ForEach(role => Mutate_Into_Role(null, role));
       }
-      Compose_Role(testParameters);
-      var noErrorExpected =
-        testParameters.ExpectedGlobalCheckError == 0 &&
-        testParameters.ExpectedRoleError == 0 && 
-        testParameters.ExpectedCompositionError == 0;
 
-      if (noErrorExpected) {
+      Compose_Role(testParameters);
+
+      if (!ErrorExpected(testParameters)) {
         VerifyAndTestAssembly(testParameters);
       }
     }
 
-    [Test, TestCaseSource(typeof(MutationTestCaseFactory<CompositionTestAttribute>), "LoadTestCases")]
-    public void Test_Composition_Mutation(CompositionTestAttribute testParameters) {
-      Run_Global_Checks(testParameters);
-      Compose_Role(testParameters);
-      var noErrorExpected =
-        testParameters.ExpectedGlobalCheckError == 0 &&
-        testParameters.ExpectedCompositionError == 0;
-
-      if (noErrorExpected) {
-        VerifyAndTestAssembly(testParameters);
-      }
+    private bool ErrorExpected(MutationTestAttribute testParameters) {
+      return
+        testParameters.ExpectedGlobalCheckError != 0 ||
+        testParameters.ExpectedRoleError != 0 ||
+        testParameters.ExpectedCompositionError != 0;
     }
 
     private void VerifyAndTestAssembly(MutationTestAttribute testParameters) {
@@ -63,15 +65,16 @@ namespace NRoles.Engine.Test {
       }
     }
 
-    private void Mutate_Into_Role(RoleTestAttribute testParameters, Type sourceType) {
+    private void Mutate_Into_Role(MutationTestAttribute testParameters, Type roleType) {
+      if (roleType == null) return;
       var mutator = new MorphIntoRoleMutator();
-      var runner = new MutationRunner(_assembly.GetType(sourceType));
+      var runner = new MutationRunner(_assembly.GetType(roleType));
       var result = runner.Run(mutator);
 
       Assert_Mutate_Into_Role_Result(testParameters, result);
     }
 
-    private static void Assert_Mutate_Into_Role_Result(RoleTestAttribute testParameters, IOperationResult result) {
+    private static void Assert_Mutate_Into_Role_Result(MutationTestAttribute testParameters, IOperationResult result) {
       result.Messages.ForEach(Console.WriteLine);
       var expectedError = testParameters != null && testParameters.ExpectedRoleError != 0;
       var expectedWarning = testParameters != null && testParameters.ExpectedRoleWarning != 0;
