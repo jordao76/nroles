@@ -46,7 +46,18 @@ namespace NRoles.Engine {
     }
 
     public static bool IsPlaceholder(this IMemberDefinition member) {
-      return member.IsMarkedWith<PlaceholderAttribute>();
+      if (member.IsMarkedWith<PlaceholderAttribute>()) return true;
+      var method = member as MethodDefinition;
+      if (method == null) return false;
+      // for an accessor method, see if its container (property or event) is a placeholder
+      // TODO: won't this logic applies to other attributes? like Exclude, Aliasing, Hide, ...?
+      if (method.IsPropertyAccessor()) {
+        return method.ResolveContainerProperty().IsPlaceholder();
+      }
+      if (method.IsEventAccessor()) {
+        return method.ResolveContainerEvent().IsPlaceholder();
+      }
+      return false;
     }
 
     public static bool IsExcluded(this IMemberDefinition member, ModuleDefinition module) {

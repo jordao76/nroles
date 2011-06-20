@@ -69,6 +69,17 @@ namespace NRoles.Engine {
       }
     }
 
+    public static MethodBody GetBody(this MethodDefinition self) {
+      try {
+        return self.HasBody ? self.Body : null;
+      }
+      catch (NullReferenceException) {
+        // only happens when the method is NOT abstract and has no implementation -> RVA == 0
+        // (TODO: only seen in the wild with an extern method without the DllImport attribute!)
+        return null;
+      }
+    }
+
     #region Semantic Attributes
 
     // TODO: Cecil 0.9 has utility methods (eg IsGetter) in MethodDefinition for these
@@ -115,16 +126,14 @@ namespace NRoles.Engine {
 
     #endregion
 
-    public static MethodBody GetBody(this MethodDefinition self) {
-      try {
-        return self.HasBody ? self.Body : null;
-      }
-      catch (NullReferenceException) {
-        // only happens when the method is NOT abstract and has no implementation -> RVA == 0
-        // (TODO: only seen in the wild with an extern method without the DllImport attribute!)
-        return null;
-      }
+    public static PropertyDefinition ResolveContainerProperty(this MethodDefinition self) {
+      return self.DeclaringType.Properties.Single(p => p.GetMethod == self || p.SetMethod == self);
     }
+
+    public static EventDefinition ResolveContainerEvent(this MethodDefinition self) {
+      return self.DeclaringType.Events.Single(e => e.AddMethod == self || e.RemoveMethod == self || e.InvokeMethod == self);
+    }
+  
   }
 
   static class FieldInstructionsExtensions {

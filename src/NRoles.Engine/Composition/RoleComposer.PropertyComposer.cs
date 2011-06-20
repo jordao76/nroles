@@ -72,8 +72,17 @@ namespace NRoles.Engine {
 
       private PropertyDefinition ImplementProperty() {
         Tracer.TraceVerbose("Compose property: {0}", _name);
-        var implementedProperty = new MemberResolver(Role, Module).ResolvePropertyDefinition(RoleProperty);
-        TargetType.Properties.Add(implementedProperty);
+
+        var placeholder = ((PropertyDefinition)Group.Placeholder);
+
+        var implementedProperty = 
+          placeholder ?? 
+          new MemberResolver(Role, Module).ResolvePropertyDefinition(RoleProperty);
+
+        if (placeholder == null) {
+          TargetType.Properties.Add(implementedProperty);
+        }
+        
         return implementedProperty;
       }
 
