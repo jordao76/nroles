@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using NUnit.Framework;
 
-namespace NRoles.Engine.Test.Support {
+namespace NRoles.Engine.Test.Support.PlaceholderMethods {
 
   [RoleTest(
     Description = "Placeholder in composition method should be replaced by concrete role method",
@@ -26,7 +26,7 @@ namespace NRoles.Engine.Test.Support {
     }
   }
 
-  // TODO: properties and events
+  // TODO: events
 
   // TODO: think about placeholders in roles that are also compositions
   //    the placeholders make the method act like an abstract method
