@@ -17,12 +17,17 @@ namespace NRoles.Engine.Test.Support.PlaceholderProperties {
       get { return answer + 2; }
       set { answer = value - 2; }
     }
+    public int AutoAnswer { get; set; }
   }
 
   public class DeepThought : Does<RDeepThought> {
     [Placeholder] public int Answer { 
       get { return 4 + 2; } 
       set { } 
+    }
+    [Placeholder] public int AutoAnswer {
+      get { return 4 * 2; }
+      set { throw new Exception(); }
     }
   }
 
@@ -31,12 +36,12 @@ namespace NRoles.Engine.Test.Support.PlaceholderProperties {
       var thinker = new DeepThought();
       thinker.Answer = 42;
       Assert.AreEqual(42, thinker.Answer);
+      thinker.AutoAnswer = 42;
+      Assert.AreEqual(42, thinker.AutoAnswer);
     }
   }
 
   // TODO: possible bug: test superceded property
-
-  // TODO: auto-property
 
   // TODO: placeholder in individual getter or setter
 
