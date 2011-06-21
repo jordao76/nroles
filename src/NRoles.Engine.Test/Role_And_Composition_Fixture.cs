@@ -79,10 +79,10 @@ namespace NRoles.Engine.Test {
       var expectedError = testParameters != null && testParameters.ExpectedRoleError != 0;
       var expectedWarning = testParameters != null && testParameters.ExpectedRoleWarning != 0;
       if (expectedError) {
-        Assert.That(result.Messages.Any(m => m.Number == (int)testParameters.ExpectedRoleError));
+        AssertError(testParameters.ExpectedRoleError, result);
       }
       if (expectedWarning) {
-        Assert.That(result.Messages.Any(m => m.Number == (int)testParameters.ExpectedRoleWarning));
+        AssertWarning(testParameters.ExpectedRoleWarning, result);
       }
       Assert.AreEqual(!expectedError, result.Success);
     }
@@ -111,12 +111,24 @@ namespace NRoles.Engine.Test {
       var expectedError = testParameters.ExpectedCompositionError != 0;
       var expectedWarning = testParameters.ExpectedCompositionWarning != 0;
       if (expectedError) {
-        Assert.That(result.Messages.Any(m => m.Number == (int)testParameters.ExpectedCompositionError));
+        AssertError(testParameters.ExpectedCompositionError, result);
       }
       if (expectedWarning) {
-        Assert.That(result.Messages.Any(m => m.Number == (int)testParameters.ExpectedCompositionWarning));
+        AssertWarning(testParameters.ExpectedCompositionWarning, result);
       }
       Assert.AreEqual(!expectedError, result.Success);
+    }
+
+    private static void AssertWarning(Warning.Code warning, IMessageContainer container) {
+      if (!container.Messages.Any(m => m.Number == (int)warning)) {
+        Assert.Fail("Expected warning '{0}' not found.", warning);
+      }
+    }
+
+    private static void AssertError(Error.Code error, IMessageContainer container) {
+      if (!container.Messages.Any(m => m.Number == (int)error)) {
+        Assert.Fail("Expected error '{0}' not found.", error);
+      }
     }
 
     private void Run_Global_Checks(MutationTestAttribute testParameters) {

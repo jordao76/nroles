@@ -78,6 +78,7 @@
     <Compile Include="Support\Placeholder_Properties.cs" />
     <Compile Include="Support\Events.cs" />
     <Compile Include="Support\Placeholder.cs" />
+    <Compile Include="Support\Placeholder_Warnings.cs" />
     <Compile Include="Support\Properties.cs" />
     <Compile Include="Support\Role_With_External_Method.cs" />
     <Compile Include="Support\Diamond_Generic_Composition.cs" />
