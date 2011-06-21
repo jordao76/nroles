@@ -34,7 +34,13 @@ namespace NRoles.Engine {
       /// Occurs when the assembly is marked with the DontMutate attribute, 
       /// which aborts the mutation process.
       /// </summary>
-      AssemblyMarkedWithDontMutate = 103
+      AssemblyMarkedWithDontMutate = 103,
+
+      /// <summary>
+      /// Occurs when a member marked as a placeholder in a composition doesn't
+      /// match any role members. So there's nothing to replace it with.
+      /// </summary>
+      PlaceholderDoesntMatchAnyRoleMembers = 104
 
     }
 
@@ -66,6 +72,13 @@ namespace NRoles.Engine {
       return new Warning(
         Code.AssemblyMarkedWithDontMutate,
         "The assembly '{0}' is marked to not be mutated. Aborting mutation.", assembly);
+    }
+
+    internal static Warning PlaceholderDoesntMatchAnyRoleMembers(object member) {
+      return new Warning(
+        Code.PlaceholderDoesntMatchAnyRoleMembers,
+        "The member '{0}' is marked as a placeholder but there's no matching role member to replace it.",
+        member);
     }
     
   }

@@ -88,7 +88,12 @@ namespace NRoles.Engine {
       var member = classMember.Definition;
 
       var memberGroup = ResolveGroup(classMember.Class, member);
-      if (memberGroup == null) return; // no clash
+      if (memberGroup == null) { // no clash
+        if (classMember.IsPlaceholder) {
+          AddMessage(Warning.PlaceholderDoesntMatchAnyRoleMembers(classMember.Definition));
+        }
+        return; 
+      }
 
       // if there's a match, there's a conflict in the target type itself
       // it must be explicitly marked as [Supercede] to resolve the conflict,
