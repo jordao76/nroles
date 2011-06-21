@@ -33,6 +33,14 @@ namespace NRoles.Engine {
       IsInherited = isInherited;
     }
 
+    /// <summary>
+    /// Indicates if the member is a placeholder.
+    /// </summary>
+    public bool IsPlaceholder {
+      get {
+        return Definition.IsPlaceholder();
+      }
+    }
   }
 
 }
