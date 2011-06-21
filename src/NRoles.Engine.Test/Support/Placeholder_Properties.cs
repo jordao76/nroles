@@ -36,8 +36,8 @@ namespace NRoles.Engine.Test.Support.PlaceholderProperties {
       var thinker = new DeepThought();
       thinker.Answer = 42;
       Assert.AreEqual(42, thinker.Answer);
-      thinker.AutoAnswer = 42;
-      Assert.AreEqual(42, thinker.AutoAnswer);
+      thinker.AutoAnswer = 48;
+      Assert.AreEqual(48, thinker.AutoAnswer);
     }
   }
 
