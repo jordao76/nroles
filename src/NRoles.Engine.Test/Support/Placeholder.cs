@@ -26,7 +26,7 @@ namespace NRoles.Engine.Test.Support.PlaceholderMethods {
     }
   }
 
-  // TODO: events
+  // TODO: warning when placeholder doesn't match any role members
 
   // TODO: think about placeholders in roles that are also compositions
   //    the placeholders make the method act like an abstract method
