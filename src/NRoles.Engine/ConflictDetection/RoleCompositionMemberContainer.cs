@@ -117,7 +117,7 @@ namespace NRoles.Engine {
         return;
       }
 
-      if (member.IsPlaceholder()) {
+      if (classMember.IsPlaceholder) {
         memberGroup.Placeholder = member;
         return;
       }
