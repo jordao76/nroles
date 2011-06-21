@@ -35,6 +35,7 @@ namespace NRoles.Engine {
 
     /// <summary>
     /// Indicates if the member is a placeholder.
+    /// A placeholder member is meant to be replaced.
     /// </summary>
     public bool IsPlaceholder {
       get {
