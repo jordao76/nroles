@@ -269,7 +269,7 @@ namespace NRoles.Engine {
     internal static Error RoleHasPlaceholder(object member) {
       return new Error(
         Code.RoleHasPlaceholder,
-        "Role member '{0}' is marked as a placeholder. Roles cannot have placeholders, use an abstract member instead.",
+        "Role member '{0}' is marked as a placeholder. Roles cannot have placeholders, use an abstract member not marked as a placeholder instead.",
         member);
     }
     internal static Message RoleHasExplicitInterfaceImplementation(object role) {
