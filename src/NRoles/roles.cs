@@ -58,4 +58,21 @@ namespace NRoles {
 
   }
 
+  /// <summary>
+  /// Defines a single method to be used in a placeholder (<see cref="PlaceholderAttribute"/>).
+  /// It's just a convenient way to mark it as throw-away code: <c>throw Away.Code</c>.
+  /// </summary>
+  public static class Away {
+    
+    /// <summary>
+    /// To be used as a placeholder's code simply as <c>throw Away.Code</c>.
+    /// </summary>
+    public static Exception Code {
+      get {
+        return new Exception("Throw-away code not thrown away!");
+      }
+    }
+
+  }
+
 }
