@@ -40,6 +40,8 @@ namespace NRoles.Engine {
 
       CheckRoleHasNoPInvokeMethods(result);
 
+      CheckRoleHasNoPlaceholders(result);
+
       /* TODO Checks:
         * a role can't be a struct
         * static members? right now it's being checked in the wrong class!
@@ -79,6 +81,15 @@ namespace NRoles.Engine {
     private void CheckRoleHasNoPInvokeMethods(OperationResult result) {
       _roleType.Methods.Where(m => m.IsPInvokeImpl).
         ForEach(m => result.AddMessage(Error.RoleHasPInvokeMethod(m)));
+    }
+
+    private void CheckRoleHasNoPlaceholders(OperationResult result) {
+      var members = new List<IMemberDefinition>();
+      _roleType.Properties.ForEach(m => members.Add(m));
+      _roleType.Events.ForEach(m => members.Add(m));
+      _roleType.Methods.ForEach(m => members.Add(m));
+      members.Where(m => m.IsMarkedAsPlaceholder()).
+        ForEach(m => result.AddMessage(Error.RoleHasPlaceholder(m)));
     }
 
   }

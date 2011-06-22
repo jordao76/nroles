@@ -45,8 +45,12 @@ namespace NRoles.Engine {
       return member.IsMarkedWith<SupersedeAttribute>();
     }
 
+    public static bool IsMarkedAsPlaceholder(this IMemberDefinition member) {
+      return member.IsMarkedWith<PlaceholderAttribute>();
+    }
+
     public static bool IsPlaceholder(this IMemberDefinition member) {
-      if (member.IsMarkedWith<PlaceholderAttribute>()) return true;
+      if (member.IsMarkedAsPlaceholder()) return true;
       var method = member as MethodDefinition;
       if (method == null) return false;
       // for an accessor method, see if its container (property or event) is a placeholder
