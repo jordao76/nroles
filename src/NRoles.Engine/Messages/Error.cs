@@ -130,6 +130,12 @@ namespace NRoles.Engine {
       SelfTypeConstraintNotSetToCompositionType = 60,
 
       /// <summary>
+      /// Occurs when a role has a member marked as a placeholder.
+      /// This is not allowed since roles can have abstract members instead.
+      /// </summary>
+      RoleHasPlaceholder = 61,
+
+      /// <summary>
       /// Occurs when a role explicitly implements interface members. This scenario is not supported.
       /// </summary>
       RoleHasExplicitInterfaceImplementation = 666
@@ -259,6 +265,12 @@ namespace NRoles.Engine {
         composition,
         role,
         selfType);
+    }
+    internal static Error RoleHasPlaceholder(object member) {
+      return new Error(
+        Code.RoleHasPlaceholder,
+        "Role member '{0}' is marked as a placeholder. Roles cannot have placeholders, use an abstract member instead.",
+        member);
     }
     internal static Message RoleHasExplicitInterfaceImplementation(object role) {
       return new Error(

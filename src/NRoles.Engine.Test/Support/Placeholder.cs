@@ -26,14 +26,5 @@ namespace NRoles.Engine.Test.Support.PlaceholderMethods {
     }
   }
 
-  // TODO: think about placeholders in roles that are also compositions
-  //    the placeholders make the method act like an abstract method
-  //    they're not necessary as abstract methods can be used in roles
-  //      so issue an error message
-
   // TODO: placeholder in abstract method
-
-  // TODO: placeholder in an override of a base-class member
-
-  // TODO: calls to placeholder methods must change to callvirt? I don't think so.
 }

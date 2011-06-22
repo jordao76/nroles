@@ -65,20 +65,18 @@ namespace NRoles.Engine {
 
         implementedMethod.Attributes |=
             MethodAttributes.HideBySig | // TODO: what about HideByName?
-            //MethodAttributes.Strict | // TODO: VB.NET uses this!
             //MethodAttributes.Final |  // TODO?
             MethodAttributes.NewSlot |
             MethodAttributes.Virtual;
 
         implementedMethod.SemanticsAttributes = RoleMethod.SemanticsAttributes;
 
-        if (placeholder != null || !implementedMethod.IsAbstract) {
-          createMethodCode(implementedMethod);
-        }
+        createMethodCode(implementedMethod);
 
         if (placeholder == null) {
           TargetType.Methods.Add(implementedMethod);
         }
+
         return implementedMethod;
       }
 
@@ -103,8 +101,6 @@ namespace NRoles.Engine {
 
       private void CreateCodeToCallCodeClass(MethodDefinition implementedMethod) {
         var companionClassMethod = ResolveCompanionMethod();
-        if (companionClassMethod == null) return;
-
         implementedMethod.Body = new MethodBody(implementedMethod);
         PushParameters(implementedMethod);
         EmitCodeToCallMethod(implementedMethod, companionClassMethod);
