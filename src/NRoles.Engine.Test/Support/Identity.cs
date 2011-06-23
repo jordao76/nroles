@@ -12,9 +12,7 @@ namespace NRoles.Engine.Test.Support {
     ExpectedCompositionError = Error.Code.SelfTypeConstraintNotSetToCompositionType)]
 
   public class Identity<S> : Role { // S is the type of "this", by default
-    public S Self {
-      get { return this.Cast<S>(); }
-    }
+    public S Self { get { return this.Cast<S>(); } }
   }
 
   public class Identity_Composition : Does<Identity<Identity_Composition>> {
