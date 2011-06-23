@@ -73,13 +73,14 @@ namespace NRoles.Engine {
         _parameters.Context.RegisterWrapUpAction(mc => action());
       }
 
+      // Morphs an accessor and returns whether it still remains in the role
       private bool MorphAccessor(MethodDefinition accessor) {
-        var remove = false;
+        bool remains = false;
         if (accessor != null) {
-          remove = RemoveAccessor(accessor);
           MorphMethod(accessor);
+          remains = !RemoveAccessor(accessor);
         }
-        return remove;
+        return remains;
       }
 
       private bool RemoveAccessor(MethodDefinition accessor) {
@@ -96,22 +97,19 @@ namespace NRoles.Engine {
       private void MorphProperty(PropertyDefinition property) {
         Tracer.TraceVerbose("Morph property: {0}", property.Name);
 
-        var removeGetter = MorphAccessor(property.GetMethod);
-        if (removeGetter) {
+        var getterRemains = MorphAccessor(property.GetMethod);
+        if (!getterRemains) {
           Defer(() => property.GetMethod = null);
         }
 
-        var removeSetter = MorphAccessor(property.SetMethod);
-        if (removeSetter) {
+        var setterRemains = MorphAccessor(property.SetMethod);
+        if (!setterRemains) {
           Defer(() => property.SetMethod = null);
         }
 
-        Defer(() => {
-          //if (property.GetMethod == null && property.SetMethod == null) // TODO: Cecil BUG: this condition was causing get_Smile to lose its SemanticsAttributes
-          if (removeGetter && removeSetter) {
-            property.DeclaringType.Properties.Remove(property);
-          }
-        });
+        if (!getterRemains && !setterRemains) {
+          Defer(() => property.DeclaringType.Properties.Remove(property));
+        }
       }
 
       #endregion
@@ -137,26 +135,24 @@ namespace NRoles.Engine {
       private void MorphEvent(EventDefinition @event) {
         Tracer.TraceVerbose("Morph event: {0}", @event.Name);
 
-        var removeAdder = MorphAccessor(@event.AddMethod);
-        if (removeAdder) {
+        var adderRemains = MorphAccessor(@event.AddMethod);
+        if (!adderRemains) {
           Defer(() => @event.AddMethod = null);
         }
 
-        var removeRemover = MorphAccessor(@event.RemoveMethod);
-        if (removeRemover) {
+        var removerRemains = MorphAccessor(@event.RemoveMethod);
+        if (!removerRemains) {
           Defer(() => @event.RemoveMethod = null);
         }
 
-        var removeInvoker = MorphAccessor(@event.InvokeMethod);
-        if (removeInvoker) {
+        var invokerRemains = MorphAccessor(@event.InvokeMethod);
+        if (!invokerRemains) {
           Defer(() => @event.InvokeMethod = null);
         }
 
-        Defer(() => {
-          if (removeAdder && removeRemover) { // Note: the InvokeMethod is optional, and should not occur alone. So it's not checked here.
-            @event.DeclaringType.Events.Remove(@event);
-          }
-        });
+        if (!adderRemains && !removerRemains && !invokerRemains) {
+          Defer(() => @event.DeclaringType.Events.Remove(@event));
+        }
       }
 
       #endregion
