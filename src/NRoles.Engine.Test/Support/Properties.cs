@@ -41,19 +41,19 @@ namespace NRoles.Engine.Test.Support {
   }
 
   [RoleTest(
-    CompositionType = typeof(Role_With_Private_Property_Composition),
-    TestType = typeof(Role_With_Private_Property_Composition_Test))]
-  class Role_With_Private_Property : Role {
+    CompositionType = typeof(Role_With_Properties_Composition),
+    TestType = typeof(Role_With_Properties_Composition_Test))]
+  class Role_With_Properties : Role {
     private string Property { get; set; }
     public string PublicProperty {
       get { return Property; }
       set { Property = value; }
     }
   }
-  class Role_With_Private_Property_Composition : Does<Role_With_Private_Property> { }
-  class Role_With_Private_Property_Composition_Test : DynamicTestFixture {
+  class Role_With_Properties_Composition : Does<Role_With_Properties> { }
+  class Role_With_Properties_Composition_Test : DynamicTestFixture {
     public override void Test() {
-      var role = new Role_With_Private_Property_Composition().As<Role_With_Private_Property>();
+      var role = new Role_With_Properties_Composition().As<Role_With_Properties>();
       Assert.IsNull(role.PublicProperty);
       role.PublicProperty = "test";
       Assert.AreEqual("test", role.PublicProperty);
@@ -62,16 +62,23 @@ namespace NRoles.Engine.Test.Support {
 
   [RoleTest(CompositionType = typeof(Role_With_Property_Composition_With_Property_Superceded))]
   [RoleTest(CompositionType = typeof(Derived_Class_From_Base_Class_With_Property))]
-  public interface Role_With_Property : Role {
+  public interface IRole_With_Property : Role {
     int Property { get; }
   }
-  public class Role_With_Property_Composition_With_Property_Superceded : Does<Role_With_Property> {
+  public class Role_With_Property_Composition_With_Property_Superceded : Does<IRole_With_Property> {
     public int Property { get; set; }
   }
   public class Base_Class_With_Property {
     public int Property { get { return 42; } }
   }
-  public class Derived_Class_From_Base_Class_With_Property : Base_Class_With_Property, Does<Role_With_Property> { }
-  // TODO: finish this test
+  public class Derived_Class_From_Base_Class_With_Property : Base_Class_With_Property, Does<IRole_With_Property> { }
+
+  public class Role_With_Private_Property : Role {
+    int Property { get { return 42; } }
+  }
+  [CompositionTest(
+    Description = "Composition with role with private property should succeed",
+    RoleType = typeof(Role_With_Private_Property))]
+  public class Role_With_Private_Property_Composition : Does<Role_With_Private_Property> { }
 
 }
