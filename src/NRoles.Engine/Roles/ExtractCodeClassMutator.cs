@@ -191,7 +191,7 @@ namespace NRoles.Engine {
         }
 
         if (sourceMethod.IsAssembly || sourceMethod.IsFamilyAndAssembly) {
-          return MethodAttributes.Assem;
+          return MethodAttributes.Assembly;
         }
 
         return MethodAttributes.Private;
