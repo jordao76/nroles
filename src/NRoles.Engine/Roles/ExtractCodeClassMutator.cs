@@ -274,8 +274,10 @@ namespace NRoles.Engine {
 
       private void AdjustCallsToSourceClass() {
         // change calls (call) to @this to virtual calls (callvirt), since @this will become an interface
-        Parameters.Context.CodeVisitorsRegistry.Register(
-          new ChangeCallToCallVirtVisitor(SourceType)); // visit the whole assembly
+        if (SourceType.Methods.Any(m => !m.IsVirtual && m.RemainsInRoleInterface())) {
+          Parameters.Context.CodeVisitorsRegistry.Register(
+            new ChangeCallToCallVirtVisitor(SourceType)); // visit the whole assembly
+        }
       }
 
       #endregion

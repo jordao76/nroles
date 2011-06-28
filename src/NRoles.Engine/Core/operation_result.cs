@@ -23,22 +23,7 @@ namespace NRoles.Engine {
   /// <summary>
   /// Encapulates the result of an operation. Default implementation for <see cref="IOperationResult"/>. 
   /// </summary>
-  public class OperationResult : IOperationResult {
-    List<Message> _messages = new List<Message>();
-
-    /// <summary>
-    /// The messages of the operation result.
-    /// </summary>
-    public IEnumerable<Message> Messages { get { return _messages; } }
-
-    /// <summary>
-    /// Adds a message to this operation result.
-    /// </summary>
-    /// <param name="message">Message to add.</param>
-    public void AddMessage(Message message) {
-      if (message == null) throw new ArgumentNullException("message");
-      _messages.Add(message); 
-    }
+  public class OperationResult : IOperationResult, Does<RMessageContainer> {
 
     /// <summary>
     /// Indicates if the operation was successful.
@@ -49,6 +34,10 @@ namespace NRoles.Engine {
     public bool Success { 
       get { return !this.HasError(); } 
     }
+
+    public extern IEnumerable<Message> Messages { [Placeholder] get; }
+    [Placeholder] public extern void AddMessage(Message message);
+
   }
 
   /// <summary>
