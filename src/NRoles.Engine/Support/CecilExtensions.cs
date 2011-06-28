@@ -164,9 +164,9 @@ namespace NRoles.Engine {
     public static IEnumerable<CustomAttribute> RetrieveAttributes<TAttribute>(this ICustomAttributeProvider self) where TAttribute : Attribute {
       if (self == null) throw new InstanceArgumentNullException();
       var attributes = new HashSet<CustomAttribute>();
-      foreach (var attribute in self.CustomAttributes) {
-        if (attribute.Constructor.DeclaringType.FullName == typeof(TAttribute).FullName) {
-          attributes.Add(attribute);
+      foreach (var ca in self.CustomAttributes) {
+        if (ca.Is<TAttribute>()) {
+          attributes.Add(ca);
         }
       }
       return attributes;
@@ -174,10 +174,13 @@ namespace NRoles.Engine {
 
     public static bool IsMarkedWith<TAttribute>(this ICustomAttributeProvider self) {
       if (self == null) throw new InstanceArgumentNullException();
-      return self.CustomAttributes.
-        Any(ca =>
-          ca.Constructor.DeclaringType.Resolve() ==
-          ca.Constructor.DeclaringType.Module.Import(typeof(TAttribute)).Resolve());
+      return self.CustomAttributes.Any(ca => ca.Is<TAttribute>());
+    }
+
+    private static bool Is<TAttribute>(this CustomAttribute attribute) {
+      return 
+        attribute.Constructor.DeclaringType.Resolve().FullName == 
+        typeof(TAttribute).FullName;
     }
 
   }
