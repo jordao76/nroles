@@ -177,9 +177,9 @@ namespace NRoles.Engine {
       return self.CustomAttributes.Any(ca => ca.Is<TAttribute>());
     }
 
-    private static bool Is<TAttribute>(this CustomAttribute attribute) {
+    public static bool Is<TAttribute>(this CustomAttribute attribute) {
       return 
-        attribute.Constructor.DeclaringType.Resolve().FullName == 
+        attribute.AttributeType.Resolve().FullName == 
         typeof(TAttribute).FullName;
     }
 
