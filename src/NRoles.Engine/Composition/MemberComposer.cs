@@ -141,13 +141,11 @@ namespace NRoles.Engine {
     }
 
     private MethodDefinition AdjustSupercedingMember(ClassMember classMember, IEnumerable<RoleCompositionMember> overrides) {
-      if (overrides.Count() == 0) return null;
+      Tracer.TraceVerbose("Adjust superceding member: {0}", classMember.Definition);
 
       var member = classMember.Definition;
       var method = member as MethodDefinition;
       if (method == null) return null;
-
-      Tracer.TraceVerbose("Adjust superceding member: {0}", classMember.Definition);
 
       MethodDefinition targetMethod = null;
       if (!classMember.IsInherited) {
@@ -159,9 +157,7 @@ namespace NRoles.Engine {
         if (method.IsVirtual && !method.IsFinal) {
           targetMethod.IsNewSlot = false; // the derived method overrides the base method
         }
-        if (!method.IsAbstract) {
-          CreateCodeToCallBaseClassMethod(targetMethod, classMember);
-        }
+        CreateCodeToCallBaseClassMethod(targetMethod, classMember);
         TargetType.Methods.Add(targetMethod);
       }
 
