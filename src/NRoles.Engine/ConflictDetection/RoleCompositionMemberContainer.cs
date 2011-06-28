@@ -129,7 +129,7 @@ namespace NRoles.Engine {
 
       // TODO: DECIDE on the spelling: supersede vs supercede!!
       memberGroup.MarkAsSuperceded(classMember);
-      if (!member.IsSupersede(TargetType.Module)) {
+      if (!member.IsSupersede()) {
         // TODO: add a warning?
       }
     }

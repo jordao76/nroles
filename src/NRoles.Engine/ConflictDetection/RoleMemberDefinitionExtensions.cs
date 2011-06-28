@@ -41,7 +41,7 @@ namespace NRoles.Engine {
       return member.IsMarkedWith<GuardAttribute>();
     }
 
-    public static bool IsSupersede(this IMemberDefinition member, ModuleDefinition module) {
+    public static bool IsSupersede(this IMemberDefinition member) {
       return member.IsMarkedWith<SupersedeAttribute>();
     }
 
