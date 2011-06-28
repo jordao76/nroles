@@ -14,6 +14,7 @@ namespace NRoles.Engine {
 
     public TypeReference RetrieveSelfType(TypeReference selfTypeHost) {
       var definition = selfTypeHost.Resolve();
+      if (definition == null) return null; // the "role" could be a generic parameter
       foreach (var parameter in definition.GenericParameters) {
         if (IsSelfTypeParameter(parameter)) {
           return ((GenericInstanceType)selfTypeHost).GenericArguments[parameter.Position];

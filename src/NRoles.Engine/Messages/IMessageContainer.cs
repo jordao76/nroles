@@ -9,7 +9,7 @@ namespace NRoles.Engine {
   /// </summary>
   /// <seealso cref="Message"/>
   public interface IMessageContainer {
-    
+
     /// <summary>
     /// Messages in the container.
     /// </summary>
@@ -22,7 +22,21 @@ namespace NRoles.Engine {
     void AddMessage(Message message);
 
   }
-  
+
+  /// <summary>
+  /// Canonical <see cref="IMessageContainer"/> implementation.
+  /// </summary>
+  public abstract class RMessageContainer : IMessageContainer, Role {
+    private List<Message> _messages = new List<Message>();
+    public virtual IEnumerable<Message> Messages {
+      get { return _messages; }
+    }
+    public virtual void AddMessage(Message message) {
+      if (message == null) throw new ArgumentNullException("message");
+      _messages.Add(message);
+    }
+  }
+
   /// <summary>
   /// Extension methods for <see cref="IMessageContainer"/>.
   /// </summary>

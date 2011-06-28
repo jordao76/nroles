@@ -6,7 +6,7 @@ using Mono.Cecil;
 
 namespace NRoles.Engine {
 
-  public abstract class RoleCompositionMember : TypeMember, IMessageContainer {
+  public abstract class RoleCompositionMember : TypeMember, IMessageContainer, Does<RMessageContainer> {
 
     public TypeReference Role { get { return Type; } }
 
@@ -61,15 +61,8 @@ namespace NRoles.Engine {
 
     #region Messages
 
-    // TODO: role for message handling! eat your own dogfood!
-
-    List<Message> _messages = new List<Message>();
-    public IEnumerable<Message> Messages {
-      get { return _messages; }
-    }
-    public void AddMessage(Message message) {
-      _messages.Add(message);
-    }
+    public extern IEnumerable<Message> Messages { [Placeholder] get; }
+    [Placeholder] public extern void AddMessage(Message message);
 
     #endregion
 
