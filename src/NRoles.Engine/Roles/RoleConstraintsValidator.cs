@@ -60,6 +60,7 @@ namespace NRoles.Engine {
     }
 
     private void CheckNoInstancesAreCreatedForRole(MutationContext context, OperationResult result) {
+      if (_roleType.IsAbstract) return;
       var codeVisitor = new FindRoleInstantiation(_roleType, context);
       context.CodeVisitorsRegistry.Register(codeVisitor);
     }
