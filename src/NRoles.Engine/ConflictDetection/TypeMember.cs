@@ -38,7 +38,7 @@ namespace NRoles.Engine {
     /// <c>void Add(int p)</c> if the actual class is <c>List&lt;int&gt;</c>.
     /// </summary>
     public IMemberDefinition ResolveContextualDefinition() {
-      return new MemberResolver(Type, Type.Module).ResolveMemberDefinition(Definition);
+      return new MemberResolver(Type).ResolveMemberDefinition(Definition);
     }
 
   }
