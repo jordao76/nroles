@@ -11,7 +11,7 @@ namespace NRoles.Engine {
     /// The class the member belongs to.
     /// </summary>
     public TypeReference Class { get { return Type; } }
-    
+
     /// <summary>
     /// Indicates if the represented member is inherited.
     /// </summary>
