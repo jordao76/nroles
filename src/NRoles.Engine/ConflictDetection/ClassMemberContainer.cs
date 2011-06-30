@@ -19,7 +19,6 @@ namespace NRoles.Engine {
 
     public IEnumerable<ClassMember> Members { get; private set; }
 
-    // TODO: move all this static code!
     private static IEnumerable<ClassMember> RetrieveMembers(TypeDefinition type) {
       var members = new List<ClassMember>();
       var inherited = false;
@@ -42,10 +41,15 @@ namespace NRoles.Engine {
     private static void AddMembers(List<ClassMember> memberSink, IEnumerable<ClassMember> membersToAdd) {
       memberSink.AddRange(
         membersToAdd.
+
+          Where(memberToAdd => 
+            !memberToAdd.IsInherited || IsVisibleInSubclass(memberToAdd.Definition)).
+
           Where(memberToAdd => // O(n^2)
             // TODO: what if the methods are "hide by name"?
-            !memberSink.Any(member => MemberMatcher.IsMatch(member.ResolveContextualDefinition(), memberToAdd.ResolveContextualDefinition()))).
-          Where(memberToAdd => !memberToAdd.IsInherited || IsVisibleInSubclass(memberToAdd.Definition)));
+            !memberSink.Any(memberInSink => MemberMatcher.IsMatch(memberInSink.ResolveContextualDefinition(), memberToAdd.ResolveContextualDefinition())))
+
+      );
     }
 
     private static bool IsVisibleInSubclass(IMemberDefinition member) {
@@ -64,7 +68,6 @@ namespace NRoles.Engine {
       if (property != null) {
         var getterIsVisible = IsVisibleInSubclass(property.GetMethod);
         var setterIsVisible = IsVisibleInSubclass(property.SetMethod);
-        // TODO: others
         return getterIsVisible || setterIsVisible;
       }
 
@@ -73,7 +76,6 @@ namespace NRoles.Engine {
         var adderIsVisible = IsVisibleInSubclass(@event.AddMethod);
         var removerIsVisible = IsVisibleInSubclass(@event.RemoveMethod);
         var invokerIsVisible = IsVisibleInSubclass(@event.InvokeMethod);
-        // TODO: others
         return adderIsVisible || removerIsVisible || invokerIsVisible;
       }
 
