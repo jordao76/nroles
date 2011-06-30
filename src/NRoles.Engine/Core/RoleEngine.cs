@@ -115,9 +115,7 @@ namespace NRoles.Engine {
 
     void MarkAsMutated(AssemblyDefinition assembly) {
       assembly.CustomAttributes.Add(
-        new CustomAttribute(
-          assembly.MainModule.Import(
-            typeof(DontMutateAttribute).GetConstructor(Type.EmptyTypes))));
+        assembly.MainModule.Create<DontMutateAttribute>());
     }
 
     IOperationResult VerifyAssembly(AssemblyDefinition assembly, int timeoutInSeconds) {

@@ -12,14 +12,7 @@ namespace NRoles.Engine {
     //   we solve this by using instance methods, not static method extensions!
 
     public static void MarkAsHidden(this IMemberDefinition member, ModuleDefinition module) {
-      member.CustomAttributes.Add(new CustomAttribute(
-        new MethodReference(".ctor",
-          module.Import(typeof(void))) {
-          DeclaringType = module.Import(typeof(HideAttribute)),
-          HasThis = true,
-          ExplicitThis = false,
-          CallingConvention = MethodCallingConvention.Default 
-        }));
+      member.CustomAttributes.Add(module.Create<HideAttribute>());
     }
 
     public static bool IsHidden(this IMemberDefinition member, ModuleDefinition module) {
@@ -27,14 +20,7 @@ namespace NRoles.Engine {
     }
 
     public static void MarkAsGuarded(this IMemberDefinition member, ModuleDefinition module) {
-      member.CustomAttributes.Add(new CustomAttribute(
-        new MethodReference(".ctor",
-          module.Import(typeof(void))) {
-            DeclaringType = module.Import(typeof(GuardAttribute)),
-            HasThis = true,
-            ExplicitThis = false,
-            CallingConvention = MethodCallingConvention.Default
-          }));
+      member.CustomAttributes.Add(module.Create<GuardAttribute>());
     }
 
     public static bool IsGuarded(this IMemberDefinition member, ModuleDefinition module) {
