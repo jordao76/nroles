@@ -39,7 +39,7 @@ namespace NRoles.Engine {
         method.IsAssembly ||
         method.IsFamilyAndAssembly ||
         method.IsConstructor ||
-        method.IsStatic); // unfortunately, C# doesn't allow calling static methods in interfaces
+        method.IsStatic); // C# doesn't allow calling static methods in interfaces
     }
 
     public static InstructionAndProcessor FindBaseCtorCallInstruction(this MethodDefinition ctor) {
@@ -159,7 +159,7 @@ namespace NRoles.Engine {
 
   }
 
-  static class CustomAttributeProviderExtensions {
+  static class CustomAttributeExtensions {
 
     public static IEnumerable<CustomAttribute> RetrieveAttributes<TAttribute>(this ICustomAttributeProvider self) where TAttribute : Attribute {
       if (self == null) throw new InstanceArgumentNullException();
@@ -181,6 +181,11 @@ namespace NRoles.Engine {
       return 
         attribute.AttributeType.Resolve().FullName == 
         typeof(TAttribute).FullName;
+    }
+
+    public static CustomAttribute Create<TAttribute>(this ModuleDefinition module) {
+      return new CustomAttribute(
+        module.Import(typeof(TAttribute).GetConstructor(Type.EmptyTypes)));
     }
 
   }
