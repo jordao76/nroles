@@ -10,19 +10,12 @@ namespace NRoles.Engine {
   // based on the WHOLE signature (that is, including the return type)
   // TODO: separate conflict detection from member resolution? create an IConflictResolver?
   public class ContributedConflictGroup : ConflictGroupBase { 
-    TypeDefinition _targetType;
     ClassMember _supercedingMember;
     bool _hasConflict;
 
     // TODO: this does not belong here, create another class that associates a ConflictGroup with its implemented member
     public IMemberDefinition ImplementedMember { get; set; }
     public bool DontImplement { get; set; }
-
-    public ContributedConflictGroup(TypeDefinition targetType) {
-      if (targetType == null) throw new ArgumentNullException("targetType");
-      _targetType = targetType;
-      Module = _targetType.Module;
-    }
 
     public IEnumerable<RoleCompositionMember> ResolveOverridingMembers() {
       // the overriding members are the members that are overriden by this group,
@@ -75,7 +68,7 @@ namespace NRoles.Engine {
       // process excluded members
       var resolvedMembers = Members.Where(roleMember => !roleMember.IsExcluded).ToList();
       if (resolvedMembers.Count == 0) {
-        result.AddMessage(Error.AllMembersExcluded(_targetType, ResolveRepresentation()));
+        result.AddMessage(Error.AllMembersExcluded(TargetType, ResolveRepresentation()));
         return result;
       }
 
@@ -99,8 +92,8 @@ namespace NRoles.Engine {
       }
 
       if (resolvedMembers.All(roleMember => roleMember.IsAbstract)) {
-        if (!_targetType.IsRole()) {
-          result.AddMessage(Error.DoesNotImplementAbstractRoleMember(_targetType, ResolveRepresentation()));
+        if (!TargetType.IsRole()) {
+          result.AddMessage(Error.DoesNotImplementAbstractRoleMember(TargetType, ResolveRepresentation()));
         }
         return result;
       }
@@ -109,7 +102,7 @@ namespace NRoles.Engine {
       resolvedMembers = resolvedMembers.Where(roleMember => !roleMember.IsAbstract).ToList();
       if (resolvedMembers.Count > 1) {
         _hasConflict = true;
-        result.AddMessage(Error.Conflict(_targetType, ResolveRepresentation(), resolvedMembers));
+        result.AddMessage(Error.Conflict(TargetType, ResolveRepresentation(), resolvedMembers));
         return result;
       }
 

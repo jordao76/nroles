@@ -7,7 +7,6 @@ using Mono.Cecil;
 namespace NRoles.Engine {
 
   public interface IConflictClassifier {
-    ModuleDefinition Module { get; set; }
     void Classify(IEnumerable<RoleCompositionMember> members);
     IEnumerable<IConflictGroup> Groups { get; }
   }
@@ -15,9 +14,9 @@ namespace NRoles.Engine {
   public class ConflictClassifier<TConflictGroup> : IConflictClassifier
     where TConflictGroup : IConflictGroup, new()
   {
-    List<IConflictGroup> _groups = new List<IConflictGroup>();
-    public IEnumerable<IConflictGroup> Groups { get { return _groups; } }
-    public ModuleDefinition Module { get; set; }
+    List<TConflictGroup> _groups = new List<TConflictGroup>();
+    public IEnumerable<TConflictGroup> Groups { get { return _groups; } }
+    public TypeDefinition TargetType { get; set; }
 
     public void Classify(IEnumerable<RoleCompositionMember> members) {
       if (members == null) throw new ArgumentNullException("members");
@@ -29,7 +28,7 @@ namespace NRoles.Engine {
       var newGroup = false;
       var group = ResolveGroup(member);
       if (group == null) {
-        group = new TConflictGroup() { Module = Module };
+        group = new TConflictGroup() { TargetType = TargetType };
         newGroup = true;
       }
       if (group.Matches(member)) {
@@ -40,9 +39,22 @@ namespace NRoles.Engine {
       }
     }
 
-    public IConflictGroup ResolveGroup(RoleCompositionMember member) {
+    public TConflictGroup ResolveGroup(RoleCompositionMember member) {
       return _groups.SingleOrDefault(group => group.Matches(member));
     }
+
+    void IConflictClassifier.Classify(IEnumerable<RoleCompositionMember> members) {
+      throw new NotImplementedException();
+    }
+
+    IEnumerable<IConflictGroup> IConflictClassifier.Groups {
+      get {
+        foreach (var group in Groups) {
+          yield return group;
+        }
+      }
+    }
+
   }
 
 }
