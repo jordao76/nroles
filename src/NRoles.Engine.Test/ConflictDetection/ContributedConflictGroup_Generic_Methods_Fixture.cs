@@ -25,7 +25,7 @@ namespace NRoles.Engine.Test.ConflictDetection {
     [SetUp]
     public void SetUp() {
       var targetType = GetType(typeof(Empty));
-      _group = new ContributedConflictGroup(targetType);
+      _group = new ContributedConflictGroup { TargetType = targetType };
     }
 
     [Test]

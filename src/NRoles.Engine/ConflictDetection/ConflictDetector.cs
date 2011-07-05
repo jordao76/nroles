@@ -39,32 +39,28 @@ namespace NRoles.Engine {
       return result;
     }
 
-    private void AddRole(TypeReference role) {
+    [Obsolete] private void AddRole(TypeReference role) {
       var memberReader = new MemberReaderVisitor();
       role.Resolve().Accept(memberReader);
       var roleMembers = memberReader.Members.Select(member => MakeRoleMember(role, member));
       AddRoleMembers(role, roleMembers);
     }
 
-    private void AddRoleMembers(TypeReference role, IEnumerable<RoleCompositionMember> members) {
+    [Obsolete] private void AddRoleMembers(TypeReference role, IEnumerable<RoleCompositionMember> members) {
       members.ForEach(member => AddRoleMember(role, member));
     }
 
-    private void AddRoleMember(TypeReference role, RoleCompositionMember member) {
+    [Obsolete] private void AddRoleMember(TypeReference role, RoleCompositionMember member) {
       Container.AddMember(member);
     }
 
-    private RoleCompositionMember MakeRoleMember(TypeReference role, IMemberDefinition member) {
-      if (member.IsInRoleView()) {
+    [Obsolete] private RoleCompositionMember MakeRoleMember(TypeReference role, IMemberDefinition member) {
+      if (role.IsRoleView()) {
         return new RoleViewMember(role, member);
       }
       else {
         return new RoleMember(role, member);
       }
-    }
-
-    public IList<ContributedConflictGroup> RetrieveMemberGroups() {
-      return Container.RetrieveMemberGroups();
     }
 
   }
