@@ -10,11 +10,16 @@ namespace NRoles.Engine {
   /// Base class for conflict grouping strategies.
   /// </summary>
   public abstract class ConflictGroupBase : IConflictGroup {
-    
+
+    /// <summary>
+    /// The target type of the composition.
+    /// </summary>
+    public TypeDefinition TargetType { get; set; }
+
     /// <summary>
     /// The module currently being analyzed.
     /// </summary>
-    public ModuleDefinition Module { get; set; }
+    public ModuleDefinition Module { get { return TargetType.Module; } }
 
     /// <summary>
     /// The members in this group.
