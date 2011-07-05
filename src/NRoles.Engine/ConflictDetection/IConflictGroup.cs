@@ -3,16 +3,16 @@
 namespace NRoles.Engine {
 
   /// <summary>
-  /// Represents a member classification strategy, used to group 
+  /// Represents a member classification strategy single group, used to group 
   /// members that match a certain condition, normally indicating that 
   /// they're in conflict with each other.
   /// </summary>
   public interface IConflictGroup : IConflictDetector {
 
     /// <summary>
-    /// The module currently being analyzed.
+    /// The target type of the composition.
     /// </summary>
-    ModuleDefinition Module { get; set; }
+    TypeDefinition TargetType { get; set; }
 
     /// <summary>
     /// Checks if a member matches the condition to be part of this group.

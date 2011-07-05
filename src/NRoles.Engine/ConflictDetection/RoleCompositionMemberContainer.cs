@@ -9,10 +9,11 @@ namespace NRoles.Engine {
 
   // TODO: refactor this class!!
   //   merge with the other container class?
+  [Obsolete]
   public class RoleCompositionMemberContainer : IMessageContainer {
 
     HashSet<RoleCompositionMember> _members = new HashSet<RoleCompositionMember>();
-    IList<ContributedConflictGroup> _conflictGroups = new List<ContributedConflictGroup>();
+    List<ContributedConflictGroup> _conflictGroups = new List<ContributedConflictGroup>();
 
     public ModuleDefinition Module { get; private set; }
     public TypeDefinition TargetType { get; private set; }
@@ -40,20 +41,24 @@ namespace NRoles.Engine {
     private void ValidateMembers() {
       // runs validating classifications
 
-      Classify<MethodSignatureConflictGroup>();
+      ProcessGroups(Classify<MethodSignatureConflictGroup>());
 
-      Classify<NameConflictGroup>();
+      ProcessGroups(Classify<NameConflictGroup>());
 
       // TODO: other validations
-      //   generic clashes
+      //   generic clashes?
     }
 
-    private void Classify<TConflictGroup>() where TConflictGroup : IConflictGroup, new() {
+    private IEnumerable<TConflictGroup> Classify<TConflictGroup>() where TConflictGroup : IConflictGroup, new() {
       var classifier = new ConflictClassifier<TConflictGroup>();
-      classifier.Module = TargetType.Module;
+      classifier.TargetType = TargetType;
       classifier.Classify(_members);
-      classifier.Groups.ForEach(group => this.Slurp(group.Process()));
       TraceGroups(classifier);
+      return classifier.Groups;
+    }
+
+    private void ProcessGroups<TConflictGroup>(IEnumerable<TConflictGroup> groups) where TConflictGroup : IConflictGroup {
+      groups.ForEach(group => this.Slurp(group.Process()));
     }
 
     private void ProcessMembers() {
@@ -62,21 +67,7 @@ namespace NRoles.Engine {
     }
 
     private void Group() {
-      _members.ForEach(member => GroupMember(member));
-    }
-
-    private void ProcessGroups() {
-      _conflictGroups.ForEach(group => this.Slurp(group.Process()));
-    }
-
-    // TODO: this code is now in ConflictClassifier
-    private void GroupMember(RoleCompositionMember memberToGroup) {
-      var memberGroup = ResolveGroup(memberToGroup);
-      if (memberGroup == null) {
-        memberGroup = new ContributedConflictGroup(TargetType);
-        _conflictGroups.Add(memberGroup);
-      }
-      memberGroup.AddMember(memberToGroup);
+      _conflictGroups.AddRange(Classify<ContributedConflictGroup>());
     }
 
     private void ProcessTargetTypeMembers() {
@@ -132,6 +123,10 @@ namespace NRoles.Engine {
       if (!member.IsSupersede()) {
         // TODO: add a warning?
       }
+    }
+
+    private void ProcessGroups() {
+      ProcessGroups(_conflictGroups);
     }
 
     // TODO: shouldn't the indexer return from the _conflictGroups list?
