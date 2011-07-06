@@ -8,10 +8,10 @@ namespace NRoles.Engine {
 
   public abstract class RoleCompositionMember : TypeMember, IMessageContainer, Does<RMessageContainer> {
 
-    public TypeReference Role { get { return Type; } }
+    public TypeReference Role { get { return base.Type; } }
 
-    protected RoleCompositionMember(TypeReference role, IMemberDefinition memberDefinition) :
-      base(role, memberDefinition) { }
+    protected RoleCompositionMember(TypeReference type, IMemberDefinition memberDefinition) :
+      base(type, memberDefinition) { }
 
     public abstract void Process();
 
@@ -22,10 +22,12 @@ namespace NRoles.Engine {
     //   1. the member itself
     //   2. if the member is excluded, the member that remains (in another role, or in the class itself)
     // ? 3. if the member is aliased, the alias for the member (can be many, but ONLY ONE will implement/override this member)
-    //   4. if the member is overriden, the class member that overrode it
+    //   4. if the member is superceded, the class member that superceded it
     public abstract RoleCompositionMember ResolveImplementingMember();
 
     public abstract IEnumerable<RoleCompositionMember> ResolveOverridingMembers();
+
+    // TODO: push these properties down the inheritance path?
 
     // TODO: IsHidden?
 
