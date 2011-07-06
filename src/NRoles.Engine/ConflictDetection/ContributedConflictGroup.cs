@@ -119,7 +119,7 @@ namespace NRoles.Engine {
 
     public override string ToString() {
       var sb = new StringBuilder();
-      sb.AppendFormat("[Member Group]{1}{2} -> {0}\n",
+      sb.AppendFormat("[Group]{1}{2} -> {0}\n",
         ResolveRepresentation(), 
         _hasConflict ? " [Conflict]" : "",
         IsSuperceded ?  " [Superceded]" : "");

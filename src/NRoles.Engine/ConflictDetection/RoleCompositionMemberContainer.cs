@@ -13,7 +13,7 @@ namespace NRoles.Engine {
   public class RoleCompositionMemberContainer : IMessageContainer {
 
     HashSet<RoleCompositionMember> _members = new HashSet<RoleCompositionMember>();
-    List<ContributedConflictGroup> _conflictGroups = new List<ContributedConflictGroup>();
+    ConflictClassifier<ContributedConflictGroup> _classifier;
 
     public ModuleDefinition Module { get; private set; }
     public TypeDefinition TargetType { get; private set; }
@@ -49,16 +49,16 @@ namespace NRoles.Engine {
       //   generic clashes?
     }
 
-    private IEnumerable<TConflictGroup> Classify<TConflictGroup>() where TConflictGroup : IConflictGroup, new() {
+    private ConflictClassifier<TConflictGroup> Classify<TConflictGroup>() where TConflictGroup : IConflictGroup, new() {
       var classifier = new ConflictClassifier<TConflictGroup>();
       classifier.TargetType = TargetType;
       classifier.Classify(_members);
-      TraceGroups(classifier);
-      return classifier.Groups;
+      classifier.TraceGroups();
+      return classifier;
     }
 
-    private void ProcessGroups<TConflictGroup>(IEnumerable<TConflictGroup> groups) where TConflictGroup : IConflictGroup {
-      groups.ForEach(group => this.Slurp(group.Process()));
+    private void ProcessGroups<TConflictGroup>(ConflictClassifier<TConflictGroup> classifier) where TConflictGroup : IConflictGroup, new() {
+      classifier.Groups.ForEach(group => this.Slurp(group.Process()));
     }
 
     private void ProcessMembers() {
@@ -67,69 +67,26 @@ namespace NRoles.Engine {
     }
 
     private void Group() {
-      _conflictGroups.AddRange(Classify<ContributedConflictGroup>());
+      _classifier = Classify<ContributedConflictGroup>();
     }
 
     private void ProcessTargetTypeMembers() {
+      // TODO: add the target type members to the groups
       var container = new ClassMemberContainer(TargetType);
       container.Members.ForEach(member => ProcessTargetTypeMember(member));
     }
 
     private void ProcessTargetTypeMember(ClassMember classMember) {
-      var member = classMember.Definition;
-
-      var memberGroup = ResolveGroup(classMember.Class, member);
-      if (memberGroup == null) { // no clash
-        if (classMember.IsPlaceholder) {
-          AddMessage(Warning.PlaceholderDoesntMatchAnyRoleMembers(classMember.Definition));
-        }
-        return; 
-      }
-
-      // if there's a match, there's a conflict in the target type itself
-      // it must be explicitly marked as [Supercede] to resolve the conflict,
-      // or else a warning is created
-
-      // TODO: the supercede can have any accessibility?
-      // TODO: what if there's a clash and the supercede is NOT public?
-
-      if (classMember.IsInherited) {
-        // role members supercede base class members. Composition wins over inheritance!
-        var method = member as MethodDefinition;
-        if (method != null && method.IsVirtual && !method.IsFinal) { 
-          // reuses the virtual slot from the base class virtual method
-          memberGroup.ReuseSlot = true;
-        }
-
-        // if all members in the group are abstract, supercede with the inherited member
-        // TODO: what if the inherited member is also abstract?
-        // TODO: very strange to look at the message to decide!
-        var messages = memberGroup.Process().Messages;
-        if (messages.Count() == 1 && messages.First().Number == (int)Error.Code.DoesNotImplementAbstractRoleMember) {
-          // TODO: issue an info message that the role method is being silently superceded?
-          memberGroup.MarkAsSuperceded(classMember);
-        }
-
-        return;
-      }
-
-      if (classMember.IsPlaceholder) {
-        memberGroup.Placeholder = member;
-        return;
-      }
-
-      // TODO: DECIDE on the spelling: supersede vs supercede!!
-      memberGroup.MarkAsSuperceded(classMember);
-      if (!member.IsSupersede()) {
-        // TODO: add a warning?
-      }
+      classMember.Container = this;
+      classMember.Process();
+      this.Slurp(classMember);
     }
 
     private void ProcessGroups() {
-      ProcessGroups(_conflictGroups);
+      ProcessGroups(_classifier);
     }
 
-    // TODO: shouldn't the indexer return from the _conflictGroups list?
+    // TODO: shouldn't the indexer return from the _classifier.Groups list?
     public RoleCompositionMember this[IMemberDefinition memberDefinition] {
       get {
         return _members.Single(roleMember => roleMember.Definition == memberDefinition);
@@ -143,42 +100,26 @@ namespace NRoles.Engine {
     }
 
     public ContributedConflictGroup ResolveGroup(RoleCompositionMember member) {
-      return _conflictGroups.SingleOrDefault(group => group.Matches(member));
+      return _classifier.ResolveGroup(member);
     }
 
-    public IList<ContributedConflictGroup> RetrieveMemberGroups() {
-      return _conflictGroups;
+    public IEnumerable<ContributedConflictGroup> RetrieveMemberGroups() {
+      return _classifier.Groups;
     }
 
     public void Clear() {
       _members.Clear();
-      _conflictGroups.Clear();
+      _classifier = null;
     }
 
     List<Message> _messages = new List<Message>();
     public IEnumerable<Message> Messages {
       get {
-        var messageContainers = _members.Cast<IMessageContainer>();
-        return messageContainers.SelectMany(mc => mc.Messages).Concat(_messages);
+        return _messages.Concat(_members.SelectMany(m => m.Messages));
       }
     }
     public void AddMessage(Message message) {
       _messages.Add(message);
-    }
-
-    internal void TraceGroups(IConflictClassifier classifier) {
-      Tracer.TraceVerbose("[Classifier Groups] : {0}", classifier);
-      classifier.Groups.ForEach(group => {
-        Tracer.TraceVerbose(group.ToString());
-      });
-      Tracer.TraceVerbose("[/Classifier Groups]");
-    }
-    internal void TraceGroups() {
-      Tracer.TraceVerbose("[Member Groups]");
-      _conflictGroups.ForEach(group => {
-        Tracer.TraceVerbose(group.ToString());
-      });
-      Tracer.TraceVerbose("[/Member Groups]");
     }
 
   }
