@@ -32,8 +32,6 @@ namespace NRoles.Engine {
 
       Container.Process();
 
-      Container.TraceGroups();
-
       result.Slurp(Container);
 
       return result;

@@ -43,6 +43,14 @@ namespace NRoles.Engine {
       return _groups.SingleOrDefault(group => group.Matches(member));
     }
 
+    internal void TraceGroups() {
+      Tracer.TraceVerbose("[Groups] : {0}", typeof(TConflictGroup).Name);
+      Groups.ForEach(group => {
+        Tracer.TraceVerbose(group.ToString());
+      });
+      Tracer.TraceVerbose("[/Groups]");
+    }
+
     void IConflictClassifier.Classify(IEnumerable<RoleCompositionMember> members) {
       throw new NotImplementedException();
     }
