@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Mono.Cecil;
+using System.Text.RegularExpressions;
 
 namespace NRoles.Engine {
   
@@ -77,9 +78,18 @@ namespace NRoles.Engine {
 
     // code class
 
-    public static TypeDefinition ResolveCodeClass(this TypeReference role) {
-      var codeClassName = role.Resolve().FullName + "/" + NameProvider.GetCodeClassName(role.Name);
-      return role.Resolve().NestedTypes.Single(nt => nt.FullName == codeClassName);
+    public static TypeDefinition ResolveCodeClass(this TypeReference roleReference) {
+      // TODO: create separate strategies!
+      var role = roleReference.Resolve();
+      var codeClassName = role.FullName + "/" + NameProvider.GetCodeClassName(role.Name);
+      var codeClass = role.NestedTypes.SingleOrDefault(nt => nt.FullName == codeClassName);
+      if (codeClass == null) {
+        // NOTE, TODO: the alternative strategy is only used for testing!
+        codeClassName = new Regex(role.Name + "$").Replace(role.FullName, "") + NameProvider.GetAlternativeCodeClassName(role.Name);
+        codeClass = role.Module.GetType(codeClassName);
+      }
+      if (codeClass == null) throw new InvalidOperationException("No code class for role " + role); // TODO:assert
+      return codeClass;
     }
 
     public static MethodDefinition ResolveCorrespondingMethod(this TypeDefinition role, MethodDefinition roleMethod) {
