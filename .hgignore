@@ -9,6 +9,8 @@ bin/*.pdb
 bin/*.exe
 bin/*.config
 
+src/NRoles.VisualState.xml
+
 syntax: regexp
 
 ^src/.*/bin/.*
