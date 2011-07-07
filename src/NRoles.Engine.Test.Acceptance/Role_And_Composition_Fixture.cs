@@ -21,7 +21,7 @@ namespace NRoles.Engine.Test {
 
     [SetUp]
     public void SetUp() {
-      _assembly = new AssemblyAccessor();
+      _assembly = new AssemblyAccessor(Assembly.GetExecutingAssembly().Location);
     }
 
     [Test, TestCaseSource(typeof(MutationTestCaseFactory<RoleTestAttribute>), "LoadTestCases")]

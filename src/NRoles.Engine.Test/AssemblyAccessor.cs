@@ -10,15 +10,19 @@ using Mono.Cecil.Rocks;
 
 namespace NRoles.Engine.Test {
   
-  // accesses the current assembly
   public class AssemblyAccessor {
 
+    private static string _assemblyLocation;
     private static byte[] _assemblyBytes;
-
     private AssemblyDefinition _assembly;
-    Dictionary<string, TypeDefinition> _types;
+    private Dictionary<string, TypeDefinition> _types;
 
-    public AssemblyAccessor() {
+    public AssemblyAccessor(string assemblyLocation = null) {
+      assemblyLocation = assemblyLocation ?? Assembly.GetExecutingAssembly().Location;
+      if (_assemblyLocation != assemblyLocation) {
+        _assemblyBytes = null;
+        _assemblyLocation = assemblyLocation;
+      }
       if (_assemblyBytes == null) {
         LoadAssemblyBytes();
       }
@@ -27,8 +31,7 @@ namespace NRoles.Engine.Test {
     }
 
     private void LoadAssemblyBytes() {
-      var assemblyLocation = Assembly.GetExecutingAssembly().Location;
-      _assemblyBytes = File.ReadAllBytes(assemblyLocation);
+      _assemblyBytes = File.ReadAllBytes(_assemblyLocation);
     }
 
     private void LoadAssembly() {
