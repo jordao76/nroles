@@ -18,7 +18,6 @@ namespace NRoles.Engine.Test {
     private Dictionary<string, TypeDefinition> _types;
 
     public AssemblyAccessor(string assemblyLocation = null) {
-      // TODO: check performance
       assemblyLocation = assemblyLocation ?? Assembly.GetExecutingAssembly().Location;
       if (_assemblyLocation != assemblyLocation) {
         _assemblyBytes = null;

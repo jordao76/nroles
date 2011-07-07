@@ -748,27 +748,15 @@ namespace NRoles.Engine.Test.Support {
   class Role_With_Matching_Protected_Method_From_Base_Class_Composition : Base_Class_With_Protected_Virtual_Method, Does<Role_With_Matching_Protected_Method_From_Base_Class> { }
 
   [RoleTest(
-    Description = "Role with base method call should call corresponding composition base method.",
-    CompositionType = typeof(Role_With_Base_Method_Call_Composition),
-    TestType = typeof(Role_With_Base_Method_Call_Composition_Test))]
+    CompositionType = typeof(Role_With_Base_Method_Call_Composition))]
   public class Role_With_Base_Method_Call : Role {
     public override string ToString() {
       return "[Role] " + base.ToString(); // base calls are "virtual"
     }
   }
-  public class Base_For_Role_With_Base_Method_Call_Composition {
-    public override string ToString() {
-      return "[Base]";
-    }
+  public class Role_With_Base_Method_Call_Composition : Does<Role_With_Base_Method_Call> {
   }
-  public class Role_With_Base_Method_Call_Composition : Base_For_Role_With_Base_Method_Call_Composition, Does<Role_With_Base_Method_Call> {
-  }
-  public class Role_With_Base_Method_Call_Composition_Test : DynamicTestFixture {
-    public override void Test() {
-      var c = new Role_With_Base_Method_Call_Composition();
-      Assert.AreEqual("[Role] [Base]", c.ToString());
-    }
-  }
+  // TODO: test class!
 
   // TODO: all of the above with conflicts! Ouch!
 
@@ -810,21 +798,22 @@ namespace NRoles.Engine.Test.Support {
     public Role_With_Public_Parameterized_Constructor(string name) { }
   }
 
-  class StaticConstructor { public static bool Called = false; }
+  class StaticConstructor { public static bool Created = false; }
   [RoleTest(
     CompositionType = typeof(Role_With_Static_Constructor_Composition),
     TestType = typeof(Role_With_Static_Constructor_Composition_Test),
     Ignore = true)]
   class Role_With_Static_Constructor : Role {
     static Role_With_Static_Constructor() {
-      StaticConstructor.Called = true;
+      StaticConstructor.Created = true;
     }
   }
   class Role_With_Static_Constructor_Composition : Does<Role_With_Static_Constructor> { }
   class Role_With_Static_Constructor_Composition_Test : DynamicTestFixture {
     public override void Test() {
+      Assert.IsFalse(StaticConstructor.Created, "Created flag should be false before creation");
       new Role_With_Static_Constructor_Composition();
-      Assert.IsTrue(StaticConstructor.Called, "Should have called the static constructor after creation");
+      Assert.IsTrue(StaticConstructor.Created, "Created flag should be true after creation");
     }
   }
 
