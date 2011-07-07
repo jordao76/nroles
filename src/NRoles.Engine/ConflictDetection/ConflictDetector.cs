@@ -15,7 +15,6 @@ namespace NRoles.Engine {
     public ConflictDetector(TypeDefinition targetType) {
       if (targetType == null) throw new ArgumentNullException("targetType");
       _targetType = targetType;
-      Container = new RoleCompositionMemberContainer(targetType);
     }
 
     public ConflictDetectionResult Process(params TypeReference[] roles) {
@@ -24,7 +23,7 @@ namespace NRoles.Engine {
 
     public ConflictDetectionResult Process(List<TypeReference> roles) {
       if (roles == null) throw new ArgumentNullException("roles");
-      Container.Clear(); // this method (Process) should be idempotent
+      Container = new RoleCompositionMemberContainer(_targetType);
 
       var result = new ConflictDetectionResult();
 

@@ -10,6 +10,10 @@ namespace NRoles.Engine {
     public static string GetCodeClassName(string roleName) {
       return "Code";
     }
+    // TODO: use strategy for code class name!
+    public static string GetAlternativeCodeClassName(string roleName) {
+      return roleName + "_Code";
+    }
     public static string GetCodeClassInitMethodName(string roleName) {
       return "Init";
     }
@@ -50,6 +54,7 @@ namespace NRoles.Engine {
     public static string GetSelfTypeParameterName() {
       return "S";
     }
+
   }
 
 }

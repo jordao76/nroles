@@ -22,6 +22,12 @@ namespace NRoles.Engine {
       if (targetType == null) throw new ArgumentNullException();
       TargetType = targetType;
       Module = targetType.Module;
+      //TODO: AddTargetTypeMembers();
+    }
+
+    public void AddTargetTypeMembers() {
+      var container = new ClassMemberContainer(TargetType);
+      container.Members.ForEach(member => AddMember(member));
     }
 
     public void AddMember(RoleCompositionMember typeMember) {
@@ -32,9 +38,9 @@ namespace NRoles.Engine {
 
     public void Process() {
       ValidateMembers();
-      ProcessMembers();
       Group();
-      ProcessTargetTypeMembers();
+      ProcessMembers();
+      ProcessTargetTypeMembers(); // TODO:remove
       ProcessGroups();
     }
 
@@ -105,11 +111,6 @@ namespace NRoles.Engine {
 
     public IEnumerable<ContributedConflictGroup> RetrieveMemberGroups() {
       return _classifier.Groups;
-    }
-
-    public void Clear() {
-      _members.Clear();
-      _classifier = null;
     }
 
     List<Message> _messages = new List<Message>();

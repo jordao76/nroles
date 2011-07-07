@@ -141,11 +141,13 @@ namespace NRoles.Engine {
     }
 
     private MethodDefinition AdjustSupercedingMember(ClassMember classMember, IEnumerable<RoleCompositionMember> overrides) {
-      Tracer.TraceVerbose("Adjust superceding member: {0}", classMember.Definition);
+      if (overrides.Count() == 0) return null;
 
       var member = classMember.Definition;
       var method = member as MethodDefinition;
       if (method == null) return null;
+
+      Tracer.TraceVerbose("Adjust superceding member: {0}", classMember.Definition);
 
       MethodDefinition targetMethod = null;
       if (!classMember.IsInherited) {

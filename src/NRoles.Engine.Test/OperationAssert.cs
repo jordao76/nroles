@@ -23,18 +23,6 @@ namespace NRoles.Engine.Test {
       }
     }
 
-    public static void AssertWarning(this IOperationResult result, Warning.Code warning) {
-      if (!result.Messages.Any(m => m.Number == (int)warning)) {
-        Assert.Fail("Expected warning '{0}' not found.", warning);
-      }
-    }
-
-    public static void AssertError(this IOperationResult result, Error.Code error) {
-      if (!result.Messages.Any(m => m.Number == (int)error)) {
-        Assert.Fail("Expected error '{0}' not found.", error);
-      }
-    }
-    
   }
 
 }
