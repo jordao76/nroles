@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRoles.Engine.Test.Support"
 		{385C3B5D-1624-4C30-8926-6263215E028F} = {385C3B5D-1624-4C30-8926-6263215E028F}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NRoles.Engine.Test.Acceptance", "NRoles.Engine.Test.Acceptance\NRoles.Engine.Test.Acceptance.csproj", "{C4C4A113-EDB4-4D06-B259-009E6699C0BE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -74,6 +76,16 @@ Global
 		{BA0CCFE5-8769-44F9-8E2C-D8EEAA8AA678}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{BA0CCFE5-8769-44F9-8E2C-D8EEAA8AA678}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{BA0CCFE5-8769-44F9-8E2C-D8EEAA8AA678}.Release|x86.ActiveCfg = Release|Any CPU
+		{C4C4A113-EDB4-4D06-B259-009E6699C0BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4C4A113-EDB4-4D06-B259-009E6699C0BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4C4A113-EDB4-4D06-B259-009E6699C0BE}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{C4C4A113-EDB4-4D06-B259-009E6699C0BE}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{C4C4A113-EDB4-4D06-B259-009E6699C0BE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C4C4A113-EDB4-4D06-B259-009E6699C0BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4C4A113-EDB4-4D06-B259-009E6699C0BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4C4A113-EDB4-4D06-B259-009E6699C0BE}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{C4C4A113-EDB4-4D06-B259-009E6699C0BE}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{C4C4A113-EDB4-4D06-B259-009E6699C0BE}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
