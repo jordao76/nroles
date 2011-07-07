@@ -69,6 +69,7 @@
     <Compile Include="MethodMatcherFixture.cs" />
     <Compile Include="MutationTestAttribute.cs" />
     <Compile Include="ReflectionAssert.cs" />
+    <Compile Include="OperationAssert.cs" />
     <Compile Include="RoleTestAttribute.cs" />
     <Compile Include="Role_And_Composition_Fixture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
