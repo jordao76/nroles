@@ -146,7 +146,7 @@ namespace NRoles.Engine {
       }
 
       private MethodDefinition ExtractMethod(MethodDefinition sourceMethod) {
-        if (sourceMethod.IsAbstract) { return null; }
+        if (sourceMethod.IsAbstract) return null;
 
         Tracer.TraceVerbose("Extract method: {0}", sourceMethod.ToString());
 
