@@ -798,22 +798,21 @@ namespace NRoles.Engine.Test.Support {
     public Role_With_Public_Parameterized_Constructor(string name) { }
   }
 
-  class StaticConstructor { public static bool Created = false; }
+  class StaticConstructor { public static bool Called = false; }
   [RoleTest(
     CompositionType = typeof(Role_With_Static_Constructor_Composition),
     TestType = typeof(Role_With_Static_Constructor_Composition_Test),
     Ignore = true)]
   class Role_With_Static_Constructor : Role {
     static Role_With_Static_Constructor() {
-      StaticConstructor.Created = true;
+      StaticConstructor.Called = true;
     }
   }
   class Role_With_Static_Constructor_Composition : Does<Role_With_Static_Constructor> { }
   class Role_With_Static_Constructor_Composition_Test : DynamicTestFixture {
     public override void Test() {
-      Assert.IsFalse(StaticConstructor.Created, "Created flag should be false before creation");
       new Role_With_Static_Constructor_Composition();
-      Assert.IsTrue(StaticConstructor.Created, "Created flag should be true after creation");
+      Assert.IsTrue(StaticConstructor.Called, "Should have called the static constructor after creation");
     }
   }
 
