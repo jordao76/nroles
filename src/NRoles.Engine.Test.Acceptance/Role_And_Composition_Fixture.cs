@@ -79,10 +79,10 @@ namespace NRoles.Engine.Test {
       var expectedError = testParameters != null && testParameters.ExpectedRoleError != 0;
       var expectedWarning = testParameters != null && testParameters.ExpectedRoleWarning != 0;
       if (expectedError) {
-        AssertError(testParameters.ExpectedRoleError, result);
+        result.AssertError(testParameters.ExpectedRoleError);
       }
       if (expectedWarning) {
-        AssertWarning(testParameters.ExpectedRoleWarning, result);
+        result.AssertWarning(testParameters.ExpectedRoleWarning);
       }
       Assert.AreEqual(!expectedError, result.Success);
     }
@@ -111,24 +111,12 @@ namespace NRoles.Engine.Test {
       var expectedError = testParameters.ExpectedCompositionError != 0;
       var expectedWarning = testParameters.ExpectedCompositionWarning != 0;
       if (expectedError) {
-        AssertError(testParameters.ExpectedCompositionError, result);
+        result.AssertError(testParameters.ExpectedCompositionError);
       }
       if (expectedWarning) {
-        AssertWarning(testParameters.ExpectedCompositionWarning, result);
+        result.AssertWarning(testParameters.ExpectedCompositionWarning);
       }
       Assert.AreEqual(!expectedError, result.Success);
-    }
-
-    private static void AssertWarning(Warning.Code warning, IMessageContainer container) {
-      if (!container.Messages.Any(m => m.Number == (int)warning)) {
-        Assert.Fail("Expected warning '{0}' not found.", warning);
-      }
-    }
-
-    private static void AssertError(Error.Code error, IMessageContainer container) {
-      if (!container.Messages.Any(m => m.Number == (int)error)) {
-        Assert.Fail("Expected error '{0}' not found.", error);
-      }
     }
 
     private void Run_Global_Checks(MutationTestAttribute testParameters) {
@@ -164,10 +152,6 @@ namespace NRoles.Engine.Test {
     }
 
     private void Assert_Assembly(string assemblyPath) {
-      // debug!!
-      //((AssemblyDefinition)_assembly).Write(@"C:\Temp\NRoles.mutated.dll");
-      //Console.WriteLine(@"SAVED ASSEMBLY: C:\Temp\NRoles.mutated.dll");
-
       AssemblyAssert.Verify(assemblyPath);
     }
 

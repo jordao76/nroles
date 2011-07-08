@@ -10,6 +10,7 @@ bin/*.exe
 bin/*.config
 
 src/NRoles.VisualState.xml
+src/TestResult.xml
 
 syntax: regexp
 
