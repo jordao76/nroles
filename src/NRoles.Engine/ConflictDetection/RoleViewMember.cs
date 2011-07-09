@@ -91,6 +91,8 @@ namespace NRoles.Engine {
       return _implementingMemberDefinition;
     }
 
+    public override bool IsForeign { get { return true; } }
+
     public override bool IsAbstract {
       get { return false; }
     }

@@ -11,8 +11,8 @@ namespace NRoles.Engine {
     public RoleMember(TypeReference role, IMemberDefinition member) :
       base(role, member) { }
 
-    public override void Process(MemberConflictResolver resolver) {
-      resolver.Process(this);
+    public override void Process() {
+      // no-op
     }
 
     public override bool IsForeign { get { return true; } }
@@ -20,8 +20,7 @@ namespace NRoles.Engine {
     public override bool IsAbstract {
       get {
         // abstractedness is only applicable to method definitions
-        return 
-          (Definition is MethodDefinition) &&
+        return (Definition is MethodDefinition) &&
           Role.Resolve().IsAbstract((MethodDefinition)Definition);
       }
     }

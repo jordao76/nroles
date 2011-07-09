@@ -50,7 +50,10 @@ namespace NRoles.Engine {
       var member = Definition;
 
       var memberGroup = Container.ResolveGroup(Class, member);
-      if (memberGroup == null) {//TODO || memberGroup.Members.Count == 1) { // no clash
+      if (memberGroup.Members.Count == 1) { // no clash
+        if (memberGroup.Members.First() != this) {
+          throw new InvalidOperationException(); // TODO: Assert!
+        }
         if (IsPlaceholder) {
           AddMessage(Warning.PlaceholderDoesntMatchAnyRoleMembers(Definition));
         }
@@ -98,6 +101,8 @@ namespace NRoles.Engine {
       }
     }
 
+    public override bool IsForeign { get { return false; } }
+
     public override bool IsAbstract {
       get {
         return Definition is MethodDefinition && ((MethodDefinition)Definition).IsAbstract; 
@@ -109,7 +114,7 @@ namespace NRoles.Engine {
     }
 
     public override IEnumerable<RoleCompositionMember> ResolveOverridingMembers() {
-      return new RoleCompositionMember[] { }; // TODO: look into the Container?
+      return new RoleCompositionMember[] { };
     }
 
   }
