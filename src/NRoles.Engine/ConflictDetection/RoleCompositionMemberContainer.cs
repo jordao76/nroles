@@ -22,7 +22,7 @@ namespace NRoles.Engine {
       if (targetType == null) throw new ArgumentNullException();
       TargetType = targetType;
       Module = targetType.Module;
-      //TODO: AddTargetTypeMembers();
+      AddTargetTypeMembers();
     }
 
     public void AddTargetTypeMembers() {
@@ -40,7 +40,6 @@ namespace NRoles.Engine {
       ValidateMembers();
       Group();
       ProcessMembers();
-      ProcessTargetTypeMembers(); // TODO:remove
       ProcessGroups();
     }
 
@@ -74,18 +73,6 @@ namespace NRoles.Engine {
 
     private void Group() {
       _classifier = Classify<ContributedConflictGroup>();
-    }
-
-    private void ProcessTargetTypeMembers() {
-      // TODO: add the target type members to the groups
-      var container = new ClassMemberContainer(TargetType);
-      container.Members.ForEach(member => ProcessTargetTypeMember(member));
-    }
-
-    private void ProcessTargetTypeMember(ClassMember classMember) {
-      classMember.Container = this;
-      classMember.Process();
-      this.Slurp(classMember);
     }
 
     private void ProcessGroups() {

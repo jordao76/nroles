@@ -15,6 +15,8 @@ namespace NRoles.Engine {
       // no-op
     }
 
+    public override bool IsForeign { get { return true; } }
+
     public override bool IsAbstract {
       get {
         // abstractedness is only applicable to method definitions

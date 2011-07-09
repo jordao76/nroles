@@ -10,15 +10,14 @@ namespace NRoles.Engine {
   /// Groups members based on naming conflicts.
   /// </summary>
   /// <remarks>
-  /// Naming conflicts can only happen if two members that are not overloads share the same name.
-  /// This is true for non-methods that share the same name with methods or with other non-methods.
+  /// Naming conflicts can only happen if two or more members of different types share the same name.
   /// For example, the following members all have naming conflicts:
   /// <code>
   /// public class NamingConflicts {
-  ///   public string Member { get; set; }
-  ///   public event EventHandler Member;
-  ///   private bool Member;
-  ///   protected string Member(int param);
+  ///   public string Member { get; set; } // property
+  ///   public event EventHandler Member; // event
+  ///   private bool Member; // field
+  ///   protected string Member(int param); // method
   /// }
   /// </code>
   /// </remarks>
@@ -42,10 +41,9 @@ namespace NRoles.Engine {
 
     private bool HasConflict() {
       if (Members.Count <= 1) return false;
-      // a name conflict exists if at least one member is NOT a method
-      // methods are accounted for in other classifiers
-      // TODO: take aliasing and exclusion into account!
-      return Members.Any(member => !(member.Definition is MethodDefinition));
+      // TODO: take aliasing, exclusion and hiding into account!
+      var firstType = Members[0].Definition.GetType();
+      return Members.Skip(1).Any(member => member.Definition.GetType() != firstType);
     }
 
   }

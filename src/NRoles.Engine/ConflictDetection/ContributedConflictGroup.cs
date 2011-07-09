@@ -19,11 +19,11 @@ namespace NRoles.Engine {
 
     public IEnumerable<RoleCompositionMember> ResolveOverridingMembers() {
       // the overriding members are the members that are overriden by this group,
-      // they include all the group members that are not aliased (the aliased ones are overridden on other groups)
-      // plus the implementing member of the resolved member
+      // they include all the foreign group members that are not aliased (the aliased ones are overridden on other groups)
+      // plus the overriding members of the resolved member
 
       return Members.
-        Where(roleMember => !roleMember.IsAliased).
+        Where(roleMember => roleMember.IsForeign && !roleMember.IsAliased).
         Concat(
           ResolvedMember != null ? 
             ResolvedMember.ResolveOverridingMembers() :
@@ -61,12 +61,17 @@ namespace NRoles.Engine {
 
       var result = new ConflictDetectionResult();
 
-      if (IsSuperceded) return result; // TODO: process warnings? views here are superfluous since the member is overriden!
+      if (IsSuperceded) {
+        return result; // TODO: process warnings? views here are superfluous since the member is overriden!
+      }
 
       // to solve the conflict, EXACTLY one non-abstract member must remain in the list
 
+      // only consider foreign members
+      var resolvedMembers = Members.Where(roleMember => roleMember.IsForeign).ToList();
+
       // process excluded members
-      var resolvedMembers = Members.Where(roleMember => !roleMember.IsExcluded).ToList();
+      resolvedMembers = resolvedMembers.Where(roleMember => !roleMember.IsExcluded).ToList();
       if (resolvedMembers.Count == 0) {
         result.AddMessage(Error.AllMembersExcluded(TargetType, ResolveRepresentation()));
         return result;

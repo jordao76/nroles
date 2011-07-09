@@ -23,6 +23,14 @@ namespace NRoles.Engine {
       return self;
     }
 
+    public static IEnumerable<T> Trace<T>(this IEnumerable<T> self, string title = null) {
+      if (self == null) throw new InstanceArgumentNullException();
+      if (title != null) Tracer.TraceVerbose(title);
+      self.ForEach(item => Tracer.TraceVerbose(item.ToString()));
+      if (title != null) Tracer.TraceVerbose("/" + title);
+      return self;
+    }
+
   }
 
 }
