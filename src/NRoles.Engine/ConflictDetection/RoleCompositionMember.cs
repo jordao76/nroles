@@ -8,6 +8,7 @@ namespace NRoles.Engine {
 
   public abstract class RoleCompositionMember : TypeMember, IMessageContainer, Does<RMessageContainer> {
 
+    [Obsolete("Use Type")]
     public TypeReference Role { get { return base.Type; } }
 
     protected RoleCompositionMember(TypeReference type, IMemberDefinition memberDefinition) :
@@ -17,6 +18,11 @@ namespace NRoles.Engine {
 
     // TODO: move this to the RoleViewMember?
     public RoleCompositionMemberContainer Container { get; internal set; }
+
+    /// <summary>
+    /// A foreign member is a member that comes from outside the <see cref="Type"/>.
+    /// </summary>
+    public abstract bool IsForeign { get; }
 
     // the implementing member can be:
     //   1. the member itself
