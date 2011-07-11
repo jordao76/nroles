@@ -47,7 +47,7 @@ namespace NRoles.Engine {
       // the implementing member is the role member that this role view member refers to
       var implementingMemberDefinition = ResolveImplementingMemberDefinition();
       if (implementingMemberDefinition == null) return null;
-      return Container[implementingMemberDefinition];
+      return Container.ResolveMember(implementingMemberDefinition);
     }
 
     private IMemberDefinition _implementingMemberDefinition;

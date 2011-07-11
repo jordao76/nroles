@@ -79,16 +79,12 @@ namespace NRoles.Engine {
       ProcessGroups(_classifier);
     }
 
-    // TODO: shouldn't the indexer return from the _classifier.Groups list?
-    public RoleCompositionMember this[IMemberDefinition memberDefinition] {
-      get {
-        return _members.Single(roleMember => roleMember.Definition == memberDefinition);
-      }
+    public RoleCompositionMember ResolveMember(IMemberDefinition memberDefinition) {
+      return _members.Single(roleMember => roleMember.Definition == memberDefinition);
     }
 
     public ContributedConflictGroup ResolveGroup(TypeReference type, IMemberDefinition memberDefinition) {
-      type = type ?? memberDefinition.DeclaringType;
-      var member = new RoleMember(type, memberDefinition); // TODO: RoleMember?
+      var member = new RoleMember(type, memberDefinition);
       return ResolveGroup(member);
     }
 

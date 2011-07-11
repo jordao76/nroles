@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Mono.Cecil;
-using System;
 
 namespace NRoles.Engine {
 
@@ -49,11 +49,9 @@ namespace NRoles.Engine {
     public override void Process() {
       var member = Definition;
 
-      var memberGroup = Container.ResolveGroup(Class, member);
+      var memberGroup = Container.ResolveGroup(this);
       if (memberGroup.Members.Count == 1) { // no clash
-        if (memberGroup.Members.First() != this) {
-          throw new InvalidOperationException(); // TODO: Assert!
-        }
+        Tracer.Assert(memberGroup.Members.First() == this);
         if (IsPlaceholder) {
           AddMessage(Warning.PlaceholderDoesntMatchAnyRoleMembers(Definition));
         }
@@ -76,7 +74,7 @@ namespace NRoles.Engine {
 
           // if all members in the group are abstract, supercede with the inherited member
           // TODO: what if the inherited member is also abstract?
-          // TODO: very strange to look at the message to decide!
+          // TODO: it's very strange to have to look at the message to decide!
           var messages = memberGroup.Process().Messages;
           if (messages.Count() == 1 && messages.First().Number == (int)Error.Code.DoesNotImplementAbstractRoleMember) {
             // TODO: issue an info message that the role method is being silently superceded?
