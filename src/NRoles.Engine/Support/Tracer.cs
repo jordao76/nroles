@@ -12,8 +12,8 @@ namespace NRoles.Engine {
       Trace.WriteLineIf(MutatorSwitch.Level == TraceLevel.Verbose, string.Format(message, parameters));
     }
     [Conditional("TRACE")]
-    public static void Assert(bool condition) {
-      if (!condition) throw new Exception(); // TODO: create an assert exception!
+    public static void Assert(bool condition = false) {
+      if (!condition) throw new InvalidProgramException();
     }
 
     // TODO: remove these methods?
