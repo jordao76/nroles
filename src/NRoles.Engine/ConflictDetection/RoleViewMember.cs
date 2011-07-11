@@ -12,24 +12,24 @@ namespace NRoles.Engine {
       base(role, member) { }
 
     public override void Process() {
-      var implementingMemberDefinition = ResolveImplementingMemberDefinition();
+      var implementingMember = ResolveImplementingMember();
       if (this.HasError()) return;
 
       string aliasing;
-      if (Definition.IsAliasing(out aliasing, Container.Module)) {
+      if (Definition.IsAliasing(out aliasing, Type.Module)) {
         // inform the immediate implementing member that it's been aliased
-        if (Container[implementingMemberDefinition].IsAliased) {
-          AddMessage(Error.RoleMemberAliasedAgain(Role, Container[implementingMemberDefinition].Role, Container[implementingMemberDefinition]));
+        if (implementingMember.IsAliased) {
+          AddMessage(Error.RoleMemberAliasedAgain(Role, implementingMember.Role, implementingMember));
         }
-        Container[implementingMemberDefinition].MarkAsAliased();
+        implementingMember.MarkAsAliased();
       }
 
-      if (Definition.IsExcluded(Container.Module)) {
+      if (Definition.IsExcluded(Type.Module)) {
         // inform the implementing member that it's been excluded
-        if (Container[implementingMemberDefinition].IsExcluded) {
-          AddMessage(Warning.RoleMemberExcludedAgain(Role, Container[implementingMemberDefinition].Role, Container[implementingMemberDefinition]));
+        if (implementingMember.IsExcluded) {
+          AddMessage(Warning.RoleMemberExcludedAgain(Role, implementingMember.Role, implementingMember));
         }
-        Container[implementingMemberDefinition].MarkAsExcluded();
+        implementingMember.MarkAsExcluded();
         // the role view member is also excluded
         MarkAsExcluded();
       }
@@ -38,9 +38,9 @@ namespace NRoles.Engine {
 
     public override IEnumerable<RoleCompositionMember> ResolveOverridingMembers() {
       // the overriding members are this role view member and the role member it refers to
-      var implementingMemberDefinition = ResolveImplementingMemberDefinition();
-      if (implementingMemberDefinition == null) throw new InvalidOperationException();
-      return new RoleCompositionMember[] { this, Container[implementingMemberDefinition] };
+      var implementingMember = ResolveImplementingMember();
+      if (implementingMember == null) throw new InvalidOperationException();
+      return new RoleCompositionMember[] { this, implementingMember };
     }
 
     public override RoleCompositionMember ResolveImplementingMember() {
@@ -80,7 +80,7 @@ namespace NRoles.Engine {
       var roleForView = allRolesForView.Single();
 
       _implementingMemberDefinition =
-        Definition.ResolveDefinitionInRole(roleForView, Container.Module);
+        Definition.ResolveDefinitionInRole(roleForView, Type.Module);
 
       if (_implementingMemberDefinition == null) {
         // TODO: if it's being aliased, use the Aliasing name instead of the Definition name
@@ -98,7 +98,7 @@ namespace NRoles.Engine {
     }
 
     private List<TypeReference> RetrieveAllRolesForView(TypeDefinition roleView) {
-      var roleViewTypeDefinition = Container.Module.Import(typeof(RoleView<>)).Resolve();
+      var roleViewTypeDefinition = Type.Module.Import(typeof(RoleView<>)).Resolve();
       var allRolesForView = roleView.Interfaces
         .Where(interfaceTypeReference => interfaceTypeReference.Resolve() == roleViewTypeDefinition)
         .Select(roleViewTypeReference => ((GenericInstanceType)roleViewTypeReference).GenericArguments[0])
