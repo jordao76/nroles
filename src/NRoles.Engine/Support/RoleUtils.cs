@@ -17,10 +17,13 @@ namespace NRoles.Engine {
     public static bool IsRoleView(this TypeReference role) {
       var interfaces = role.Resolve().Interfaces;
       if (interfaces != null && interfaces.Count > 0) {
-        return interfaces
-          .Any(type => type.Resolve().FullName == typeof(RoleView<>).FullName);
+        return interfaces.Any(IsRoleViewInterface);
         }
       return false;
+    }
+
+    public static bool IsRoleViewInterface(this TypeReference interfaceReference) {
+      return interfaceReference.Resolve().FullName == typeof(RoleView<>).FullName;
     }
 
     #region Retrieve roles
