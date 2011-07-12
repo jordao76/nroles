@@ -6,7 +6,7 @@ using Mono.Cecil;
 
 namespace NRoles.Engine {
 
-  // a group for ONE contributed member to the target class from one or more role members,
+  // a group for ONE contributed member to the target class from one or more role-composition members,
   // based on the WHOLE signature (that is, including the return type)
   // TODO: separate conflict detection from member resolution? create an IConflictResolver?
   public class ContributedConflictGroup : ConflictGroupBase { 

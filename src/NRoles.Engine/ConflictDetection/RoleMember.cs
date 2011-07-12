@@ -20,7 +20,8 @@ namespace NRoles.Engine {
     public override bool IsAbstract {
       get {
         // abstractedness is only applicable to method definitions
-        return (Definition is MethodDefinition) &&
+        return 
+          (Definition is MethodDefinition) &&
           Role.Resolve().IsAbstract((MethodDefinition)Definition);
       }
     }
