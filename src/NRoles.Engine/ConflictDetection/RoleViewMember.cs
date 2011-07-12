@@ -11,6 +11,14 @@ namespace NRoles.Engine {
     public RoleViewMember(TypeReference role, IMemberDefinition member) :
       base(role, member) { }
 
+    public override bool IsAbstract {
+      get { return false; }
+    }
+
+    public override bool IsForeign {
+      get { return true; }
+    }
+
     public override void Process() {
       var implementingMember = ResolveImplementingMember();
       if (this.HasError()) return;
@@ -39,7 +47,7 @@ namespace NRoles.Engine {
     public override IEnumerable<RoleCompositionMember> ResolveOverridingMembers() {
       // the overriding members are this role view member and the role member it refers to
       var implementingMember = ResolveImplementingMember();
-      if (implementingMember == null) throw new InvalidOperationException();
+      Tracer.Assert(implementingMember != null);
       return new RoleCompositionMember[] { this, implementingMember };
     }
 
@@ -69,9 +77,7 @@ namespace NRoles.Engine {
 
       var allRolesForView = RetrieveAllRolesForView(roleView);
 
-      if (allRolesForView.Count == 0) {
-        throw new InvalidOperationException(); // TODO: AssertionException!
-      }
+      Tracer.Assert(allRolesForView.Count > 0);
       if (allRolesForView.Count > 1) { 
         AddMessage(Error.RoleViewWithMultipleRoles(roleView, allRolesForView));
         return null;
@@ -83,7 +89,7 @@ namespace NRoles.Engine {
         Definition.ResolveDefinitionInRole(roleForView, Type.Module);
 
       if (_implementingMemberDefinition == null) {
-        // TODO: if it's being aliased, use the Aliasing name instead of the Definition name
+        // TODO: if it's being aliased, use the Aliasing name on the error message
         AddMessage(Error.RoleViewMemberNotFoundInRole(roleForView, Definition));
         return null;
       }
@@ -91,16 +97,9 @@ namespace NRoles.Engine {
       return _implementingMemberDefinition;
     }
 
-    public override bool IsForeign { get { return true; } }
-
-    public override bool IsAbstract {
-      get { return false; }
-    }
-
     private List<TypeReference> RetrieveAllRolesForView(TypeDefinition roleView) {
-      var roleViewTypeDefinition = Type.Module.Import(typeof(RoleView<>)).Resolve();
       var allRolesForView = roleView.Interfaces
-        .Where(interfaceTypeReference => interfaceTypeReference.Resolve() == roleViewTypeDefinition)
+        .Where(interfaceTypeReference => interfaceTypeReference.IsRoleViewInterface())
         .Select(roleViewTypeReference => ((GenericInstanceType)roleViewTypeReference).GenericArguments[0])
         .ToList();
       return allRolesForView;
