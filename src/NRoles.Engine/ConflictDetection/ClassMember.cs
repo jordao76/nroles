@@ -64,58 +64,11 @@ namespace NRoles.Engine {
       get { return false; } 
     }
 
-    public override void Process() {
-      var member = Definition;
-
-      var memberGroup = Container.ResolveGroup(this);
-      if (memberGroup.Members.Count == 1) { // no clash
-        Tracer.Assert(memberGroup.Members.First() == this);
-        if (IsPlaceholder) {
-          AddMessage(Warning.PlaceholderDoesntMatchAnyRoleMembers(Definition));
-        }
-      }
-      else {
-        // if there's a match with other members, there's a conflict in the target type itself
-        // it must be explicitly marked as [Supercede] to resolve the conflict,
-        // or else a warning is created
-
-        // TODO: the supercede can have any accessibility?
-        // TODO: what if there's a clash and the supercede is NOT public?
-
-        if (IsInherited) {
-          // role members supercede base class members. Composition wins over inheritance!
-          var method = member as MethodDefinition;
-          if (method != null && method.IsVirtual && !method.IsFinal) {
-            // reuses the virtual slot from the base class virtual method
-            memberGroup.ReuseSlot = true;
-          }
-
-          // if all members in the group are abstract, supercede with the inherited member
-          // TODO: what if the inherited member is also abstract?
-          // TODO: it's very strange to have to look at the message to decide!
-          var messages = memberGroup.Process().Messages;
-          if (messages.Count() == 1 && messages.First().Number == (int)Error.Code.DoesNotImplementAbstractRoleMember) {
-            // TODO: issue an info message that the role method is being silently superceded?
-            memberGroup.MarkAsSuperceded(this);
-          }
-
-          return;
-        }
-
-        if (IsPlaceholder) {
-          memberGroup.Placeholder = member;
-          return;
-        }
-      }
-
-      if (memberGroup == null) return;
-
-      // TODO: DECIDE on the spelling: supersede vs supercede!!
-      memberGroup.MarkAsSuperceded(this);
-      if (!member.IsSupersede()) {
-        // TODO: add a warning?
-      }
+    public override void Process(MemberConflictResolver resolver) {
+      resolver.Process(this);
     }
+
+    // TODO: the next 2 methods are not relevant for this class
 
     public override RoleCompositionMember ResolveImplementingMember() {
       return this; // TODO: what if it's a placeholder?

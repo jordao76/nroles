@@ -19,31 +19,10 @@ namespace NRoles.Engine {
       get { return true; }
     }
 
-    public override void Process() {
-      var implementingMember = ResolveImplementingMember();
-      if (this.HasError()) return;
-
-      string aliasing;
-      if (Definition.IsAliasing(out aliasing, Type.Module)) {
-        // inform the immediate implementing member that it's been aliased
-        if (implementingMember.IsAliased) {
-          AddMessage(Error.RoleMemberAliasedAgain(Role, implementingMember.Role, implementingMember));
-        }
-        implementingMember.MarkAsAliased();
-      }
-
-      if (Definition.IsExcluded(Type.Module)) {
-        // inform the implementing member that it's been excluded
-        if (implementingMember.IsExcluded) {
-          AddMessage(Warning.RoleMemberExcludedAgain(Role, implementingMember.Role, implementingMember));
-        }
-        implementingMember.MarkAsExcluded();
-        // the role view member is also excluded
-        MarkAsExcluded();
-      }
-      // TODO: Hidden?
+    public override void Process(MemberConflictResolver resolver) {
+      resolver.Process(this);
     }
-
+    
     public override IEnumerable<RoleCompositionMember> ResolveOverridingMembers() {
       // the overriding members are this role view member and the role member it refers to
       var implementingMember = ResolveImplementingMember();
@@ -86,7 +65,7 @@ namespace NRoles.Engine {
       var roleForView = allRolesForView.Single();
 
       _implementingMemberDefinition =
-        Definition.ResolveDefinitionInRole(roleForView, Type.Module);
+        Definition.ResolveDefinitionInRole(roleForView);
 
       if (_implementingMemberDefinition == null) {
         // TODO: if it's being aliased, use the Aliasing name on the error message

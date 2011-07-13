@@ -60,6 +60,7 @@
     <Compile Include="Composition\SelfType\Composition_Self_Types_Checker_Fixture.cs" />
     <Compile Include="Composition\SelfType\Retrieve_Self_Types_From_Roles_Fixture.cs" />
     <Compile Include="Composition\SelfType\Retrieve_Single_Self_Type_Fixture.cs" />
+    <Compile Include="ConflictDetection\ClassMemberTests\ClassMemberFixture.cs" />
     <Compile Include="ConflictDetection\ConflictDetectorFixture.cs" />
     <Compile Include="ConflictDetection\ContributedConflictGroup_Generic_Methods_Fixture.cs" />
     <Compile Include="ConflictDetection\MethodSignatureConflictGroup_Simple_Property_Fixture.cs" />
