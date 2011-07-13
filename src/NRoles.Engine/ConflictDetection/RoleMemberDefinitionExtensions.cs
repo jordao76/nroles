@@ -77,8 +77,8 @@ namespace NRoles.Engine {
       return roleType.IsRoleView();
     }
 
-    public static IMemberDefinition ResolveDefinitionInRole(this IMemberDefinition member, TypeReference type) {
-      var finder = new MemberFinder(type);
+    public static IMemberDefinition ResolveDefinitionInRole(this IMemberDefinition member, TypeReference role) {
+      var finder = new MemberFinder(role);
       string aliasing;
       if (member.IsAliasing(out aliasing)) {
         return finder.FindMatchFor(member, aliasing);

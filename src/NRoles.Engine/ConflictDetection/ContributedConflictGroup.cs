@@ -10,7 +10,7 @@ namespace NRoles.Engine {
   // based on the WHOLE signature (that is, including the return type)
   public class ContributedConflictGroup : ConflictGroupBase { 
     ClassMember _supercedingMember;
-    bool _hasConflict;
+    public bool HasConflict { get; internal set; }
 
     public IMemberDefinition ImplementedMember { get; set; }
     public bool DontImplement { get; set; }
@@ -25,7 +25,7 @@ namespace NRoles.Engine {
         Concat(
           ResolvedMember != null ? 
             ResolvedMember.ResolveOverridingMembers() :
-            Enumerable.Empty<RoleCompositionMember>()).
+            new RoleCompositionMember[] { }).
         Distinct();
     }
 
@@ -49,74 +49,17 @@ namespace NRoles.Engine {
 
     public IMemberDefinition Placeholder { get; set; }
 
-    public bool IsBaseMethod { get; private set; }
+    public bool IsBaseMethod { get; internal set; }
 
     public bool ReuseSlot { get; set; }
 
     public override ConflictDetectionResult Process() {
-      ResolvedMember = null;
-      _hasConflict = false;
-
-      var result = new ConflictDetectionResult();
-
-      if (IsSuperceded) {
-        return result; // TODO: process warnings? views here are superfluous since the member is overriden!
-      }
-
-      // to solve the conflict, EXACTLY one non-abstract member must remain in the list
-
-      // only consider foreign members
-      var resolvedMembers = Members.Where(roleMember => roleMember.IsForeign).ToList();
-
-      // process excluded members
-      resolvedMembers = resolvedMembers.Where(roleMember => !roleMember.IsExcluded).ToList();
-      if (resolvedMembers.Count == 0) {
-        result.AddMessage(Error.AllMembersExcluded(TargetType, ResolveRepresentation()));
-        return result;
-      }
-
-      // process aliased members
-      resolvedMembers = resolvedMembers.Where(roleMember => !roleMember.IsAliased).ToList();
-      if (resolvedMembers.Count == 0) {
-        // all members are aliased
-        ResolvedMember = null;
-        return result;
-      }
-
-      // process base methods
-      if (resolvedMembers.All(roleMember => roleMember.Definition.IsBaseMethod())) {
-        // all members are virtual base members, they'll be provided by the composing class
-        IsBaseMethod = true;
-        ResolvedMember = null;
-        return result;
-      }
-      if (resolvedMembers.Any(roleMember => roleMember.Definition.IsBaseMethod())) {
-        throw new InvalidOperationException("Base methods cannot be provided by roles");
-      }
-
-      if (resolvedMembers.All(roleMember => roleMember.IsAbstract)) {
-        if (!TargetType.IsRole()) {
-          result.AddMessage(Error.DoesNotImplementAbstractRoleMember(TargetType, ResolveRepresentation()));
-        }
-        return result;
-      }
-
-      // process abstract members
-      resolvedMembers = resolvedMembers.Where(roleMember => !roleMember.IsAbstract).ToList();
-      if (resolvedMembers.Count > 1) {
-        _hasConflict = true;
-        result.AddMessage(Error.Conflict(TargetType, ResolveRepresentation(), resolvedMembers));
-        return result;
-      }
-
-      ResolvedMember = resolvedMembers.Single();
-
-      return result;
+      return new GroupConflictResolver().Process(this);
     }
 
-    public RoleCompositionMember ResolvedMember { get; private set; }
+    public RoleCompositionMember ResolvedMember { get; internal set; }
 
-    private string ResolveRepresentation() {
+    public string ResolveRepresentation() {
       return Members[0].ResolveContextualDefinition().ToString();
     }
 
@@ -124,7 +67,7 @@ namespace NRoles.Engine {
       var sb = new StringBuilder();
       sb.AppendFormat("[Group]{1}{2} -> {0}\n",
         ResolveRepresentation(), 
-        _hasConflict ? " [Conflict]" : "",
+        HasConflict ? " [Conflict]" : "",
         IsSuperceded ?  " [Superceded]" : "");
       Members.ForEach(roleMember => 
         sb.AppendFormat("  {2}{0}::{1}\n", 
