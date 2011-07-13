@@ -83,6 +83,7 @@
     <Compile Include="ConflictDetection\ClassMemberContainer.cs" />
     <Compile Include="ConflictDetection\ConflictClassifier.cs" />
     <Compile Include="ConflictDetection\ConflictGroupBase.cs" />
+    <Compile Include="ConflictDetection\GroupConflictResolver.cs" />
     <Compile Include="ConflictDetection\IConflictDetector.cs" />
     <Compile Include="ConflictDetection\IConflictGroup.cs" />
     <Compile Include="ConflictDetection\MemberConflictResolver.cs" />
