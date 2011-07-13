@@ -17,7 +17,6 @@ namespace NRoles.Engine.Test.ConflictDetection.ClassMemberTests {
     //     ResolveGroup returns MemberGroup 
     //   MemberGroup (~IConflictGroup, none of the following methods are in IConflictGroup)
     //     MarkAsSuperceded <= this is just like saying: "I win the conflict!" => ResolveConflictWith(this)
-    //       The opposite is to lose the conflict (excluded(overridden), placeholder(~overridden), aliased?(not overridden)) => LoseConflict(this)?
     //     ReuseSlot <= this term is only meaninful when composing
     //     Process just to find out if DoesNotImplementAbstractRoleMember
 

@@ -26,7 +26,15 @@ namespace NRoles.Engine {
     /// </summary>
     public abstract bool IsForeign { get; }
 
-    public abstract void Process();
+    public void Process() {
+      // TODO: clear messages
+      var resolver = new MemberConflictResolver();
+      resolver.Container = Container;
+      Process(resolver);
+      this.Slurp(resolver);
+    }
+    
+    public abstract void Process(MemberConflictResolver resolver);
 
     /// <summary>
     /// The implementing member is the member that "implements" this role/composition member.
