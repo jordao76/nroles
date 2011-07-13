@@ -11,8 +11,8 @@ namespace NRoles.Engine {
     public RoleMember(TypeReference role, IMemberDefinition member) :
       base(role, member) { }
 
-    public override void Process() {
-      // no-op
+    public override void Process(MemberConflictResolver resolver) {
+      resolver.Process(this);
     }
 
     public override bool IsForeign { get { return true; } }

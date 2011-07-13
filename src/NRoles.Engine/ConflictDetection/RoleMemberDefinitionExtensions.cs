@@ -50,17 +50,17 @@ namespace NRoles.Engine {
       return false;
     }
 
-    public static bool IsExcluded(this IMemberDefinition member, ModuleDefinition module) {
+    public static bool IsExcluded(this IMemberDefinition member) {
       if (!member.IsInRoleView()) return false;
       return member.IsMarkedWith<ExcludeAttribute>();
     }
 
-    public static bool IsAliasing(this IMemberDefinition member, ModuleDefinition module) {
+    public static bool IsAliasing(this IMemberDefinition member) {
       string ignored;
-      return member.IsAliasing(out ignored, module);
+      return member.IsAliasing(out ignored);
     }
 
-    public static bool IsAliasing(this IMemberDefinition member, out string aliasing, ModuleDefinition module) {
+    public static bool IsAliasing(this IMemberDefinition member, out string aliasing) {
       aliasing = null;
       if (!member.IsInRoleView()) return false;
       if (member.IsMarkedWith<AliasingAttribute>()) {
@@ -77,10 +77,10 @@ namespace NRoles.Engine {
       return roleType.IsRoleView();
     }
 
-    public static IMemberDefinition ResolveDefinitionInRole(this IMemberDefinition member, TypeReference type, ModuleDefinition module) {
+    public static IMemberDefinition ResolveDefinitionInRole(this IMemberDefinition member, TypeReference type) {
       var finder = new MemberFinder(type);
       string aliasing;
-      if (member.IsAliasing(out aliasing, module)) {
+      if (member.IsAliasing(out aliasing)) {
         return finder.FindMatchFor(member, aliasing);
       }
       else {
