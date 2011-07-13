@@ -85,6 +85,7 @@
     <Compile Include="ConflictDetection\ConflictGroupBase.cs" />
     <Compile Include="ConflictDetection\IConflictDetector.cs" />
     <Compile Include="ConflictDetection\IConflictGroup.cs" />
+    <Compile Include="ConflictDetection\MemberConflictResolver.cs" />
     <Compile Include="ConflictDetection\NameConflictGroup.cs" />
     <Compile Include="ConflictDetection\RoleMember.cs" />
     <Compile Include="ConflictDetection\RoleViewMember.cs" />

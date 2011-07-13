@@ -36,7 +36,6 @@ namespace NRoles.Engine {
       return result;
     }
 
-
     private bool HasConflict() {
       if (Members.Count <= 1) return false;
       // a signature conflict exists if at least 2 members differ in the return type

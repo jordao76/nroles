@@ -8,12 +8,10 @@ namespace NRoles.Engine {
 
   // a group for ONE contributed member to the target class from one or more role-composition members,
   // based on the WHOLE signature (that is, including the return type)
-  // TODO: separate conflict detection from member resolution? create an IConflictResolver?
   public class ContributedConflictGroup : ConflictGroupBase { 
     ClassMember _supercedingMember;
     bool _hasConflict;
 
-    // TODO: this does not belong here, create another class that associates a ConflictGroup with its implemented member
     public IMemberDefinition ImplementedMember { get; set; }
     public bool DontImplement { get; set; }
 
