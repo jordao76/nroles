@@ -39,8 +39,7 @@ namespace NRoles.Engine {
     public void Process() {
       ValidateMembers();
       Group();
-      ProcessMembers();
-      ProcessGroups();
+      ResolveConflicts();
     }
 
     private void ValidateMembers() {
@@ -66,13 +65,17 @@ namespace NRoles.Engine {
       classifier.Groups.ForEach(group => this.Slurp(group.Process()));
     }
 
-    private void ProcessMembers() {
-      // TODO: remove the Process method from the RoleViewMember
-      _members.ForEach(member => member.Process());
-    }
-
     private void Group() {
       _classifier = Classify<ContributedConflictGroup>();
+    }
+
+    private void ResolveConflicts() {
+      ProcessMembers();
+      ProcessGroups();
+    }
+
+    private void ProcessMembers() {
+      _members.ForEach(member => member.Process()); // TODO: slurp?
     }
 
     private void ProcessGroups() {

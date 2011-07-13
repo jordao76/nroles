@@ -29,6 +29,7 @@ namespace NRoles.Engine {
 
       roles.ForEach(role => AddRole(role));
 
+      // TODO: take responsibility of conflict resolution from the Container!
       Container.Process();
 
       result.Slurp(Container);
