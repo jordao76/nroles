@@ -6,15 +6,14 @@ using Mono.Cecil;
 
 namespace NRoles.Engine {
 
-  public abstract class RoleCompositionMember : TypeMember, IMessageContainer, Does<RMessageContainer> {
+  // TODO: try to get rid of this type
+  public abstract class RoleCompositionMember : TypeMember, IMessageContainer, Does<RMessageContainer>, Does<MemberMarkings> {
 
     [Obsolete("Use Type")]
     public TypeReference Role { get { return base.Type; } }
 
     protected RoleCompositionMember(TypeReference type, IMemberDefinition memberDefinition) :
       base(type, memberDefinition) { }
-
-    public RoleCompositionMemberContainer Container { get; internal set; }
 
     /// <summary>
     /// Indicates if the member is abstract.
@@ -26,6 +25,9 @@ namespace NRoles.Engine {
     /// </summary>
     public abstract bool IsForeign { get; }
 
+    public RoleCompositionMemberContainer Container { get; internal set; }
+
+    // TODO: return a result and make this type not a message container?
     public void Process() {
       // TODO: clear messages
       var resolver = new MemberConflictResolver();
@@ -36,6 +38,33 @@ namespace NRoles.Engine {
     
     public abstract void Process(MemberConflictResolver resolver);
 
+    #region MemberMarkings
+
+    public abstract RoleCompositionMember ResolveImplementingMember();
+    public abstract IEnumerable<RoleCompositionMember> ResolveOverridingMembers();
+
+    public extern bool IsExcluded { [Placeholder] get; }
+    [Placeholder] public extern void MarkAsExcluded();
+    public extern bool IsAliased { [Placeholder] get; }
+    [Placeholder] public extern void MarkAsAliased();
+
+    #endregion
+
+    #region Messages
+
+    public extern IEnumerable<Message> Messages { [Placeholder] get; }
+    [Placeholder] public extern void AddMessage(Message message);
+
+    #endregion
+
+  }
+
+  public abstract class MemberMarkings : Role { // TODO: better name
+
+    public abstract IMemberDefinition Definition { get; }
+
+    public abstract bool IsAbstract { get; }
+    
     /// <summary>
     /// The implementing member is the member that "implements" this role/composition member.
     /// </summary>
@@ -56,45 +85,26 @@ namespace NRoles.Engine {
     /// <returns>Members that this member overrides.</returns>
     public abstract IEnumerable<RoleCompositionMember> ResolveOverridingMembers();
 
-    // TODO: push these properties down the inheritance path? Or to a separate strategy object?
-
     // TODO: IsHidden?
 
-    bool _isExcluded = false;
-    public bool IsExcluded {
-      get { return _isExcluded; }
-    }
-    public void MarkAsExcluded() {
-      _isExcluded = true;
-    }
+    public virtual bool IsExcluded { get; private set; }
+    public virtual void MarkAsExcluded() { IsExcluded = true; }
 
-    bool _isAliased = false;
-    public bool IsAliased {
-      get { return _isAliased; }
-    }
-    public void MarkAsAliased() {
-      _isAliased = true;
-    }
+    public virtual bool IsAliased { get; private set; }
+    public virtual void MarkAsAliased() { IsAliased = true; }
 
     public override string ToString() {
       var implementingMember = ResolveImplementingMember();
       return string.Format(
-        "{1}{2}{3}{0}{4}", 
-          Definition, 
+        "{1}{2}{3}{0}{4}",
+          Definition,
           IsAliased ? "[Aliased] " : "",
           IsExcluded ? "[Excluded] " : "",
           IsAbstract ? "[Abstract] " : "",
           implementingMember == null ? " -> CAN'T RESOLVE" : (implementingMember.Definition != Definition ? (" -> " + implementingMember.Definition) : "")
         );
     }
-
-    #region Messages
-
-    public extern IEnumerable<Message> Messages { [Placeholder] get; }
-    [Placeholder] public extern void AddMessage(Message message);
-
-    #endregion
-
+  
   }
 
 }
