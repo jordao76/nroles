@@ -75,6 +75,7 @@
     <Compile Include="Support\Rgb.cs" />
     <Compile Include="Support\Role_With_External_Method.cs" />
     <Compile Include="Support\Role_With_Internal_Method.cs" />
+    <Compile Include="Support\SupercededMemberCalls.cs" />
     <Compile Include="Support\Support_Types.cs" />
   </ItemGroup>
   <ItemGroup>
