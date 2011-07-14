@@ -28,7 +28,7 @@ namespace NRoles.Engine {
     }
 
     public static bool IsSupersede(this IMemberDefinition member) {
-      return member.IsMarkedWith<SupersedeAttribute>();
+      return member.IsMarkedWith<SupercedeAttribute>();
     }
 
     public static bool IsMarkedAsPlaceholder(this IMemberDefinition member) {
