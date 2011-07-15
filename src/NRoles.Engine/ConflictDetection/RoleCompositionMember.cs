@@ -61,7 +61,9 @@ namespace NRoles.Engine {
 
   public abstract class MemberMarkings : Role { // TODO: better name
 
+    public abstract TypeReference Type { get; }
     public abstract IMemberDefinition Definition { get; }
+    public abstract IMemberDefinition ResolveContextualDefinition();
 
     public abstract bool IsAbstract { get; }
     
@@ -93,16 +95,19 @@ namespace NRoles.Engine {
     public virtual bool IsAliased { get; private set; }
     public virtual void MarkAsAliased() { IsAliased = true; }
 
-    // TODO: check that this ToString is called!
     public override string ToString() {
       var implementingMember = ResolveImplementingMember();
       return string.Format(
-        "{1}{2}{3}{0}{4}",
-          Definition,
+        "{2}{3}{4}{1}::{0}{5}",
+          ResolveContextualDefinition(),
+          Type,
           IsAliased ? "[Aliased] " : "",
           IsExcluded ? "[Excluded] " : "",
           IsAbstract ? "[Abstract] " : "",
-          implementingMember == null ? " -> CAN'T RESOLVE" : (implementingMember.Definition != Definition ? (" -> " + implementingMember.Definition) : "")
+          implementingMember == null ? 
+            " -> CAN'T RESOLVE" : 
+            (implementingMember.Definition != Definition ? 
+              (" -> " + implementingMember.ResolveContextualDefinition()) : "")
         );
     }
   
