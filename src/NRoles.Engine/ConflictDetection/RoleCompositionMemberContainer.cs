@@ -57,12 +57,12 @@ namespace NRoles.Engine {
       var classifier = new ConflictClassifier<TConflictGroup>();
       classifier.TargetType = TargetType;
       classifier.Classify(_members);
-      classifier.TraceGroups();
       return classifier;
     }
 
     private void ProcessGroups<TConflictGroup>(ConflictClassifier<TConflictGroup> classifier) where TConflictGroup : IConflictGroup, new() {
       classifier.Groups.ForEach(group => this.Slurp(group.Process()));
+      classifier.TraceGroups();
     }
 
     private void Group() {

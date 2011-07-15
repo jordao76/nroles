@@ -70,9 +70,8 @@ namespace NRoles.Engine {
         HasConflict ? " [Conflict]" : "",
         IsSuperceded ?  " [Superceded]" : "");
       Members.ForEach(roleMember => 
-        sb.AppendFormat("  {2}{0}::{1}\n", 
-          roleMember.Type,
-          roleMember.ResolveContextualDefinition(),
+        sb.AppendFormat("  {1}{0}\n", 
+          roleMember,
           ResolvedMember == roleMember ? "[Resolved] " : ""
       ));
       sb.Length -= "\n".Length;
