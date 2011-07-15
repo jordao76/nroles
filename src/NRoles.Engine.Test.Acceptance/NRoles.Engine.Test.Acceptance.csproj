@@ -57,6 +57,7 @@
     <Compile Include="ReflectionAssert.cs" />
     <Compile Include="RoleTestAttribute.cs" />
     <Compile Include="Role_And_Composition_Fixture.cs" />
+    <Compile Include="Support\AbstractMembers.cs" />
     <Compile Include="Support\Circle.cs" />
     <Compile Include="Support\Circle2.cs" />
     <Compile Include="Support\Circle3.cs" />

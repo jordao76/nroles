@@ -159,7 +159,9 @@ namespace NRoles.Engine {
         if (method.IsVirtual && !method.IsFinal) {
           targetMethod.IsNewSlot = false; // the derived method overrides the base method
         }
-        CreateCodeToCallBaseClassMethod(targetMethod, classMember);
+        if (!method.IsAbstract) {
+          CreateCodeToCallBaseClassMethod(targetMethod, classMember);
+        }
         TargetType.Methods.Add(targetMethod);
       }
 
