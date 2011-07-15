@@ -748,15 +748,27 @@ namespace NRoles.Engine.Test.Support {
   class Role_With_Matching_Protected_Method_From_Base_Class_Composition : Base_Class_With_Protected_Virtual_Method, Does<Role_With_Matching_Protected_Method_From_Base_Class> { }
 
   [RoleTest(
-    CompositionType = typeof(Role_With_Base_Method_Call_Composition))]
+    Description = "Role with base method call should call corresponding composition base method.",
+    CompositionType = typeof(Role_With_Base_Method_Call_Composition),
+    TestType = typeof(Role_With_Base_Method_Call_Composition_Test))]
   public class Role_With_Base_Method_Call : Role {
     public override string ToString() {
       return "[Role] " + base.ToString(); // base calls are "virtual"
     }
   }
-  public class Role_With_Base_Method_Call_Composition : Does<Role_With_Base_Method_Call> {
+  public class Base_For_Role_With_Base_Method_Call_Composition {
+    public override string ToString() {
+      return "[Base]";
+    }
   }
-  // TODO: test class!
+  public class Role_With_Base_Method_Call_Composition : Base_For_Role_With_Base_Method_Call_Composition, Does<Role_With_Base_Method_Call> {
+  }
+  public class Role_With_Base_Method_Call_Composition_Test : DynamicTestFixture {
+    public override void Test() {
+      var c = new Role_With_Base_Method_Call_Composition();
+      Assert.AreEqual("[Role] [Base]", c.ToString());
+    }
+  }
 
   // TODO: all of the above with conflicts! Ouch!
 
