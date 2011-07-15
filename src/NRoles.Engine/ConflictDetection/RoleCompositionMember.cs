@@ -93,6 +93,7 @@ namespace NRoles.Engine {
     public virtual bool IsAliased { get; private set; }
     public virtual void MarkAsAliased() { IsAliased = true; }
 
+    // TODO: check that this ToString is called!
     public override string ToString() {
       var implementingMember = ResolveImplementingMember();
       return string.Format(
