@@ -233,7 +233,7 @@ namespace NRoles.Engine {
     internal static Error PEVerifyDoesntExist() {
       return new Error(
         Code.PEVerifyDoesntExist,
-        "The PEVerify executable was not found in the system.");
+        "The PEVerify executable was not found in the system. Consider using the --peverifypath option.");
     }
     internal static Error ErrorFromWarnings() {
       return new Error(
