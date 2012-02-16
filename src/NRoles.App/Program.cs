@@ -20,7 +20,7 @@ namespace NRoles.App {
       bool warningsAsErrors = false;
       string input = null;
       string output = null;
-      bool noPEVerify = false;
+      string peVerifyPath = null;
       int peVerifyTimeout = 5; // default 5s
       bool showHelp = false;
 
@@ -29,7 +29,7 @@ namespace NRoles.App {
         { "q|quiet", "shhh.", q => quiet = q != null },
         { "evilwarnings", "treats warnings as errors.", wae => warningsAsErrors = wae != null },
         { "o|out=", "output to VALUE (default is to overwrite the input file).", o => output = o },
-        { "nopeverify", "don't run PEVerify (the default is to run it if it's found, and to generate an error if it isn't found).", npv => noPEVerify = npv != null },
+        { "peverifypath=", "path to the PEVerify executable to use to verify the resulting assembly.", (string pvp) => peVerifyPath = pvp },
         { "peverifytimeout=", "sets the timeout in seconds to wait for PEVerify to check the generated assembly.", (int pvt) => peVerifyTimeout = pvt },
         { "trace", "prints trace information (trust me, you don't want to see this).", t => trace = t != null }
       };
@@ -69,7 +69,8 @@ namespace NRoles.App {
         result = new RoleEngine().Execute(
           new RoleEngineParameters(input, output) { 
             TreatWarningsAsErrors = warningsAsErrors,
-            RunPEVerify = !noPEVerify,
+            RunPEVerify = peVerifyPath != null,
+            PEVerifyPath = peVerifyPath,
             PEVerifyTimeout = peVerifyTimeout
           });
       }

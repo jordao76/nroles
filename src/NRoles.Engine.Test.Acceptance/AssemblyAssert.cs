@@ -7,8 +7,17 @@ namespace NRoles.Engine.Test {
   
   public static class AssemblyAssert {
 
+    static string ResolvePEVerifyPath() {
+      var peVerifyPath =
+        Path.Combine(
+          Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
+          @"Microsoft SDKs\Windows\v7.1\Bin\NETFX 4.0 Tools\x64\PEVerify.exe"); // Windows 7
+      if (File.Exists(peVerifyPath)) return peVerifyPath;
+      return null;
+    }
+
     public static void Verify(string assemblyPath) {
-      var result = new AssemblyVerifier(assemblyPath).Verify();
+      var result = new AssemblyVerifier(assemblyPath, ResolvePEVerifyPath()).Verify();
       result.Messages.ForEach(Console.WriteLine);
       if (!result.Success) {
         // TODO: ildasm dump

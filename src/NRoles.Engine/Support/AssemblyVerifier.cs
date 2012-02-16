@@ -10,51 +10,39 @@ namespace NRoles.Engine {
   /// </summary>
   public class AssemblyVerifier {
 
-    static string[] peVerifySearchPaths = new string[] { 
-      @"Microsoft SDKs\Windows\v7.0A\bin\NETFX 4.0 Tools\",
-      @"Microsoft SDKs\Windows\v7.0A\bin\",
-      @"Microsoft SDKs\Windows\v7.0\Bin\",
-      @"Microsoft SDKs\Windows\v6.0A\bin\"
-    };
-
-    static string ResolvePEVerifyPath() {
-      foreach (var searchPath in peVerifySearchPaths) {
-        var peVerifyPath =
-          Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
-            searchPath + "PEVerify.exe");
-        if (File.Exists(peVerifyPath)) return peVerifyPath;
-      }
-      return null;
-    }
-
     readonly AssemblyDefinition _assembly;
     readonly string _assemblyPath;
     int _timeoutInMillis;
+    string _peVerifyPath;
+
+    private AssemblyVerifier(string peVerifyPath, int timeoutInMillis) {
+      if (peVerifyPath == null) throw new ArgumentNullException("peVerifyPath");
+      if (timeoutInMillis < 1000 || timeoutInMillis > 60000) throw new ArgumentOutOfRangeException("timeoutInMillis", "timeout must be between 1 and 60s (1000 and 60000ms)");
+      _peVerifyPath = peVerifyPath;
+      _timeoutInMillis = timeoutInMillis;
+    }
 
     /// <summary>
     /// Creates a new instance of this class.
     /// </summary>
     /// <param name="assembly">Assembly to verify.</param>
+    /// <param name="peVerifyPath">Path to the PEVerify executable.</param>
     /// <param name="timeoutInMillis">Timeout for the verification process in milliseconds. Valid values are from 1000 to 60000.</param>
-    public AssemblyVerifier(AssemblyDefinition assembly, int timeoutInMillis = 5000) {
+    public AssemblyVerifier(AssemblyDefinition assembly, string peVerifyPath, int timeoutInMillis = 5000) : this(peVerifyPath, timeoutInMillis) {
       if (assembly == null) throw new ArgumentNullException("assembly");
-      if (timeoutInMillis < 1000 || timeoutInMillis > 60000) throw new ArgumentOutOfRangeException("timeoutInMillis", "timeout must be between 1 annd 60s (1000 and 60000ms)");
-      _assembly = assembly;
-      _timeoutInMillis = timeoutInMillis;
       _assemblyPath = null;
+      _assembly = assembly;
     }
 
     /// <summary>
     /// Creates a new instance of this class.
     /// </summary>
     /// <param name="assemblyPath">Path to the assembly to verify.</param>
+    /// <param name="peVerifyPath">Path to the PEVerify executable.</param>
     /// <param name="timeoutInMillis">Timeout for the verification process in milliseconds. Valid values are from 1000 to 60000.</param>
-    public AssemblyVerifier(string assemblyPath, int timeoutInMillis = 5000) {
+    public AssemblyVerifier(string assemblyPath, string peVerifyPath, int timeoutInMillis = 5000) : this(peVerifyPath, timeoutInMillis) {
       if (assemblyPath == null) throw new ArgumentNullException("assemblyPath");
-      if (timeoutInMillis < 1000 || timeoutInMillis > 60000) throw new ArgumentOutOfRangeException("timeoutInMillis", "timeout must be between 1 annd 60s (1000 and 60000ms)");
       _assemblyPath = assemblyPath;
-      _timeoutInMillis = timeoutInMillis;
       _assembly = null;
     }
 
@@ -64,7 +52,7 @@ namespace NRoles.Engine {
     /// <returns>Result of the operation.</returns>
     public IOperationResult Verify() {
       var result = new OperationResult();
-      var peVerifyPath = ResolvePEVerifyPath();
+      var peVerifyPath = _peVerifyPath;
       if (peVerifyPath == null) {
         result.AddMessage(Error.PEVerifyDoesntExist());
         return result;
