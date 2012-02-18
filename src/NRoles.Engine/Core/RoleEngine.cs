@@ -36,8 +36,8 @@ namespace NRoles.Engine {
       var assemblyPath = parameters.AssemblyPath;
       var assembly = AssemblyDefinition.ReadAssembly(assemblyPath,
         new ReaderParameters() { 
-          ReadSymbols = true,
-          SymbolReaderProvider = new Mono.Cecil.Pdb.PdbReaderProvider() // Microsoft centric
+          ReadSymbols = false
+          //SymbolReaderProvider = new Mono.Cecil.Pdb.PdbReaderProvider() // Microsoft centric
         }
       );
       return assembly;
@@ -46,8 +46,8 @@ namespace NRoles.Engine {
     void WriteAssembly(RoleEngineParameters parameters, AssemblyDefinition assembly) {
       assembly.Write(parameters.OutputAssemblyPath,
         new WriterParameters() { 
-          WriteSymbols = true,
-          SymbolWriterProvider = new Mono.Cecil.Pdb.PdbWriterProvider() // Microsoft centric
+          WriteSymbols = false,
+          //SymbolWriterProvider = new Mono.Cecil.Pdb.PdbWriterProvider() // Microsoft centric
         }
       );
     }
