@@ -91,14 +91,14 @@ namespace NRoles.Engine {
       PEVerifyTimeout = 53,
 
       /// <summary>
-      /// Occurs when PEVerify detects error in the generated assembly.
+      /// Occurs when PEVerify detects errors in the generated assembly.
       /// This could mean that the assembly is unverifiable (as when it has unsafe code),
       /// or that there's a bug in the roles engine.
       /// </summary>
       PEVerifyError = 54,
 
       /// <summary>
-      /// Occurs when the PEVerify executable is not found in the system.
+      /// Occurs when the PEVerify executable file doesn't exist.
       /// </summary>
       PEVerifyDoesntExist = 55,
 
@@ -230,10 +230,10 @@ namespace NRoles.Engine {
         "PEVerify found errors in the mutated assembly:\n{0}",
         description);
     }
-    internal static Error PEVerifyDoesntExist() {
+    internal static Error PEVerifyDoesntExist(string path) {
       return new Error(
         Code.PEVerifyDoesntExist,
-        "The PEVerify executable was not found in the system. Consider using the --peverifypath option.");
+        "The PEVerify supplied path '{0}' doesn't exist.", path);
     }
     internal static Error ErrorFromWarnings() {
       return new Error(

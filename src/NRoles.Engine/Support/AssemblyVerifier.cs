@@ -53,8 +53,8 @@ namespace NRoles.Engine {
     public IOperationResult Verify() {
       var result = new OperationResult();
       var peVerifyPath = _peVerifyPath;
-      if (peVerifyPath == null) {
-        result.AddMessage(Error.PEVerifyDoesntExist());
+      if (!File.Exists(peVerifyPath)) {
+        result.AddMessage(Error.PEVerifyDoesntExist(peVerifyPath));
         return result;
       }
       if (_assembly != null) {
