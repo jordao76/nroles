@@ -198,7 +198,7 @@ namespace NRoles.Engine {
       if (source == null) throw new ArgumentNullException("source");
       if (!source.HasGenericParameters) return target;
       foreach (GenericParameter parameter in source.GenericParameters) {
-        var newGenericArgument = new GenericParameter(parameter.Name, target);
+        // TODO? var newGenericArgument = new GenericParameter(parameter.Name, target);
         target.GenericArguments.Add(parameter);
       }
       return target; // allow chaining
@@ -215,7 +215,6 @@ namespace NRoles.Engine {
     public static void CopyGenericParametersFrom(this IGenericParameterProvider target, Collection<GenericParameter> source) {
       if (target == null) throw new InstanceArgumentNullException();
       if (source == null) throw new ArgumentNullException("source");
-      int position = target.GenericParameters.Count;
       foreach (GenericParameter sourceParameter in source) {
         var targetParameter = new GenericParameter(sourceParameter.Name, target);
         targetParameter.CopyGenericConstraintsFrom(sourceParameter);

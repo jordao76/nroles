@@ -15,10 +15,10 @@ namespace NRoles.Engine {
 
     public MemberResolver(TypeReference target, ModuleDefinition targetModule = null) {
       if (target == null) throw new ArgumentNullException("target");
-      Module = targetModule ?? target.Module;
       Target = target;
-      Source = target.Resolve();
-      TargetWithArguments = target as GenericInstanceType;
+      Module = targetModule ?? Target.Module;
+      Source = Target.Resolve();
+      TargetWithArguments = Target as GenericInstanceType;
       _map = new GenericParametersMap(Source, TargetWithArguments);
     }
 
