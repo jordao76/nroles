@@ -22,10 +22,16 @@ namespace NRoles.Engine.Test {
           @"Microsoft SDKs\Windows\v7.0A\bin\NETFX 4.0 Tools\PEVerify.exe"); // Windows XP
       if (File.Exists(peVerifyPath)) return peVerifyPath;
       
+      // TODO: Mono?
+
       return null;
     }
 
     public static void Verify(string assemblyPath) {
+      if (ResolvePEVerifyPath() == null) {
+        Console.WriteLine("No PEVerify found, skipping IL verification...");
+        return;
+      }
       var result = new AssemblyVerifier(assemblyPath, ResolvePEVerifyPath()).Verify();
       result.Messages.ForEach(Console.WriteLine);
       if (!result.Success) {

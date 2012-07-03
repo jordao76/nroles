@@ -10,7 +10,7 @@ namespace NRoles.Engine {
   static class RoleUtils {
 
     public static bool IsRole(this TypeDefinition self) {
-      return self.Interfaces.Cast<TypeReference>().Any(
+      return self.Interfaces.Any(
         type => type.Resolve().FullName == typeof(Role).FullName);
     }
 

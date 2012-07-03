@@ -91,8 +91,8 @@ namespace NRoles.Engine {
       // no-op
     }
      
-    public extern IEnumerable<Message> Messages { [Placeholder] get; }
-    [Placeholder] public extern void AddMessage(Message message);
+    public IEnumerable<Message> Messages { [Placeholder] get { throw Away.Code; } }
+    [Placeholder] public void AddMessage(Message message) { throw Away.Code; }
   }
 
 }

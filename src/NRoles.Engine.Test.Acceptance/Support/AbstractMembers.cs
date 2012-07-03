@@ -31,7 +31,9 @@ namespace NRoles.Engine.Test.Support.AbstractMembers {
 
   public class Child_Test : DynamicTestFixture {
     public override void Test() {
-      var r = new Child().As<Role_With_Abstract_Method>();
+      
+      //var r = new Child().As<Role_With_Abstract_Method>(); // mono got confused with the extension method here
+      var r = NRoles.Roles.As<Role_With_Abstract_Method>(new Child());
       Assert.AreEqual(42, r.Answer);
     }
   }
