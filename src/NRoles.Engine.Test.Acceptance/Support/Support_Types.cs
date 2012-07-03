@@ -373,7 +373,7 @@ namespace NRoles.Engine.Test.Support {
   public class Role_Method_Conflict_Composition : Does<Role_Method_Conflict_1>, Does<Role_Method_Conflict_2> { }
 
   public class Role_Method_Conflict_Resolved_Through_Exclusion_Composition : Does<Role_Method_Conflict_1>, Does<Role_Method_Conflict_2>, Does<Role_Method_Conflict_Resolved_Through_Exclusion_Composition.View> {
-    interface View : RoleView<Role_Method_Conflict_1> { [Exclude] int Method(); }
+    public interface View : RoleView<Role_Method_Conflict_1> { [Exclude] int Method(); }
   }
   public class Role_Method_Conflict_Resolved_Through_Exclusion_Composition_Test : DynamicTestFixture {
     public override void Test() {
@@ -387,7 +387,7 @@ namespace NRoles.Engine.Test.Support {
   }
 
   public class Role_Method_Conflict_View_Method_With_Wrong_Return_Type : Does<Role_Method_Conflict_1>, Does<Role_Method_Conflict_2>, Does<Role_Method_Conflict_View_Method_With_Wrong_Return_Type.View> {
-    interface View : RoleView<Role_Method_Conflict_1> { 
+    public interface View : RoleView<Role_Method_Conflict_1> {
       [Exclude] void Method(); // in the role, the method returns an int
     }
   }
@@ -407,12 +407,12 @@ namespace NRoles.Engine.Test.Support {
   }
 
   public class Role_Method_Conflict_Exclude_Too_Much_Composition : Does<Role_Method_Conflict_1>, Does<Role_Method_Conflict_2>, Does<Role_Method_Conflict_Exclude_Too_Much_Composition.View1>, Does<Role_Method_Conflict_Exclude_Too_Much_Composition.View2> {
-    interface View1 : RoleView<Role_Method_Conflict_1> { [Exclude] int Method(); }
-    interface View2 : RoleView<Role_Method_Conflict_2> { [Exclude] int Method(); }
+    public interface View1 : RoleView<Role_Method_Conflict_1> { [Exclude] int Method(); }
+    public interface View2 : RoleView<Role_Method_Conflict_2> { [Exclude] int Method(); }
   }
 
   public class Role_Method_Conflict_Composition_View_With_Multiple_Roles : Does<Role_Method_Conflict_1>, Does<Role_Method_Conflict_2>, Does<Role_Method_Conflict_Composition_View_With_Multiple_Roles.View> {
-    interface View : RoleView<Role_Method_Conflict_1>, RoleView<Role_Method_Conflict_2> { 
+    public interface View : RoleView<Role_Method_Conflict_1>, RoleView<Role_Method_Conflict_2> {
       [Exclude] int Method(); 
     }
   }
@@ -450,8 +450,8 @@ namespace NRoles.Engine.Test.Support {
   public class Role_Method_Alias_Conflict_Composition : Does<Role_Method_Conflict_1>, Does<Role_Method_Conflict_2>, Does<Role_Method_Alias_Conflict_Composition.View1>, Does<Role_Method_Alias_Conflict_Composition.View2> {
     // the aliased methods are still in conflict
     // TODO: create a better test case without error MethodsWithConflictingSignatures (only Conflict)
-    interface View1 : RoleView<Role_Method_Conflict_1> { [Aliasing("Method")] int AliasedMethod(); }
-    interface View2 : RoleView<Role_Method_Conflict_2> { [Aliasing("Method")] int AliasedMethod(); }
+    public interface View1 : RoleView<Role_Method_Conflict_1> { [Aliasing("Method")] int AliasedMethod(); }
+    public interface View2 : RoleView<Role_Method_Conflict_2> { [Aliasing("Method")] int AliasedMethod(); }
   }
 
   // TODO: role view as a class and struct; role view being implemented by a class; generic role view; role view that implements other interfaces than RoleView`1
@@ -482,12 +482,16 @@ namespace NRoles.Engine.Test.Support {
     public int Method() { return 42; }
   }
   public class Role_With_Method_To_Be_Aliased_Composition : Does<Role_With_Method_To_Be_Aliased>, Does<Role_With_Method_To_Be_Aliased_Composition.View> {
-    interface View : RoleView<Role_With_Method_To_Be_Aliased> {
+    public interface View : RoleView<Role_With_Method_To_Be_Aliased> {
       [Aliasing("Method")]
       int AliasedMethod();
     }
   }
   // TODO: create test class
+
+  #if !__MonoCS__
+
+  // these classes fail compilation on Mono
 
   [RoleTest(
     CompositionType = typeof(Generic_Role_With_Method_To_Be_Aliased_Generic_Composition<>))]
@@ -533,6 +537,8 @@ namespace NRoles.Engine.Test.Support {
       int AliasedMethod();
     }
   }
+
+  #endif
 
   [RoleTest(
     OtherRoles = new Type[] { typeof(Role_For_Return_Value_Conflict_2) },
@@ -828,6 +834,8 @@ namespace NRoles.Engine.Test.Support {
     }
   }
 
+  #if !__MonoCS__
+
   class Destructor { public static bool Called = false; }
   [RoleTest(
     CompositionType = typeof(Role_With_Destructor_Composition),
@@ -848,6 +856,8 @@ namespace NRoles.Engine.Test.Support {
       Assert.IsTrue(Destructor.Called);
     }
   }
+
+  #endif
 
   #endregion
 
@@ -1131,7 +1141,7 @@ namespace NRoles.Engine.Test.Support {
 
   abstract class Abstract_Test_Class { }
   // TODO: hierarchies...
-
+  /*
   class Weirdness {
     //[CLSCompliant(false)]
     public void VariableArguments(__arglist) { // http://msdn.microsoft.com/en-us/library/ms182366%28VS.80%29.aspx
@@ -1141,5 +1151,7 @@ namespace NRoles.Engine.Test.Support {
       }
     }
   }
+  */
 
 }
+

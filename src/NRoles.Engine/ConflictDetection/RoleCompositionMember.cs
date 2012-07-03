@@ -43,17 +43,17 @@ namespace NRoles.Engine {
     public abstract RoleCompositionMember ResolveImplementingMember();
     public abstract IEnumerable<RoleCompositionMember> ResolveOverridingMembers();
 
-    public extern bool IsExcluded { [Placeholder] get; }
-    [Placeholder] public extern void MarkAsExcluded();
-    public extern bool IsAliased { [Placeholder] get; }
-    [Placeholder] public extern void MarkAsAliased();
+    public bool IsExcluded { [Placeholder] get { throw Away.Code; } }
+    [Placeholder] public void MarkAsExcluded() { throw Away.Code; }
+    public bool IsAliased { [Placeholder] get { throw Away.Code; } }
+    [Placeholder] public void MarkAsAliased() { throw Away.Code; }
 
     #endregion
 
     #region Messages
 
-    public extern IEnumerable<Message> Messages { [Placeholder] get; }
-    [Placeholder] public extern void AddMessage(Message message);
+    public IEnumerable<Message> Messages { [Placeholder] get { throw Away.Code; } }
+    [Placeholder] public void AddMessage(Message message) { throw Away.Code; }
 
     #endregion
 

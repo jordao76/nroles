@@ -78,7 +78,8 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>xcopy "$(TargetDir)*.*" "$(SolutionDir)..\bin" /Y</PostBuildEvent>
+    <PostBuildEvent Condition="'$(OS)' == 'Windows_NT'">xcopy "$(TargetDir)*.*" "$(SolutionDir)..\bin" /Y</PostBuildEvent>
+    <PostBuildEvent Condition="'$(OS)' != 'Windows_NT'">cp -Rf "$(TargetDir)" "$(SolutionDir)..\bin"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>

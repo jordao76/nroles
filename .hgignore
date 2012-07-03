@@ -3,9 +3,12 @@ syntax: glob
 *.suo
 *.sln.cache
 *.csproj.user
+*.pidb
+*.userprefs
 
 bin/*.dll
 bin/*.pdb
+bin/*.mdb
 bin/*.exe
 bin/*.config
 
@@ -16,3 +19,4 @@ syntax: regexp
 
 ^src/.*/bin/.*
 ^src/.*/obj/.*
+.*/test-results/.*

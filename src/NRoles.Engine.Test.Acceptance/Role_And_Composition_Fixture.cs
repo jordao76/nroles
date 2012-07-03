@@ -101,7 +101,6 @@ namespace NRoles.Engine.Test {
 
     private IOperationResult Compose_Role(Type compositionType) {
       if (compositionType == null) return null;
-      var composer = new RoleComposerMutator();
       var runner = new MutationRunner(_assembly.GetType(compositionType));
       return runner.Run(new RoleComposerMutator());
     }
