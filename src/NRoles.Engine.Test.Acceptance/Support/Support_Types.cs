@@ -380,7 +380,7 @@ namespace NRoles.Engine.Test.Support {
       var role = new Role_Method_Conflict_Resolved_Through_Exclusion_Composition().As<Role_Method_Conflict_1>();
       Assert.AreEqual(2, role.Method()); // since Role_Method_Conflict_1::Method was excluded, this calls Role_Method_Conflict_2::Method
       var otherRole = role.Cast<Role_Method_Conflict_2>();
-      Assert.AreEqual(2, role.Method());
+      Assert.AreEqual(2, otherRole.Method());
 
       // TODO: reflection asserts!
     }
@@ -662,7 +662,9 @@ namespace NRoles.Engine.Test.Support {
   [RoleTest(ExpectedRoleError = Error.Code.RoleInstantiated)]
   public class Role_That_Gets_Instantiated : Role { }
   public class Class_That_Instantiates_Role {
+    #pragma warning disable 414
     Role role = new Role_That_Gets_Instantiated();
+    #pragma warning restore 414
   }
 
   [RoleTest(ExpectedRoleError = Error.Code.RoleComposesItself)]
@@ -950,6 +952,8 @@ namespace NRoles.Engine.Test.Support {
   [CompositionTest]
   public class Simple_Role_With_Method_Composition : Does<Simple_Role_With_Method> { }
 
+  #if !__MonoCS__
+  
   [CompositionTest(RunGlobalChecks = true, ExpectedGlobalCheckError = Error.Code.TypeCantInheritFromRole)]
   public class Simple_Role_With_Method_Implementation : Simple_Role_With_Method {
     public int Method() { return 22; }
@@ -959,6 +963,8 @@ namespace NRoles.Engine.Test.Support {
   [CompositionTest(RunGlobalChecks = true, ExpectedGlobalCheckError = Error.Code.TypeCantInheritFromRole)]
   public interface Simple_Role_With_Method_Inheritance : Simple_Role_With_Method {
   }
+
+  #endif
 
   [CompositionTest]
   public class Simple_Role_With_Property_Composition : Does<Simple_Role_With_Property> { }
@@ -1048,7 +1054,9 @@ namespace NRoles.Engine.Test.Support {
   public class Diamond_Composition : Does<Derived_Role_With_Constructor_1>, Does<Derived_Role_With_Constructor_2> { }
   public class Diamond_Composition_Test : DynamicTestFixture {
     public override void Test() {
+      #pragma warning disable 219
       var composition = new Diamond_Composition();
+      #pragma warning restore 219
 
       var sequence = new List<string>(Constructors.Sequence);
       Constructors.Sequence.Clear();
