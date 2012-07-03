@@ -77,9 +77,15 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <FilesToCopy Include="$(TargetDir)*.*" />
+  </ItemGroup>
+  <Target Name="AfterBuild">
+    <Copy SourceFiles="@(FilesToCopy)" DestinationFolder="$(SolutionDir)..\bin" />
+  </Target>
   <PropertyGroup>
-    <PostBuildEvent Condition="'$(OS)' == 'Windows_NT'">xcopy "$(TargetDir)*.*" "$(SolutionDir)..\bin" /Y</PostBuildEvent>
-    <PostBuildEvent Condition="'$(OS)' != 'Windows_NT'">cp -Rf "$(TargetDir)" "$(SolutionDir)..\bin"</PostBuildEvent>
+    <PostBuildEvent> 
+    </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>
