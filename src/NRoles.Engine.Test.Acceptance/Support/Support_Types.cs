@@ -965,7 +965,7 @@ namespace NRoles.Engine.Test.Support {
   }
 
   #endif
-
+    
   [CompositionTest]
   public class Simple_Role_With_Property_Composition : Does<Simple_Role_With_Property> { }
 
