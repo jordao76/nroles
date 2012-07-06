@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -44,9 +44,13 @@
       <Project>{CF44EC2E-D85A-4415-809B-954EBE10C1A0}</Project>
       <Name>NRoles.Engine</Name>
     </ProjectReference>
+    <ProjectReference Include="..\NRoles\NRoles.csproj">
+      <Project>{40A323EB-2064-4CAA-9944-D385F296E8F6}</Project>
+      <Name>NRoles</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <FilesToCopy Include="%24%28TargetDir%29*.*" />
+    <FilesToCopy Include="$(TargetDir)*.*" />
   </ItemGroup>
   <Target Name="AfterBuild">
     <Copy SourceFiles="@(FilesToCopy)" DestinationFolder="$(SolutionDir)..\bin" />
