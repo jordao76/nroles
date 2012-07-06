@@ -12,7 +12,6 @@
     <AssemblyName>NRoles.Engine.Test.Support</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -54,10 +53,6 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent Condition="'$(OS)' != 'Windows_NT'">mono "$(SolutionDir)..\bin\nutate.exe" "$(TargetPath)"</PostBuildEvent>
-    <PostBuildEvent Condition="'$(OS)' == 'Windows_NT'">"$(SolutionDir)..\bin\nutate.exe" "$(TargetPath)"</PostBuildEvent>
-  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
@@ -65,4 +60,8 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <UsingTask TaskName="NRoles.Build.RoleTask" AssemblyFile="$(SolutionDir)..\lib\nroles\NRoles.Build.dll" />
+  <Target Name="AfterBuild">
+    <RoleTask AssemblyPath="@(IntermediateAssembly)" References="@(ReferencePath)" />
+  </Target>
 </Project>
