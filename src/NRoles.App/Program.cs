@@ -43,13 +43,13 @@ namespace NRoles.App {
         return -1;
       }
 
+      if (!quiet) {
+        Console.WriteLine("NRoles v" + _Metadata.Version);
+      }
+
       if (showHelp) {
         ShowHelp(options);
         return 0;
-      }
-
-      if (!quiet) {
-        Console.WriteLine("NRoles v" + _Metadata.Version);
       }
 
       if (trace) {
@@ -75,7 +75,6 @@ namespace NRoles.App {
           });
       }
       catch (Exception ex) {
-        // TODO: generate a message!
         result = new OperationResult();
         result.AddMessage(Error.InternalError());
         if (trace) {

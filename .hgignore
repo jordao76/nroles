@@ -1,5 +1,6 @@
 syntax: glob
 
+.DS_Store
 *.suo
 *.sln.cache
 *.csproj.user
@@ -11,6 +12,9 @@ bin/*.pdb
 bin/*.mdb
 bin/*.exe
 bin/*.config
+
+lib/nroles/*.mdb
+lib/nroles/*.pdb
 
 src/NRoles.VisualState.xml
 src/TestResult.xml

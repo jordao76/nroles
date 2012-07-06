@@ -35,6 +35,8 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <NoWarn>612, 618</NoWarn>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -145,6 +147,7 @@
     <Compile Include="Support\Tracer.cs" />
     <Compile Include="TypeVisitors\TypeCrawler.cs" />
     <Compile Include="CodeVisitors\VisitableCollectionExtensions.cs" />
+    <Compile Include="Support\AssemblyListAssemblyResolver.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NRoles\NRoles.csproj">
@@ -160,10 +163,6 @@
     <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent Condition="'$(OS)' != 'Windows_NT'">mono "$(SolutionDir)..\lib\nroles\nutate.exe" "$(TargetPath)"</PostBuildEvent>
-    <PostBuildEvent Condition="'$(OS)' == 'Windows_NT'">"$(SolutionDir)..\lib\nroles\nutate.exe" "$(TargetPath)"</PostBuildEvent>
-  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
@@ -171,4 +170,8 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <UsingTask TaskName="NRoles.Build.RoleTask" AssemblyFile="$(SolutionDir)..\lib\nroles\NRoles.Build.dll" />
+  <Target Name="AfterBuild">
+    <RoleTask AssemblyPath="@(IntermediateAssembly)" References="@(ReferencePath)" />
+  </Target>
 </Project>

@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using Mono.Cecil;
+using Mono.Cecil.Pdb;
+using Mono.Cecil.Mdb;
 
 namespace NRoles.Engine {
 
@@ -34,22 +37,45 @@ namespace NRoles.Engine {
 
     AssemblyDefinition ReadAssembly(RoleEngineParameters parameters) {
       var assemblyPath = parameters.AssemblyPath;
-      var assembly = AssemblyDefinition.ReadAssembly(assemblyPath,
-        new ReaderParameters() { 
-          ReadSymbols = false
-          //SymbolReaderProvider = new Mono.Cecil.Pdb.PdbReaderProvider() // Microsoft centric
+      var readerParameters = new ReaderParameters();
+      if (parameters.References != null) {
+        readerParameters.AssemblyResolver = new AssemblyListAssemblyResolver(parameters.References);
+      }
+      else {
+        var resolver = new DefaultAssemblyResolver();
+        resolver.AddSearchDirectory(Path.GetDirectoryName(assemblyPath));
+        readerParameters.AssemblyResolver = resolver;
+      }
+      var pdbPath = Path.ChangeExtension(assemblyPath, "pdb");
+      if (File.Exists(pdbPath)) {
+        readerParameters.SymbolReaderProvider = new PdbReaderProvider();
+        readerParameters.ReadSymbols = true;
+      }
+      else {
+        var mdbPath = assemblyPath + ".mdb";
+        if (File.Exists(mdbPath)) {
+          readerParameters.SymbolReaderProvider = new MdbReaderProvider();
+          readerParameters.ReadSymbols = true;
         }
-      );
+      }
+      var assembly = AssemblyDefinition.ReadAssembly(assemblyPath, readerParameters);
       return assembly;
     }
 
     void WriteAssembly(RoleEngineParameters parameters, AssemblyDefinition assembly) {
-      assembly.Write(parameters.OutputAssemblyPath,
-        new WriterParameters() { 
-          WriteSymbols = false,
-          //SymbolWriterProvider = new Mono.Cecil.Pdb.PdbWriterProvider() // Microsoft centric
+      var assemblyPath = parameters.AssemblyPath;
+      var writerParameters = new WriterParameters();
+      var pdbPath = Path.ChangeExtension(assemblyPath, "pdb");
+      if (File.Exists(pdbPath)) {
+        writerParameters.WriteSymbols = true;
+      }
+      else {
+        var mdbPath = assemblyPath + ".mdb";
+        if (File.Exists(mdbPath)) {
+          writerParameters.WriteSymbols = true;
         }
-      );
+      }
+      assembly.Write(parameters.OutputAssemblyPath, writerParameters);
     }
 
     /// <summary>
@@ -141,6 +167,11 @@ namespace NRoles.Engine {
     /// </summary>
     public readonly string OutputAssemblyPath;
 
+    /// <summary>
+    /// Gets or sets the assembly references.
+    /// </summary>
+    public IEnumerable<string> References { get; set ; }
+    
     /// <summary>
     /// Indicates if verification of the generated assembly should be executed with the PEVerify tool.
     /// </summary>

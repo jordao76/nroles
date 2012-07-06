@@ -16,7 +16,6 @@
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>
     <UpgradeBackupLocation />
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -84,7 +83,7 @@
     <Copy SourceFiles="@(FilesToCopy)" DestinationFolder="$(SolutionDir)..\bin" />
   </Target>
   <PropertyGroup>
-    <PostBuildEvent> 
+    <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
