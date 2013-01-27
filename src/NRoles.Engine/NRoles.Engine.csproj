@@ -171,7 +171,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
-  <UsingTask TaskName="NRoles.Build.RoleTask" AssemblyFile="$(SolutionDir)..\lib\nroles\NRoles.Build.dll" />
+  <UsingTask TaskName="NRoles.Build.RoleTask" AssemblyFile="$(ProjectDir)..\..\lib\nroles\NRoles.Build.dll" />
   <Target Name="AfterBuild">
     <RoleTask AssemblyPath="$(TargetPath)" References="@(ReferencePath)" />
   </Target>
