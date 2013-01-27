@@ -844,6 +844,7 @@ namespace NRoles.Engine.Test.Support {
     TestType = typeof(Role_With_Destructor_Composition_Test))]
   class Role_With_Destructor : Role {
     // TODO: create a test with a destructor that calls methods on the class itself
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1821:RemoveEmptyFinalizers")]
     ~Role_With_Destructor() { Destructor.Called = true; }
   }
   class Role_With_Destructor_Composition : Does<Role_With_Destructor> {
