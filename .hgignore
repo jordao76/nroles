@@ -1,0 +1,26 @@
+syntax: glob
+
+.DS_Store
+*.suo
+*.sln.cache
+*.csproj.user
+*.pidb
+*.userprefs
+
+bin/*.dll
+bin/*.pdb
+bin/*.mdb
+bin/*.exe
+bin/*.config
+
+lib/nroles/*.mdb
+lib/nroles/*.pdb
+
+src/NRoles.VisualState.xml
+src/TestResult.xml
+
+syntax: regexp
+
+^src/.*/bin/.*
+^src/.*/obj/.*
+.*/test-results/.*
