@@ -31,7 +31,7 @@ namespace NRoles.Engine {
       RoleInheritsFromClass = 41,
 
       /// <summary>
-      /// Occurs when a composition does not implement an abstract role members.
+      /// Occurs when a composition does not implement an abstract role member.
       /// </summary>
       DoesNotImplementAbstractRoleMember = 42,
 

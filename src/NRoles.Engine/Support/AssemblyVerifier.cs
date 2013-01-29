@@ -71,20 +71,21 @@ namespace NRoles.Engine {
 
     private void Verify(string assemblyPath, string peVerifyPath, IOperationResult result) {
       Tracer.TraceVerbose("Running PEVerify...");
-      var peVerify = Process.Start(new ProcessStartInfo {
+      using (var peVerify = Process.Start(new ProcessStartInfo {
         FileName = peVerifyPath,
         Arguments = "/nologo \"" + assemblyPath + "\"",
         WorkingDirectory = Path.GetDirectoryName(assemblyPath),
         UseShellExecute = false,
         RedirectStandardOutput = true,
         CreateNoWindow = true
-      });
-      if (!peVerify.WaitForExit(_timeoutInMillis)) {
-        peVerify.Kill();
-        result.AddMessage(Error.PEVerifyTimeout(_timeoutInMillis));
-      }
-      if (peVerify.ExitCode != 0) {
-        result.AddMessage(Error.PEVerifyError(peVerify.StandardOutput.ReadToEnd()));
+      })) {
+        if (!peVerify.WaitForExit(_timeoutInMillis)) {
+          peVerify.Kill();
+          result.AddMessage(Error.PEVerifyTimeout(_timeoutInMillis));
+        }
+        if (peVerify.ExitCode != 0) {
+          result.AddMessage(Error.PEVerifyError(peVerify.StandardOutput.ReadToEnd()));
+        }
       }
     }
 
