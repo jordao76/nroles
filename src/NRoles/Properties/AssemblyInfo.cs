@@ -38,6 +38,6 @@ namespace NRoles {
   public static class _Metadata {
     public const string Version = "0.1.9";
     public const string AssemblyVersion = Version + ".*";
-    public const string Copyright = "Copyright © Rodrigo Jordão 2010-2011";
+    public const string Copyright = "Copyright © Rodrigo Jordão 2010-2013";
   }
 }
