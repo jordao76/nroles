@@ -1,4 +1,4 @@
-﻿using System;
+ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +6,7 @@ using System.Text;
 namespace NRoles.Engine {
 
   /// <summary>
-  /// Encapulates the result of an operation.
+  /// Encapsulates the result of an operation.
   /// </summary>
   /// <remarks>
   /// The result of an operation includes whether it was successful and 
@@ -21,7 +21,7 @@ namespace NRoles.Engine {
   }
 
   /// <summary>
-  /// Encapulates the result of an operation. Default implementation for <see cref="IOperationResult"/>. 
+  /// Encapsulates the result of an operation. Default implementation for <see cref="IOperationResult"/>. 
   /// </summary>
   public class OperationResult : IOperationResult, Does<RMessageContainer> {
 
