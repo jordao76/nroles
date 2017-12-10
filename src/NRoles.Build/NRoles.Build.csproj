@@ -49,10 +49,4 @@
       <Name>NRoles</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <FilesToCopy Include="$(TargetDir)*.*" />
-  </ItemGroup>
-  <Target Name="AfterBuild">
-    <Copy SourceFiles="@(FilesToCopy)" DestinationFolder="$(SolutionDir)..\bin" />
-  </Target>
 </Project>

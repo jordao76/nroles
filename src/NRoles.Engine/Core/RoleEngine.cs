@@ -134,8 +134,8 @@ namespace NRoles.Engine {
     }
 
     bool ShouldMutate(AssemblyDefinition assembly) {
-      return 
-        !assembly.CustomAttributes.Any(ca => 
+      return
+        !assembly.CustomAttributes.Any(ca =>
           ca.Is<DontMutateAttribute>());
     }
 
@@ -162,7 +162,7 @@ namespace NRoles.Engine {
     public readonly string AssemblyPath;
 
     /// <summary>
-    /// The path to the output assembly for saving the mutations on. 
+    /// The path to the output assembly for saving the mutations on.
     /// If it's the same as <see cref="AssemblyPath"/>, the input assembly will be overwritten.
     /// </summary>
     public readonly string OutputAssemblyPath;
@@ -171,7 +171,7 @@ namespace NRoles.Engine {
     /// Gets or sets the assembly references.
     /// </summary>
     public IEnumerable<string> References { get; set ; }
-    
+
     /// <summary>
     /// Indicates if verification of the generated assembly should be executed with the PEVerify tool.
     /// </summary>
@@ -202,7 +202,7 @@ namespace NRoles.Engine {
     /// If not supplied, it will be taken from the <paramref name="assemblyPath"/>.
     /// If this file already exists, it will be overwritten.
     /// </param>
-    public RoleEngineParameters(string assemblyPath, string outputAssemblyPath = null) { 
+    public RoleEngineParameters(string assemblyPath, string outputAssemblyPath = null) {
       AssemblyPath = assemblyPath;
       OutputAssemblyPath = outputAssemblyPath ?? AssemblyPath;
       PEVerifyTimeout = 5;
@@ -221,10 +221,10 @@ namespace NRoles.Engine {
       if (Path.IsPathRooted(OutputAssemblyPath)) {
         if (!Directory.Exists(Path.GetDirectoryName(OutputAssemblyPath))) throw new InvalidOperationException("OutputAssemblyPath directory is invalid");
       }
-      else { 
+      else {
         // TODO: get the working directory and concatenate with the OutputAssemblyPath directory to check for directory existence!
       }
-      
+
     }
   }
 

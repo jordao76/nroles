@@ -71,7 +71,7 @@ namespace NRoles.Engine {
     private PropertyDefinition ImplementProperty() {
       Tracer.TraceVerbose("Compose property: {0}", _name);
 
-      var placeholder = ((PropertyDefinition)Group.Placeholder);
+      var placeholder = (PropertyDefinition)Group.Placeholder;
 
       var implementedProperty =
         placeholder ??

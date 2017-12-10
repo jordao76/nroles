@@ -16,9 +16,8 @@ namespace NRoles.Engine {
     string _peVerifyPath;
 
     private AssemblyVerifier(string peVerifyPath, int timeoutInMillis) {
-      if (peVerifyPath == null) throw new ArgumentNullException("peVerifyPath");
       if (timeoutInMillis < 1000 || timeoutInMillis > 60000) throw new ArgumentOutOfRangeException("timeoutInMillis", "timeout must be between 1 and 60s (1000 and 60000ms)");
-      _peVerifyPath = peVerifyPath;
+      _peVerifyPath = peVerifyPath ?? throw new ArgumentNullException("peVerifyPath");
       _timeoutInMillis = timeoutInMillis;
     }
 
@@ -29,9 +28,8 @@ namespace NRoles.Engine {
     /// <param name="peVerifyPath">Path to the PEVerify executable.</param>
     /// <param name="timeoutInMillis">Timeout for the verification process in milliseconds. Valid values are from 1000 to 60000.</param>
     public AssemblyVerifier(AssemblyDefinition assembly, string peVerifyPath, int timeoutInMillis = 5000) : this(peVerifyPath, timeoutInMillis) {
-      if (assembly == null) throw new ArgumentNullException("assembly");
+      _assembly = assembly ?? throw new ArgumentNullException("assembly");
       _assemblyPath = null;
-      _assembly = assembly;
     }
 
     /// <summary>
@@ -41,8 +39,7 @@ namespace NRoles.Engine {
     /// <param name="peVerifyPath">Path to the PEVerify executable.</param>
     /// <param name="timeoutInMillis">Timeout for the verification process in milliseconds. Valid values are from 1000 to 60000.</param>
     public AssemblyVerifier(string assemblyPath, string peVerifyPath, int timeoutInMillis = 5000) : this(peVerifyPath, timeoutInMillis) {
-      if (assemblyPath == null) throw new ArgumentNullException("assemblyPath");
-      _assemblyPath = assemblyPath;
+      _assemblyPath = assemblyPath ?? throw new ArgumentNullException("assemblyPath");
       _assembly = null;
     }
 

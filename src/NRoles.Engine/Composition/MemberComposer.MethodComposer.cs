@@ -125,11 +125,14 @@ namespace NRoles.Engine {
     private void CreateCodeForAutoPropertyAccessor(MethodDefinition implementedMethod) {
       if (implementedMethod.IsAbstract) return;
 
-      if (implementedMethod.IsPropertyGetter()) {
+      if (implementedMethod.IsGetter) {
         EmitGetterCode(implementedMethod);
       }
-      else if (implementedMethod.IsPropertySetter()) {
+      else if (implementedMethod.IsSetter) {
         EmitSetterCode(implementedMethod);
+      }
+      else {
+        throw new InvalidOperationException("Property accessor is not a getter nor a setter!");
       }
     }
 

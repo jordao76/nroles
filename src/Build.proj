@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\packages\MSBuildTasks.1.5.0.235\tools</MSBuildCommunityTasksPath>
+  </PropertyGroup>
+
+  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets"/>
+
+  <Target Name="Clean">
+    <DeleteTree Directories="**\obj\**;**\bin\**" />
+  </Target>
+
+  <Target Name="Compile">
+    <MSBuild Projects="$(MSBuildProjectDirectory)\NRoles.sln"
+      Properties="Configuration=Debug;OutputPath=bin\Debug\" />
+  </Target>
+
+  <Target Name="Test" DependsOnTargets="Compile">
+    <ItemGroup>
+      <TestAssemblies Include="$(MSBuildProjectDirectory)\NRoles.Engine.Test\bin\Debug\NRoles.Engine.Test.dll;$(MSBuildProjectDirectory)\NRoles.Engine.Test.Acceptance\bin\Debug\NRoles.Engine.Test.Acceptance.dll" />
+    </ItemGroup>
+    <NUnit3 ToolPath="packages\NUnit.ConsoleRunner.3.7.0\tools" Assemblies="@(TestAssemblies)" />
+  </Target>
+
+  <Target Name="AppVeyor">
+    <CallTarget Targets="Compile" />
+  </Target>
+
+  <Target Name="Build">
+    <CallTarget Targets="Clean;Test" />
+  </Target>
+
+</Project>

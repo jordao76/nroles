@@ -23,7 +23,7 @@ namespace NRoles.Engine {
   /// <summary>
   /// Encapsulates the result of an operation. Default implementation for <see cref="IOperationResult"/>. 
   /// </summary>
-  public class OperationResult : IOperationResult, Does<RMessageContainer> {
+  public class OperationResult : MessageContainer, IOperationResult {
 
     /// <summary>
     /// Indicates if the operation was successful.
@@ -34,9 +34,6 @@ namespace NRoles.Engine {
     public bool Success { 
       get { return !this.HasError(); } 
     }
-
-    public IEnumerable<Message> Messages { [Placeholder] get { throw Away.Code; } }
-    [Placeholder] public void AddMessage(Message message) { throw Away.Code; }
 
   }
 

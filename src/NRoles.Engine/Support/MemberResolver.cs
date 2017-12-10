@@ -60,12 +60,13 @@ namespace NRoles.Engine {
       }
 
       var returnType = ResolveConstituentType(sourceMethod.ReturnType);
+
       var targetMethod = new MethodDefinition(
         name,
         methodAttributes,
         returnType);
-      targetMethod.SemanticsAttributes = sourceMethod.SemanticsAttributes;
 
+      ResolveSemanticAttributes(sourceMethod, targetMethod);
       ResolveGenericParameters(sourceMethod, targetMethod);
       ResolveParameters(sourceMethod, targetMethod);
 
@@ -115,6 +116,31 @@ namespace NRoles.Engine {
         }
 
         targetMethod.Parameters.Add(targetParameter);
+      }
+    }
+
+    private void ResolveSemanticAttributes(MethodDefinition sourceMethod, MethodDefinition targetMethod) {
+      targetMethod.SemanticsAttributes = sourceMethod.SemanticsAttributes;
+
+      if ((sourceMethod.SemanticsAttributes & MethodSemanticsAttributes.Getter) > 0) {
+        targetMethod.IsGetter = true;
+        targetMethod.Attributes |= MethodAttributes.SpecialName;
+      }
+      if ((sourceMethod.SemanticsAttributes & MethodSemanticsAttributes.Setter) > 0) {
+        targetMethod.IsSetter = true;
+        targetMethod.Attributes |= MethodAttributes.SpecialName;
+      }
+      if ((sourceMethod.SemanticsAttributes & MethodSemanticsAttributes.AddOn) > 0) {
+        targetMethod.IsAddOn = true;
+        targetMethod.Attributes |= MethodAttributes.SpecialName;
+      }
+      if ((sourceMethod.SemanticsAttributes & MethodSemanticsAttributes.RemoveOn) > 0) {
+        targetMethod.IsRemoveOn = true;
+        targetMethod.Attributes |= MethodAttributes.SpecialName;
+      }
+      if ((sourceMethod.SemanticsAttributes & MethodSemanticsAttributes.Fire) > 0) {
+        targetMethod.IsFire = true;
+        targetMethod.Attributes |= MethodAttributes.SpecialName;
       }
     }
 

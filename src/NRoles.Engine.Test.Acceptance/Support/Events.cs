@@ -7,6 +7,7 @@ using NUnit.Framework;
 namespace NRoles.Engine.Test.Support {
 
   [RoleTest(
+    Ignore = true,
     CompositionType = typeof(Role_With_Public_Event_Composition),
     TestType = typeof(Role_With_Public_Event_Test))]
   public class Role_With_Public_Event : Role {
@@ -37,6 +38,7 @@ namespace NRoles.Engine.Test.Support {
   }
 
   [RoleTest(
+    Ignore = true,
     CompositionType = typeof(Generic_Role_With_Event_Composition<>),
     TestType = typeof(Generic_Role_With_Event_Test))]
   public class Generic_Role_With_Event<T> : Role {
@@ -64,6 +66,7 @@ namespace NRoles.Engine.Test.Support {
   }
 
   [RoleTest(
+    Ignore = true,
     CompositionType = typeof(Role_With_Internal_Event_Composition))]
   public class Role_With_Internal_Event : Role {
     internal event EventHandler MyEvent = delegate { };

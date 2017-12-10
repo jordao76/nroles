@@ -9,7 +9,7 @@ namespace NRoles.Engine {
   /// <summary>
   /// The context for a mutation operation.
   /// </summary>
-  public class MutationContext : IMessageContainer, Does<RMessageContainer> {
+  public class MutationContext : MessageContainer {
 
     /// <summary>
     /// Creates a new instance of this class.
@@ -86,13 +86,6 @@ namespace NRoles.Engine {
     public void RegisterWrapUpAction(Action<IMessageContainer> action) {
       if (action != null) _wrapUpActions.Add(action);
     }
-
-    #endregion
-
-    #region Messages
-
-    public IEnumerable<Message> Messages { [Placeholder] get { throw Away.Code; } }
-    [Placeholder] public void AddMessage(Message message) { throw Away.Code; }
 
     #endregion
 

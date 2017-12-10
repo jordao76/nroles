@@ -6,7 +6,7 @@ using Mono.Cecil;
 
 namespace NRoles.Engine {
   
-  public class MemberConflictResolver : IMessageContainer, Does<RMessageContainer> {
+  public class MemberConflictResolver : MessageContainer {
     public RoleCompositionMemberContainer Container { get; set; }
 
     public void Process(ClassMember classMember) {
@@ -90,9 +90,7 @@ namespace NRoles.Engine {
     public void Process(RoleMember roleMember) {
       // no-op
     }
-     
-    public IEnumerable<Message> Messages { [Placeholder] get { throw Away.Code; } }
-    [Placeholder] public void AddMessage(Message message) { throw Away.Code; }
+
   }
 
 }

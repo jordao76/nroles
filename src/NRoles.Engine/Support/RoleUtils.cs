@@ -6,7 +6,7 @@ using Mono.Cecil;
 using System.Text.RegularExpressions;
 
 namespace NRoles.Engine {
-  
+
   static class RoleUtils {
 
     public static bool IsRole(this TypeDefinition self) {
@@ -34,7 +34,7 @@ namespace NRoles.Engine {
         where @interface.DoesRole()
         select @interface.RetrieveRole();
     }
-    
+
     public static IEnumerable<TypeReference> RetrieveRoles(this TypeReference self) {
       var roles = new Dictionary<TypeReference, int>();
       self.RetrieveRoles(roles);
@@ -103,7 +103,7 @@ namespace NRoles.Engine {
     }
 
     public static bool IsAbstract(this TypeDefinition role, MethodDefinition roleMethod) {
-      // for the method to be considered abstract, it must not be present in the code class 
+      // for the method to be considered abstract, it must not be present in the code class
       //   and it must not be the state class getter
       if (IsRoleView(role)) throw new InvalidOperationException();
       return

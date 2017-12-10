@@ -7,7 +7,7 @@ using Mono.Cecil;
 namespace NRoles.Engine {
 
   // TODO: try to get rid of this type
-  public abstract class RoleCompositionMember : TypeMember, IMessageContainer, Does<RMessageContainer>, Does<MemberMarkings> {
+  public abstract class RoleCompositionMember : TypeMember, IMessageContainer {
 
     [Obsolete("Use Type")]
     public TypeReference Role { get { return base.Type; } }
@@ -38,35 +38,8 @@ namespace NRoles.Engine {
     
     public abstract void Process(MemberConflictResolver resolver);
 
-    #region MemberMarkings
+    #region Member Markings
 
-    public abstract RoleCompositionMember ResolveImplementingMember();
-    public abstract IEnumerable<RoleCompositionMember> ResolveOverridingMembers();
-
-    public bool IsExcluded { [Placeholder] get { throw Away.Code; } }
-    [Placeholder] public void MarkAsExcluded() { throw Away.Code; }
-    public bool IsAliased { [Placeholder] get { throw Away.Code; } }
-    [Placeholder] public void MarkAsAliased() { throw Away.Code; }
-
-    #endregion
-
-    #region Messages
-
-    public IEnumerable<Message> Messages { [Placeholder] get { throw Away.Code; } }
-    [Placeholder] public void AddMessage(Message message) { throw Away.Code; }
-
-    #endregion
-
-  }
-
-  public abstract class MemberMarkings : Role { // TODO: better name
-
-    public abstract TypeReference Type { get; }
-    public abstract IMemberDefinition Definition { get; }
-    public abstract IMemberDefinition ResolveContextualDefinition();
-
-    public abstract bool IsAbstract { get; }
-    
     /// <summary>
     /// The implementing member is the member that "implements" this role/composition member.
     /// </summary>
@@ -110,7 +83,21 @@ namespace NRoles.Engine {
               (" -> " + implementingMember.ResolveContextualDefinition()) : "")
         );
     }
-  
+    #endregion
+
+    #region Messages
+
+    private List<Message> _messages = new List<Message>();
+    public IEnumerable<Message> Messages {
+      get { return _messages; }
+    }
+    public void AddMessage(Message message) {
+      if (message == null) throw new ArgumentNullException("message");
+      _messages.Add(message);
+    }
+
+    #endregion
+
   }
 
 }

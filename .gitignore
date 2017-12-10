@@ -1,0 +1,16 @@
+.DS_Store
+*.suo
+*.sln.cache
+*.csproj.user
+*.pidb
+*.userprefs
+
+src/NRoles.VisualState.xml
+src/TestResult.xml
+
+bin/
+obj/
+test-results/
+
+.vs/
+packages/

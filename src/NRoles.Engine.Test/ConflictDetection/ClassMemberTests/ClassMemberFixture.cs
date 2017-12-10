@@ -33,7 +33,7 @@ namespace NRoles.Engine.Test.ConflictDetection.ClassMemberTests {
       ConflictResolutionResult ResolveConflict(IConflictGroup group);
     }
 
-    [Test, Ignore]
+    [Test, Ignore("wip")]
     public void Non_Inherited_Should_Mark_Group_As_Superceded() {
       // Non_Inherited_Should_Win_Conflict
       var member = GetMethodByName(typeof(Simple), "Method");

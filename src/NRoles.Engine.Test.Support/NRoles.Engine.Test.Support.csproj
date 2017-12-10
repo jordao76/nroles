@@ -44,9 +44,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NRoles.App\NRoles.App.csproj">
-      <Project>{385C3B5D-1624-4C30-8926-6263215E028F}</Project>
-      <Name>NRoles.App</Name>
+    <ProjectReference Include="..\NRoles.Build\NRoles.Build.csproj">
+      <Project>{e1e6db42-d17f-4fe2-bd86-59a3c619bb7c}</Project>
+      <Name>NRoles.Build</Name>
     </ProjectReference>
     <ProjectReference Include="..\NRoles\NRoles.csproj">
       <Project>{40A323EB-2064-4CAA-9944-D385F296E8F6}</Project>
@@ -54,15 +54,15 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">
   </Target>
   -->
-  <UsingTask TaskName="NRoles.Build.RoleTask" AssemblyFile="$(ProjectDir)..\..\lib\nroles\NRoles.Build.dll" />
+  <UsingTask TaskName="NRoles.Build.RoleTask" AssemblyFile="$(OutDir)NRoles.Build.dll" />
   <Target Name="AfterBuild">
-    <RoleTask AssemblyPath="$(TargetPath)" References="@(ReferencePath)" />
+    <RoleTask AssemblyPath="$(TargetPath)" References="@(ReferencePath)" ShowTrace="true" />
   </Target>
 </Project>

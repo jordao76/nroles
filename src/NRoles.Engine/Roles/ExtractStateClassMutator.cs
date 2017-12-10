@@ -12,7 +12,7 @@ namespace NRoles.Engine {
   /// Extracts the state class from a role class.
   /// </summary>
   public class ExtractStateClassMutator : ExtractTypeMutator {
-    
+
     /// <summary>
     /// Creates the visitor necessary to extract the state class from a role class.
     /// </summary>
@@ -82,8 +82,9 @@ namespace NRoles.Engine {
           MethodAttributes.Abstract | MethodAttributes.Virtual | MethodAttributes.SpecialName,
           targetType) {
             SemanticsAttributes = MethodSemanticsAttributes.Getter,
+            IsGetter = true
           };
-        
+
         // this property should not conflict with any other member from other types, so mark it as hidden
         _stateProperty.MarkAsHidden(SourceType.Module); // TODO: only the getter should be marked?
         _stateProperty.GetMethod.MarkAsHidden(SourceType.Module);
@@ -130,7 +131,7 @@ namespace NRoles.Engine {
                 private fields...
                 public static class Code { }
               }
-            }          
+            }
         */
         newField.Attributes &= ~(FieldAttributes.Assembly | FieldAttributes.FamANDAssem | FieldAttributes.Family | FieldAttributes.FamORAssem | FieldAttributes.Private | FieldAttributes.Public);
         if (oldField.IsPublic) {
@@ -140,7 +141,7 @@ namespace NRoles.Engine {
           newField.Attributes |= FieldAttributes.Assembly;
         }
 
-        if (oldField.IsPublic) { 
+        if (oldField.IsPublic) {
           // TODO: assert that the field is static
           // TODO: this is also applicable if the old field is internal and the assembly is marked with InternalsVisibleTo
           Result.AddMessage(Warning.PublicStaticFieldRelocation(oldField));

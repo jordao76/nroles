@@ -7,7 +7,7 @@ using Mono.Cecil.Cil;
 
 namespace NRoles.Engine {
 
-  sealed partial class MemberComposer {
+  sealed partial class MemberComposer : MessageContainer {
 
     public readonly TypeDefinition TargetType;
     public readonly RoleCompositionMemberContainer Container;
@@ -97,7 +97,7 @@ namespace NRoles.Engine {
         }
         // TODO: if it's an event accessor: ??
         else {
-          if (_backingField != null) throw new InvalidOperationException("The member is a method BUT has a backing field!"); // TODO: assertion!
+          if (_backingField != null) throw new InvalidOperationException("The member is a method BUT has a backing field!");
           return ImplementMethodCallingCodeClass();
         }
       }

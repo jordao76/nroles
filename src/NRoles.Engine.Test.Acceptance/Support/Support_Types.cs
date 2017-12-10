@@ -840,6 +840,7 @@ namespace NRoles.Engine.Test.Support {
 
   class Destructor { public static bool Called = false; }
   [RoleTest(
+    Ignore = true,
     CompositionType = typeof(Role_With_Destructor_Composition),
     TestType = typeof(Role_With_Destructor_Composition_Test))]
   class Role_With_Destructor : Role {

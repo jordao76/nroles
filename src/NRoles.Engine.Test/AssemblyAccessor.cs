@@ -18,7 +18,6 @@ namespace NRoles.Engine.Test {
     private Dictionary<string, TypeDefinition> _types;
 
     public AssemblyAccessor(string assemblyLocation = null) {
-      // TODO: check performance
       assemblyLocation = assemblyLocation ?? Assembly.GetExecutingAssembly().Location;
       if (_assemblyLocation != assemblyLocation) {
         _assemblyBytes = null;
@@ -37,7 +36,11 @@ namespace NRoles.Engine.Test {
 
     private void LoadAssembly() {
       using (var stream = new MemoryStream(_assemblyBytes)) {
-        _assembly = AssemblyDefinition.ReadAssembly(stream);
+        var readerParameters = new ReaderParameters();
+        var resolver = new DefaultAssemblyResolver();
+        resolver.AddSearchDirectory(Path.GetDirectoryName(_assemblyLocation));
+        readerParameters.AssemblyResolver = resolver;
+        _assembly = AssemblyDefinition.ReadAssembly(stream, readerParameters);
       }
     }
 

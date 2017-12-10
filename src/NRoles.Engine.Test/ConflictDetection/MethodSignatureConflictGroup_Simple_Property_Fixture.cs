@@ -27,9 +27,9 @@ namespace NRoles.Engine.Test.ConflictDetection {
     }
 
     [Test]
-    [ExpectedException(typeof(ArgumentException))]
     public void Property_Added_To_Group_Should_Throw() {
-      _group.AddMember(_member);
+      Assert.Throws<ArgumentException>(() =>
+        _group.AddMember(_member));
     }
 
   }

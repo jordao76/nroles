@@ -86,37 +86,12 @@ namespace NRoles.Engine {
 
     public static bool IsPropertyAccessor(this MethodDefinition self) {
       if (self == null) throw new InstanceArgumentNullException();
-      return self.IsPropertyGetter() || self.IsPropertySetter();
-    }
-
-    public static bool IsPropertyGetter(this MethodDefinition self) {
-      if (self == null) throw new InstanceArgumentNullException();
-      return self.HasSemanticAttributes(MethodSemanticsAttributes.Getter);
-    }
-
-    public static bool IsPropertySetter(this MethodDefinition self) {
-      if (self == null) throw new InstanceArgumentNullException();
-      return self.HasSemanticAttributes(MethodSemanticsAttributes.Setter);
+      return self.IsGetter || self.IsSetter;
     }
 
     public static bool IsEventAccessor(this MethodDefinition self) {
       if (self == null) throw new InstanceArgumentNullException();
-      return self.IsEventAddOn() || self.IsEventRemoveOn() || self.IsEventFire();
-    }
-
-    public static bool IsEventAddOn(this MethodDefinition self) {
-      if (self == null) throw new InstanceArgumentNullException();
-      return self.HasSemanticAttributes(MethodSemanticsAttributes.AddOn);
-    }
-
-    public static bool IsEventRemoveOn(this MethodDefinition self) {
-      if (self == null) throw new InstanceArgumentNullException();
-      return self.HasSemanticAttributes(MethodSemanticsAttributes.RemoveOn);
-    }
-
-    public static bool IsEventFire(this MethodDefinition self) {
-      if (self == null) throw new InstanceArgumentNullException();
-      return self.HasSemanticAttributes(MethodSemanticsAttributes.Fire);
+      return self.IsAddOn || self.IsRemoveOn || self.IsFire;
     }
 
     public static bool HasSemanticAttributes(this MethodDefinition self, MethodSemanticsAttributes attributes) {

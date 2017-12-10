@@ -58,7 +58,8 @@ namespace NRoles.Engine.Test {
     }
 
     private void VerifyAndTestAssembly(MutationTestAttribute testParameters) {
-      using (var assemblyFile = new TemporaryFile(Directory.GetCurrentDirectory())) {
+      var executingDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+      using (var assemblyFile = new TemporaryFile(executingDir)) {
         ((AssemblyDefinition)_assembly).Write(assemblyFile.FilePath);
         Assert_Assembly(assemblyFile.FilePath);
         Test_Role(testParameters, assemblyFile.FilePath);
@@ -75,7 +76,6 @@ namespace NRoles.Engine.Test {
     }
 
     private static void Assert_Mutate_Into_Role_Result(MutationTestAttribute testParameters, IOperationResult result) {
-      result.Messages.ForEach(Console.WriteLine);
       var expectedError = testParameters != null && testParameters.ExpectedRoleError != 0;
       var expectedWarning = testParameters != null && testParameters.ExpectedRoleWarning != 0;
       if (expectedError) {
@@ -106,7 +106,6 @@ namespace NRoles.Engine.Test {
     }
 
     private static void Assert_Compose_Role_Result(MutationTestAttribute testParameters, IOperationResult result) {
-      result.Messages.ForEach(m => Console.WriteLine(m));
       var expectedError = testParameters.ExpectedCompositionError != 0;
       var expectedWarning = testParameters.ExpectedCompositionWarning != 0;
       if (expectedError) {
@@ -128,7 +127,6 @@ namespace NRoles.Engine.Test {
     }
 
     private void Assert_Global_Checks_Result(MutationTestAttribute testParameters, IOperationResult result) {
-      result.Messages.ForEach(m => Console.WriteLine(m));
       var expectedError = testParameters.ExpectedGlobalCheckError != 0;
       if (expectedError) {
         Assert.That(result.Messages.Any(m => m.Number == (int)testParameters.ExpectedGlobalCheckError));
@@ -157,7 +155,7 @@ namespace NRoles.Engine.Test {
   }
 
   class MutationTestCaseFactory<T> where T : MutationTestAttribute {
-    public IEnumerable<TestCaseData> LoadTestCases() {
+    public static IEnumerable<TestCaseData> LoadTestCases() {
       var assembly = Assembly.GetExecutingAssembly();
 
       var markedTypes = from t in assembly.GetTypes()
@@ -175,9 +173,8 @@ namespace NRoles.Engine.Test {
         from a in attributes
         let t = a.AnnotatedType
         let name = a.ToString()
-        // TODO: these last 2 lines are ugly!
-        let tcd = (a.ExpectedException == null ? new TestCaseData(a) : new TestCaseData(a).Throws(a.ExpectedException))
-        select a.Ignore ? tcd.SetName(name).Ignore() : tcd.SetName(name);
+        let tcd = new TestCaseData(a)
+        select a.Ignore ? tcd.SetName(name).Ignore("wip") : tcd.SetName(name);
     }
   }
 

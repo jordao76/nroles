@@ -68,6 +68,7 @@ namespace NRoles.Engine {
         MethodAttributes.Virtual | MethodAttributes.SpecialName,
         _type.Module.Import(typeof(void)));
       fieldProperty.SetMethod.SemanticsAttributes = MethodSemanticsAttributes.Setter;
+      fieldProperty.SetMethod.IsSetter = true;
       fieldProperty.SetMethod.Parameters.Add(new ParameterDefinition(
         "value", ParameterAttributes.None, // use Unused?
         fieldProperty.PropertyType));
@@ -95,6 +96,7 @@ namespace NRoles.Engine {
         MethodAttributes.Virtual | MethodAttributes.SpecialName,
         fieldProperty.PropertyType);
       fieldProperty.GetMethod.SemanticsAttributes = MethodSemanticsAttributes.Getter;
+      fieldProperty.GetMethod.IsGetter = true;
 
       EmitGetterCode(fieldProperty);
     }

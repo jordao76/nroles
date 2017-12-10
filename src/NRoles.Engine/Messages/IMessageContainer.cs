@@ -26,7 +26,7 @@ namespace NRoles.Engine {
   /// <summary>
   /// Canonical <see cref="IMessageContainer"/> implementation.
   /// </summary>
-  public abstract class RMessageContainer : IMessageContainer, Role {
+  public class MessageContainer : IMessageContainer {
     private List<Message> _messages = new List<Message>();
     public virtual IEnumerable<Message> Messages {
       get { return _messages; }

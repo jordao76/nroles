@@ -26,7 +26,7 @@ namespace NRoles.Engine.Test {
       while (currentType != null &&
         (method = currentType.Methods.SingleOrDefault(m => m.Name == methodName)) == null) {
         typeContext = currentType.BaseType;
-        currentType = typeContext == null ? null : typeContext.Resolve();
+        currentType = typeContext?.Resolve();
       }
       Assert.IsNotNull(method);
       return new ClassMember(typeContext, method, typeContext != type);
