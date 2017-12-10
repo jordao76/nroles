@@ -13,11 +13,9 @@ namespace NRoles.Engine {
     readonly AssemblyDefinition _assembly;
     readonly string _assemblyPath;
     int _timeoutInMillis;
-    string _peVerifyPath;
 
-    private AssemblyVerifier(string peVerifyPath, int timeoutInMillis) {
+    private AssemblyVerifier(int timeoutInMillis) {
       if (timeoutInMillis < 1000 || timeoutInMillis > 60000) throw new ArgumentOutOfRangeException("timeoutInMillis", "timeout must be between 1 and 60s (1000 and 60000ms)");
-      _peVerifyPath = peVerifyPath ?? throw new ArgumentNullException("peVerifyPath");
       _timeoutInMillis = timeoutInMillis;
     }
 
@@ -25,9 +23,8 @@ namespace NRoles.Engine {
     /// Creates a new instance of this class.
     /// </summary>
     /// <param name="assembly">Assembly to verify.</param>
-    /// <param name="peVerifyPath">Path to the PEVerify executable.</param>
     /// <param name="timeoutInMillis">Timeout for the verification process in milliseconds. Valid values are from 1000 to 60000.</param>
-    public AssemblyVerifier(AssemblyDefinition assembly, string peVerifyPath, int timeoutInMillis = 5000) : this(peVerifyPath, timeoutInMillis) {
+    public AssemblyVerifier(AssemblyDefinition assembly, int timeoutInMillis = 5000) {
       _assembly = assembly ?? throw new ArgumentNullException("assembly");
       _assemblyPath = null;
     }
@@ -36,9 +33,8 @@ namespace NRoles.Engine {
     /// Creates a new instance of this class.
     /// </summary>
     /// <param name="assemblyPath">Path to the assembly to verify.</param>
-    /// <param name="peVerifyPath">Path to the PEVerify executable.</param>
     /// <param name="timeoutInMillis">Timeout for the verification process in milliseconds. Valid values are from 1000 to 60000.</param>
-    public AssemblyVerifier(string assemblyPath, string peVerifyPath, int timeoutInMillis = 5000) : this(peVerifyPath, timeoutInMillis) {
+    public AssemblyVerifier(string assemblyPath, int timeoutInMillis = 5000) : this(timeoutInMillis) {
       _assemblyPath = assemblyPath ?? throw new ArgumentNullException("assemblyPath");
       _assembly = null;
     }
@@ -49,7 +45,7 @@ namespace NRoles.Engine {
     /// <returns>Result of the operation.</returns>
     public IOperationResult Verify() {
       var result = new OperationResult();
-      var peVerifyPath = _peVerifyPath;
+      var peVerifyPath = ResolvePEVerifyPath();
       if (!File.Exists(peVerifyPath)) {
         result.AddMessage(Error.PEVerifyDoesntExist(peVerifyPath));
         return result;
@@ -84,6 +80,43 @@ namespace NRoles.Engine {
           result.AddMessage(Error.PEVerifyError(peVerify.StandardOutput.ReadToEnd()));
         }
       }
+    }
+
+    private static string _peverify; // Monostate
+    private string ResolvePEVerifyPath() {
+
+      if (_peverify != null) return _peverify;
+
+      var pf = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+      var pfx86 = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+
+      string[] paths = {
+        Path.Combine(pf, @"Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6.1 Tools"),
+        Path.Combine(pfx86, @"Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6.1 Tools"),
+        Path.Combine(pf, @"Microsoft SDKs\Windows\v8.1A\bin\NETFX 4.5.1 Tools"),
+        Path.Combine(pfx86, @"Microsoft SDKs\Windows\v8.1A\bin\NETFX 4.5.1 Tools"),
+        Path.Combine(pf, @"Microsoft SDKs\Windows\v8.0A\bin\NETFX 4.0 Tools"),
+        Path.Combine(pfx86, @"Microsoft SDKs\Windows\v8.0A\bin\NETFX 4.0 Tools"),
+        Path.Combine(pf, @"Microsoft SDKs\Windows\v7.1\Bin\NETFX 4.0 Tools"),
+        Path.Combine(pf, @"Microsoft SDKs\Windows\v7.1\Bin\NETFX 4.0 Tools\x64"),
+        Path.Combine(pfx86, @"Microsoft SDKs\Windows\v7.1\Bin\NETFX 4.0 Tools"),
+        Path.Combine(pf, @"Microsoft SDKs\Windows\v7.0A\bin\NETFX 4.0 Tools"),
+        Path.Combine(pfx86, @"Microsoft SDKs\Windows\v7.0A\Bin\NETFX 4.0 Tools"),
+        Path.Combine(pf, @"Microsoft SDKs\Windows\v7.0A\Bin"),
+        Path.Combine(pfx86, @"Microsoft SDKs\Windows\v7.0A\Bin"),
+        Path.Combine(pf, @"Microsoft SDKs\Windows\v6.0A\Bin"),
+        Path.Combine(pfx86, @"Microsoft SDKs\Windows\v6.0A\Bin"),
+        Path.Combine(pfx86, @"Microsoft Visual Studio 8\SDK\v2.0\bin")
+      };
+
+      foreach (var path in paths) {
+        var peverify = Path.Combine(path, "PEVerify.exe");
+        if (File.Exists(peverify)) {
+          return _peverify = peverify;
+        }
+      }
+
+      return null;
     }
 
   }

@@ -20,8 +20,8 @@ namespace NRoles.App {
       bool warningsAsErrors = false;
       string input = null;
       string output = null;
-      string peVerifyPath = null;
-      int peVerifyTimeout = 5; // default 5s
+      bool verify = false;
+      int verifyTimeout = 5; // default 5s
       bool showHelp = false;
 
       var options = new OptionSet { 
@@ -29,9 +29,9 @@ namespace NRoles.App {
         { "q|quiet", "shhh.", q => quiet = q != null },
         { "evilwarnings", "treats warnings as errors.", wae => warningsAsErrors = wae != null },
         { "o|out=", "output to VALUE (default is to overwrite the input file).", o => output = o },
-        { "peverifypath=", "path to the PEVerify executable to use to verify the resulting assembly.", (string pvp) => peVerifyPath = pvp },
-        { "peverifytimeout=", "sets the timeout in seconds to wait for PEVerify to check the generated assembly.", (int pvt) => peVerifyTimeout = pvt },
-        { "trace", "prints trace information (trust me, you don't want to see this).", t => trace = t != null }
+        { "v|verify", "verifies the resulting assembly with PEVerify.exe", v => verify = v != null },
+        { "verifytimeout=", "sets the timeout in seconds to wait for PEVerify to check the generated assembly. Only makes sense with the --verify option set.", (int vt) => verifyTimeout = vt },
+        { "t|trace", "prints trace information.", t => trace = t != null }
       };
 
       List<string> unnamed;
@@ -69,9 +69,8 @@ namespace NRoles.App {
         result = new RoleEngine().Execute(
           new RoleEngineParameters(input, output) { 
             TreatWarningsAsErrors = warningsAsErrors,
-            RunPEVerify = peVerifyPath != null,
-            PEVerifyPath = peVerifyPath,
-            PEVerifyTimeout = peVerifyTimeout
+            RunPEVerify = verify,
+            PEVerifyTimeout = verifyTimeout
           });
       }
       catch (Exception ex) {
@@ -82,11 +81,7 @@ namespace NRoles.App {
           Console.WriteLine();
           Console.WriteLine(ex.ToString());
           Console.WriteLine();
-          if (ex.InnerException != null) {
-            Console.WriteLine("INNER " + ex.InnerException.Message);
-          }
-          var hresult = Marshal.GetHRForException(ex);
-          Console.WriteLine("HRESULT 0x{0:x}", hresult);
+          Console.WriteLine("HRESULT 0x{0:x}", Marshal.GetHRForException(ex));
         }
       }
 
@@ -108,7 +103,7 @@ namespace NRoles.App {
 
     private static void ShowHelp(OptionSet options) {
       Console.WriteLine("Usage: nutate [options] <input>");
-      Console.WriteLine("Mutates an input assembly to enable roles.");
+      Console.WriteLine("Mutates an input assembly to enable roles. For more info: https://github.com/jordao76/nroles");
       Console.WriteLine();
       Console.WriteLine("Options:");
       options.WriteOptionDescriptions(Console.Out);

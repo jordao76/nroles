@@ -124,7 +124,7 @@ namespace NRoles.Engine {
       MarkAsMutated(assembly);
 
       if (parameters.RunPEVerify) {
-        var assemblyVerificationResult = VerifyAssembly(assembly, parameters.PEVerifyPath, parameters.PEVerifyTimeout);
+        var assemblyVerificationResult = VerifyAssembly(assembly, parameters.PEVerifyTimeout);
         result.AddResult(assemblyVerificationResult);
         if (!assemblyVerificationResult.Success) return result;
       }
@@ -144,8 +144,8 @@ namespace NRoles.Engine {
         assembly.MainModule.Create<DontMutateAttribute>());
     }
 
-    IOperationResult VerifyAssembly(AssemblyDefinition assembly, string peVerifyPath, int timeoutInSeconds) {
-      return new AssemblyVerifier(assembly, peVerifyPath, timeoutInSeconds * 1000).Verify();
+    IOperationResult VerifyAssembly(AssemblyDefinition assembly, int timeoutInSeconds) {
+      return new AssemblyVerifier(assembly, timeoutInSeconds * 1000).Verify();
     }
 
   }
@@ -176,11 +176,6 @@ namespace NRoles.Engine {
     /// Indicates if verification of the generated assembly should be executed with the PEVerify tool.
     /// </summary>
     public bool RunPEVerify { get; set; }
-
-    /// <summary>
-    /// Path to the PEVerify executable.
-    /// </summary>
-    public string PEVerifyPath { get; set; }
 
     /// <summary>
     /// The number of seconds to wait for the PEVerify tool to run.
