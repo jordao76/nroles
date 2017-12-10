@@ -6,7 +6,7 @@ The fact that NRoles is a post-compiler makes it harder to code against composit
 
 Given this simple role:
 
-```
+```cs
 public abstract class RPrintable : Role {
   public virtual void Print() {
     Console.WriteLine(ToString());
@@ -16,7 +16,7 @@ public abstract class RPrintable : Role {
 
 And this composition:
 
-```
+```cs
 public class Person : Does<RPrintable> {
   public string Name { get; set; }
   public string Profession { get; set; }
@@ -28,7 +28,7 @@ public class Person : Does<RPrintable> {
 
 This is the code that can be written after the post-compiler runs, in _another_ project:
 
-```
+```cs
 var wilco = new Person { Name = "Roger Wilco", Profession = "space janitor" };
 wilco.Print();
 ```
@@ -39,7 +39,7 @@ Let's see different ways to write this code in the same project that the composi
 
 NRoles provides the `TRole As<TRole>()` extension method for this purpose:
 
-```
+```cs
 var wilco = new Person { Name = "Roger Wilco", Profession = "space janitor" };
 wilco.As<RPrintable>().Print();
 ```
@@ -50,7 +50,7 @@ This is safe but can make the code longer than necessary. It can be particularly
 
 With C# 4, you can use `dynamic`:
 
-```
+```cs
 dynamic wilco = new Person { Name = "Roger Wilco", Profession = "space janitor" };
 wilco.Print();
 ```
@@ -61,7 +61,7 @@ It reads better but is not compile-time safe and also has negative performance i
 
 Members in a composition can be defined as placeholders that will be "filled up" by respective role members:
 
-```
+```cs
 public class Person : Does<RPrintable> {
   ...
   [Placeholder] public void Print() { throw Away.Code; }
@@ -70,13 +70,13 @@ public class Person : Does<RPrintable> {
 
 The `Print` method is marked with the `Placeholder` attribute. Its code doesn't really matter, it will be thrown away by the post-compiler. It can even be written as an external method (only with the MS C# compiler):
 
-```
+```cs
 [Placeholder] public extern void Print();
 ```
 
 The client code can simply be:
 
-```
+```cs
 var wilco = new Person { Name = "Roger Wilco", Profession = "space janitor" };
 wilco.Print();
 ```
@@ -87,7 +87,7 @@ Placeholders can be created only for the members that are used in the same proje
 
 More practically, roles can implement interfaces, and the compositions can also implement those interfaces. Visual Studio can be used to provide default implementations for the interface, which can then be marked as placeholders. This scaffolding can be put in special `#region`s or on dedicated partial class files:
 
-```
+```cs
 public interface IPrintable {
   void Print();
 }
