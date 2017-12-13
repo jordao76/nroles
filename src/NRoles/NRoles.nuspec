@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <authors>Rodrigo Jordão</authors>
+    <owners>Rodrigo Jordão</owners>
+    <licenseUrl>https://github.com/jordao76/nroles/blob/master/LICENSE.txt</licenseUrl>
+    <projectUrl>https://github.com/jordao76/nroles</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <copyright>Copyright © 2010</copyright>
+    <tags>traits roles</tags>
+  </metadata>
+  <files>
+    <file src="..\NRoles.Build\bin\Debug\*.*" target="tools\NRoles.Build" />
+    <file src="NRoles.targets" target="build" />
+  </files>
+</package>
