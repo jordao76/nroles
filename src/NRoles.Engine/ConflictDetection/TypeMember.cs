@@ -24,10 +24,8 @@ namespace NRoles.Engine {
     /// <param name="class">The member type.</param>
     /// <param name="definition">The member definition.</param>
     public TypeMember(TypeReference type, IMemberDefinition definition) {
-      if (type == null) throw new ArgumentNullException("type");
-      if (definition == null) throw new ArgumentNullException("definition");
-      Type = type;
-      Definition = definition;
+      Type = type ?? throw new ArgumentNullException("type");
+      Definition = definition ?? throw new ArgumentNullException("definition");
     }
 
     /// <summary>

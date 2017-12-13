@@ -23,7 +23,7 @@ namespace NRoles.Engine {
     /// <summary>
     /// Information message.
     /// </summary>
-    // TODO: what's the right name to appear in the Messages tab in Visual Studio?
+    // TODO: what's the right name to appear in the Messages tab in Visual Studio? "Hint"?
     Info
 
   }

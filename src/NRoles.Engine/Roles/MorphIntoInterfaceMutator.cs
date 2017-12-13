@@ -179,7 +179,7 @@ namespace NRoles.Engine {
         Tracer.TraceVerbose("Morph method: {0}", method.ToString());
 
         if (method.IsConstructor && method.HasParameters) {
-          AddMessage(Error.RoleCannotContainParameterizedConstructor(method.DeclaringType, method));
+          AddMessage(Error.RoleCannotContainParameterizedConstructor(method.DeclaringType, method, method.GetBody()?.Instructions?[0]?.SequencePoint));
           return;
         }
 

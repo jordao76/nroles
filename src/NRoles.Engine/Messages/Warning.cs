@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mono.Cecil.Cil;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -44,41 +45,39 @@ namespace NRoles.Engine {
 
     }
 
-    private Warning(Code number, string text) : base(MessageType.Warning, (int)number, text) { }
-    private Warning(Code number, string text, params object[] parameters) :
-      this(number, string.Format(text, parameters)) { }
+    private Warning(Code number, string text, SequencePoint sequencePoint = null) : 
+      base(MessageType.Warning, (int)number, text, sequencePoint: sequencePoint) { }
 
-    internal static Warning PublicStaticMethodRelocation(object method) {
+    internal static Warning PublicStaticMethodRelocation(object method, SequencePoint sequencePoint) {
       return new Warning(
         Code.PublicStaticMethodRelocation,
-        "The static method '{0}' will be relocated to the code class.", method);
+        $"The static method '{method}' will be relocated to the code class.",
+        sequencePoint);
     }
 
     internal static Warning RoleMemberExcludedAgain(object roleView, object role, object member) {
       return new Warning(
         Code.RoleMemberExcludedAgain,
-        "The role member '{0}' of role '{1}' is being excluded multiple times (detected at role view '{2}').",
-        member, role, roleView);
+        $"The role member '{member}' of role '{role}' is being excluded multiple times (detected at role view '{roleView}').");
     }
 
     internal static Warning PublicStaticFieldRelocation(object field) {
       return new Warning(
         Code.PublicStaticFieldRelocation,
-        "The static field '{0}' will be relocated to the data class.", field);
+        $"The static field '{field}' will be relocated to the data class.");
     }
 
     // TODO: Move to Info class!
     internal static Warning AssemblyMarkedWithDontMutate(object assembly) {
       return new Warning(
         Code.AssemblyMarkedWithDontMutate,
-        "The assembly '{0}' is marked to not be mutated. Aborting mutation.", assembly);
+        $"The assembly '{assembly}' is marked to not be mutated. Aborting mutation.");
     }
 
     internal static Warning PlaceholderDoesntMatchAnyRoleMembers(object member) {
       return new Warning(
         Code.PlaceholderDoesntMatchAnyRoleMembers,
-        "The member '{0}' is marked as a placeholder but there's no matching role member to replace it.",
-        member);
+        $"The member '{member}' is marked as a placeholder but there's no matching role member to replace it.");
     }
     
   }

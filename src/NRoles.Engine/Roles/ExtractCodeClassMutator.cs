@@ -156,7 +156,7 @@ namespace NRoles.Engine {
         }
 
         if (sourceMethod.IsStatic && sourceMethod.IsPublic) {
-          Result.AddMessage(Warning.PublicStaticMethodRelocation(sourceMethod));
+          Result.AddMessage(Warning.PublicStaticMethodRelocation(sourceMethod, sourceMethod.GetBody()?.Instructions?[0]?.SequencePoint));
           // TODO: internal method relocation warning if the assembly is marked with the InternalsVisibleToAttribute!
         }
 

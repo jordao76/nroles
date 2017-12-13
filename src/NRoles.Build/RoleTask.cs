@@ -35,6 +35,7 @@ namespace NRoles.Build {
         LogMessages(result);
       }
       catch (Exception ex) {
+        // TODO: Error.InternalError() should be processed inside the engine! Also look in NRoles.App
         result = new OperationResult();
         result.AddMessage(Error.InternalError());
         LogMessages(result);
@@ -49,8 +50,16 @@ namespace NRoles.Build {
     private void LogMessages(IMessageContainer messageContainer) {
       foreach (var message in messageContainer.Messages) {
         switch (message.Type) {
-          case MessageType.Error: Log.LogError(message.ToString()); break; // TODO: other overload!
-          case MessageType.Warning:Log.LogWarning(message.ToString()); break; // TODO: other overload!
+          case MessageType.Error:
+            Log.LogError(subcategory: null, errorCode: message.MessageCode, helpKeyword: null, file: message.File,
+              lineNumber: message.LineNumber, columnNumber: message.ColumnNumber, endLineNumber: message.EndLineNumber, endColumnNumber: message.EndColumnNumber, 
+              message: message.Text);
+            break;
+          case MessageType.Warning:
+            Log.LogWarning(subcategory: null, warningCode: message.MessageCode, helpKeyword: null, file: message.File,
+              lineNumber: message.LineNumber, columnNumber: message.ColumnNumber, endLineNumber: message.EndLineNumber, endColumnNumber: message.EndColumnNumber,
+              message: message.Text);
+            break;
           case MessageType.Info: Log.LogMessage(message.ToString()); break;
         }
       }

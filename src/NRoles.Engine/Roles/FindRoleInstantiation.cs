@@ -23,11 +23,10 @@ namespace NRoles.Engine {
     }
 
     public override void VisitInstruction(Instruction instruction) {
-      var method = instruction.Operand as MethodReference;
-      if (method != null) {
+      if (instruction.Operand is MethodReference method) {
         var methodDefinition = method.Resolve();
         if (methodDefinition.Name == ".ctor" && methodDefinition.DeclaringType == _roleType) {
-          _context.AddMessage(Error.RoleInstantiated(_roleType, _currentMethod));
+          _context.AddMessage(Error.RoleInstantiated(_roleType, _currentMethod, instruction.SequencePoint));
         }
       }
     }

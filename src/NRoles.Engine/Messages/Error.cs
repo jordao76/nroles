@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Mono.Cecil;
+using Mono.Cecil.Cil;
 
 namespace NRoles.Engine {
 
@@ -142,98 +143,96 @@ namespace NRoles.Engine {
 
     }
 
-    private Error(Code number, string text) : base(MessageType.Error, (int)number, text) { }
-    private Error(Code number, string text, params object[] parameters) :
-      this(number, string.Format(text, parameters)) { }
+    private Error(Code number, string text, SequencePoint sequencePoint = null) : 
+      base(MessageType.Error, (int)number, text, sequencePoint: sequencePoint) { }
 
     public static Message InternalError() {
       return new Error(
         Code.InternalError,
         "Oops, an internal error occurred.");
     }
-    internal static Error RoleCannotContainParameterizedConstructor(object role, object constructor) {
+    internal static Error RoleCannotContainParameterizedConstructor(object role, object constructor, SequencePoint sequencePoint) {
       return new Error(
         Code.RoleCannotContainParameterizedConstructor,
-        "Role '{0}' cannot contain parameterized constructor '{1}'.", role, constructor);
+        $"Role '{role}' cannot contain parameterized constructor '{constructor}'.",
+        sequencePoint);
     }
     internal static Error RoleInheritsFromClass(object role, object baseClass) {
       return new Error(
         Code.RoleInheritsFromClass,
-        "Role '{0}' cannot derive from class '{1}'. Roles can only derive from object, implement interfaces and compose other roles.", role, baseClass);
+        $"Role '{role}' cannot derive from class '{baseClass}'. Roles can only derive from object, implement interfaces and compose other roles.");
     }
     internal static Error DoesNotImplementAbstractRoleMember(object compositionClass, object abstractRoleMember) {
       return new Error(
         Code.DoesNotImplementAbstractRoleMember,
-        "'{0}' does not implement abstract role member '{1}'.", compositionClass, abstractRoleMember);
+        $"'{compositionClass}' does not implement abstract role member '{abstractRoleMember}'.");
     }
     internal static Error Conflict(object composition, object member, List<RoleCompositionMember> roleMembersInConflict) {
       var roles = string.Join("', '", roleMembersInConflict.Select(rmb => rmb.Role.ToString()).ToArray());
       return new Error(
         Code.Conflict,
-        "Conflict found in role composition '{0}' for '{1}'. The conflict comes from: '{2}'", composition, member, roles);
+        $"Conflict found in role composition '{composition}' for '{member}'. The conflict comes from: '{roles}'");
     }
     internal static Error AllMembersExcluded(object compositionClass, object roleMember) {
       return new Error(
         Code.AllMembersExcluded,
-        "'{0}' excludes all role members '{1}'.", compositionClass, roleMember);
+        $"'{compositionClass}' excludes all role members '{roleMember}'.");
     }
     internal static Error MethodsWithConflictingSignatures(object conflictingMethods) {
       return new Error(
         Code.MethodsWithConflictingSignatures,
-        "Methods have conflicting signatures:{0}.", conflictingMethods);
+        $"Methods have conflicting signatures:{conflictingMethods}.");
     }
     internal static Error TypeCantInheritFromRole(object inheritingType, object roleType) {
       return new Error(
         Code.TypeCantInheritFromRole,
-        "Type '{0}' cannot inherit from role '{1}'.", inheritingType, roleType);
+        $"Type '{inheritingType}' cannot inherit from role '{roleType}'.");
     }
-    internal static Error RoleInstantiated(object roleType, object instantiatingLocation) {
+    internal static Error RoleInstantiated(object roleType, object instantiatingLocation, SequencePoint sequencePoint) {
       return new Error(
         Code.RoleInstantiated,
-        "Role '{0}' is being instantiated in '{1}'. Roles cannot be instantiated.", roleType, instantiatingLocation);
+        $"Role '{roleType}' is being instantiated in '{instantiatingLocation}'. Roles cannot be instantiated.",
+        sequencePoint);
     }
     internal static Error RoleComposesItself(object roleType) {
       return new Error(
         Code.RoleComposesItself,
-        "Role '{0}' cannot compose itself.", roleType);
+        $"Role '{roleType}' cannot compose itself.");
     }
     internal static Error CompositionWithTypeParameter(object compositionType) {
       return new Error(
         Code.CompositionWithTypeParameter,
-        "Class '{0}' cannot compose a role as a type parameter.", compositionType);
+        $"Class '{compositionType}' cannot compose a role as a type parameter.");
     }
     internal static Error MembersWithSameName(object members) {
       return new Error(
         Code.MembersWithSameName,
-        "Members can't be declared with the same name:{0}.", members);
+        $"Members can't be declared with the same name:{members}.");
     }
     internal static Error RoleViewMemberNotFoundInRole(object role, object member) {
       return new Error(
         Code.RoleViewMemberNotFoundInRole,
-        "Role view member '{0}' could not be found in the role '{1}'.", member, role);
+        $"Role view member '{member}' could not be found in the role '{role}'.");
     }
     internal static Error RoleMemberAliasedAgain(object roleView, object role, object member) {
       return new Error(
         Code.RoleMemberAliasedAgain,
-        "The role member '{0}' of role '{1}' cannot be aliased multiple times (detected at role view '{2}').",
-        member, role, roleView);
+        $"The role member '{member}' of role '{role}' cannot be aliased multiple times (detected at role view '{roleView}').");
     }
     internal static Error PEVerifyTimeout(int timeoutInMillis) {
       return new Error(
         Code.PEVerifyTimeout, 
-        "PEVerify took too long and had to be terminated. The current timeout is of {0}s.", 
-        timeoutInMillis / 1000.0);
+        $"PEVerify took too long and had to be terminated. The current timeout is of {timeoutInMillis / 1000.0}s.");
     }
     internal static Error PEVerifyError(object description) {
       return new Error(
         Code.PEVerifyError,
-        "PEVerify found errors in the mutated assembly:\n{0}",
-        description);
+        $"PEVerify found errors in the mutated assembly:\n{description}");
     }
     internal static Error PEVerifyDoesntExist(string path) {
       return new Error(
         Code.PEVerifyDoesntExist,
-        "The PEVerify supplied path '{0}' doesn't exist.", path);
+        $"The PEVerify supplied path '{path}' doesn't exist.");
     }
     internal static Error ErrorFromWarnings() {
       return new Error(
@@ -243,40 +242,32 @@ namespace NRoles.Engine {
     internal static Message RoleViewWithMultipleRoles(object roleView, List<TypeReference> allRolesForView) {
       return new Error(
         Code.RoleViewWithMultipleRoles,
-        "The role view '{0}' adapts multiple roles. Use a single role per role view.",
-        roleView);
+        $"The role view '{roleView}' adapts multiple roles. Use a single role per role view.");
     }
     internal static Message RoleViewIsNotAnInterface(object roleView) {
       return new Error(
         Code.RoleViewIsNotAnInterface,
-        "The role view '{0}' must be declared as an interface.",
-        roleView);
+        $"The role view '{roleView}' must be declared as an interface.");
     }
     internal static Error RoleHasPInvokeMethod(object method) {
       return new Error(
         Code.RoleHasPInvokeMethod,
-        "The role method '{0}' is a PInvoke method. This is not supported.",
-        method);
+        $"The role method '{method}' is a PInvoke method. This is not supported.");
     }
     internal static Error SelfTypeConstraintNotSetToCompositionType(object composition, object role, object selfType) {
       return new Error(
         Code.SelfTypeConstraintNotSetToCompositionType,
-        "Composition '{0}' doesn't provide itself as the self-type parameter to role '{1}'. It uses '{2}' instead.",
-        composition,
-        role,
-        selfType);
+        $"Composition '{composition}' doesn't provide itself as the self-type parameter to role '{role}'. It uses '{selfType}' instead.");
     }
     internal static Error RoleHasPlaceholder(object member) {
       return new Error(
         Code.RoleHasPlaceholder,
-        "Role member '{0}' is marked as a placeholder. Roles cannot have placeholders, use an abstract member not marked as a placeholder instead.",
-        member);
+        $"Role member '{member}' is marked as a placeholder. Roles cannot have placeholders, use an abstract member not marked as a placeholder instead.");
     }
     internal static Message RoleHasExplicitInterfaceImplementation(object role) {
       return new Error(
         Code.RoleHasExplicitInterfaceImplementation,
-        "The role '{0}' explicitly implements interface members. This is not supported.",
-        role);
+        $"The role '{role}' explicitly implements interface members. This is not supported.");
     }
   
   }
