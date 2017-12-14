@@ -27,7 +27,7 @@ public class C : Does<R1>, Does<R2> { }
 
 The following sections show different ways to resolve the conflict.
 
-## supersede the conflict in the composition ##
+## Supersede the conflict in the composition ##
 
 A composition can supersede the conflicting member:
 
