@@ -1,0 +1,8 @@
+image:
+  Visual Studio 2017
+
+before_build:
+  nuget restore src\NRoles.sln
+
+build:
+  project: src\Build.proj
