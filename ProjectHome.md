@@ -1,10 +1,18 @@
-# NRoles #
+# NRoles
+
+[![NuGet version](http://img.shields.io/nuget/v/NRoles.svg)](https://www.nuget.org/packages/NRoles/)
+[![AppVeyor build](https://img.shields.io/appveyor/ci/jordao76/nroles.svg)](https://ci.appveyor.com/project/jordao76/nroles)
+[![License](http://img.shields.io/:license-mit-blue.svg)](https://github.com/jordao76/nroles/blob/master/LICENSE.txt)
 
 NRoles is an experiment with roles in C#. Roles, very similar to traits, are high level constructs that promote better code reuse through easier composition. NRoles is a post-compiler created with [Mono.Cecil](http://www.mono-project.com/Cecil) that transforms an assembly to enable roles and compositions.
 
-## Synopsis ##
+## Installation
 
-Reference the `NRoles.dll` (on the `NRoles` project output) assembly and create some roles and compositions:
+NRoles is available as a NuGet package. Once installed in a project, it will add a custom MSBuild post-compilation step that will transform the target assembly to enable roles and compositions.
+
+## Example
+
+_Roles_ are classes marked with the interface `NRoles.Role`, and _compositions_ with the interface `NRoles.Does<TRole>`, with the generic parameter `TRole` set to a role:
 
 ```cs
 using NRoles;
@@ -35,15 +43,7 @@ radio.As<RSwitchable>().TurnOn();
 radio.As<RTunable>().Seek(42);
 ```
 
-Note: there are also other ways to [use compositions in the same project they're defined](WorkInTheSameProject.md).
-
-Run the post-compiler `nutate.exe` (found on the `NRoles.App` project output) on the compiled assembly:
-
-```sh
-$ nutate Devices.dll
-```
-
-The roles are now composed in the compiled assembly.
+Note that there are also other ways to [use compositions in the same project they're defined](WorkInTheSameProject.md).
 
 When you reference it from another project:
 
@@ -58,3 +58,11 @@ radio.Seek(42);
 Roles cannot be instantiated, cannot inherit from any classes (only `Object`) and cannot have parameterized constructors. They can [implement interfaces](ImplementInterfaces.md), and these implementations will be carried over to the classes that compose them. They can also compose other roles and [declare self-types](http://codecrafter.blogspot.ca/2012/06/self-types-in-nroles.html). Conflicts in a composition must be [resolved explicitly](ResolveConflicts.md).
 
 More examples with NRoles can be found [here](http://codecrafter.blogspot.com/2011/05/nroles-experiment-with-roles-in-c.html) and [here](http://codecrafter.blogspot.com/2011/06/dci-example-with-nroles.html).
+
+## Disclaimer
+
+NRoles is an _experiment_, it can perform extensive changes to target assemblies, and might not work well with other tools and processes, most notably _debugging_.
+
+## License
+
+Licensed under the [MIT license](https://github.com/jordao76/nroles/blob/master/LICENSE.txt).
