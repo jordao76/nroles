@@ -27,9 +27,9 @@ public class C : Does<R1>, Does<R2> { }
 
 The following sections show different ways to resolve the conflict.
 
-## Supercede the conflict in the composition ##
+## supersede the conflict in the composition ##
 
-A composition can supercede the conflicting member:
+A composition can supersede the conflicting member:
 
 ```cs
 public class C1 : Does<R1>, Does<R2> {
@@ -37,7 +37,7 @@ public class C1 : Does<R1>, Does<R2> {
 }
 ```
 
-This will resolve the conflict with a member provided by the class itself, which will effectively supercede all role members that match the member type and signature.
+This will resolve the conflict with a member provided by the class itself, which will effectively supersede all role members that match the member type and signature.
 
 This code:
 
