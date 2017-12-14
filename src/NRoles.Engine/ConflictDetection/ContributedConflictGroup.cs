@@ -9,7 +9,7 @@ namespace NRoles.Engine {
   // a group for ONE contributed member to the target class from one or more role-composition members,
   // based on the WHOLE signature (that is, including the return type)
   public class ContributedConflictGroup : ConflictGroupBase { 
-    ClassMember _supercedingMember;
+    ClassMember _supersedingMember;
     public bool HasConflict { get; internal set; }
 
     public IMemberDefinition ImplementedMember { get; set; }
@@ -34,17 +34,17 @@ namespace NRoles.Engine {
       return MemberMatcher.IsMatch(Members[0].ResolveContextualDefinition(), member.ResolveContextualDefinition());
     }
 
-    // marks the member as superceded in the target type
-    public void MarkAsSuperceded(ClassMember supercedingMember) {
-      _supercedingMember = supercedingMember;
+    // marks the member as superseded in the target type
+    public void MarkAsSuperseded(ClassMember supersedingMember) {
+      _supersedingMember = supersedingMember;
     }
 
-    public ClassMember Supercede {
-      get { return _supercedingMember; }
+    public ClassMember Supersede {
+      get { return _supersedingMember; }
     }
 
-    public bool IsSuperceded {
-      get { return _supercedingMember != null; }
+    public bool IsSuperseded {
+      get { return _supersedingMember != null; }
     }
 
     public IMemberDefinition Placeholder { get; set; }
@@ -68,7 +68,7 @@ namespace NRoles.Engine {
       sb.AppendFormat("[Group]{1}{2} -> {0}\n",
         ResolveRepresentation(), 
         HasConflict ? " [Conflict]" : "",
-        IsSuperceded ?  " [Superceded]" : "");
+        IsSuperseded ?  " [Superseded]" : "");
       Members.ForEach(roleMember => 
         sb.AppendFormat("  {1}{0}\n", 
           roleMember,

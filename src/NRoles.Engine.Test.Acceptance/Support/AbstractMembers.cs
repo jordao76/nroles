@@ -11,7 +11,7 @@ namespace NRoles.Engine.Test.Support.AbstractMembers {
   }
 
   [CompositionTest(
-    Description = "Abstract method in a base class should be 'superceded' by abstract role method",
+    Description = "Abstract method in a base class should be 'superseded' by abstract role method",
     RoleType = typeof(Role_With_Abstract_Method),
     TestType = typeof(Child_Test))]
   public abstract class Derived : Base, Does<Role_With_Abstract_Method> { }

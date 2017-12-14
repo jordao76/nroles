@@ -17,7 +17,7 @@ namespace NRoles {
   /// Marks a role member as superseded in a composition type.
   /// </summary>
   [AttributeUsage(AttributeTargets.Event | AttributeTargets.Method | AttributeTargets.Property, AllowMultiple = false)]
-  public class SupercedeAttribute : Attribute { }
+  public class SupersedeAttribute : Attribute { }
 
   /// <summary>
   /// Marks a role member as a placeholder in a composition type. 

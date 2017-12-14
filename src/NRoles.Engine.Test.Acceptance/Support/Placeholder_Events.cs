@@ -37,7 +37,7 @@ namespace NRoles.Engine.Test.Support.PlaceholderEvents {
     }
   }
 
-  // TODO: possible bug: test superceded event
+  // TODO: possible bug: test superseded event
 
   // TODO: placeholder in individual adder or remover
 

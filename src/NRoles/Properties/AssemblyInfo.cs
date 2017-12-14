@@ -35,7 +35,7 @@ using System.Runtime.InteropServices;
 
 namespace NRoles {
   public static class _Metadata {
-    public const string Version = "0.2.0";
+    public const string Version = "0.2.1";
     public const string AssemblyVersion = Version + ".*";
     public const string Copyright = "Copyright © Rodrigo Jordão 2010";
   }

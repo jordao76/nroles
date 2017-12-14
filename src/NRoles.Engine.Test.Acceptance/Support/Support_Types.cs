@@ -177,7 +177,7 @@ namespace NRoles.Engine.Test.Support {
     public abstract int Method();
   }
   public class Role_With_Abstract_Method_Composition : Does<Role_With_Abstract_Method> {
-    // TODO: needs [Supercede] for abstracts?
+    // TODO: needs [Supersede] for abstracts?
     public int Method() { return 42; }
   }
   public class Role_With_Abstract_Method_Composition_Test : DynamicTestFixture {

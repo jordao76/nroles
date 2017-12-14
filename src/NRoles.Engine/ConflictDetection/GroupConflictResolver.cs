@@ -13,7 +13,7 @@ namespace NRoles.Engine {
 
       var result = new ConflictDetectionResult();
 
-      if (group.IsSuperceded) {
+      if (group.IsSuperseded) {
         return result; // TODO: process warnings? views here are superfluous since the member is overriden!
       }
 

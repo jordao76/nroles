@@ -39,9 +39,9 @@ namespace NRoles.Engine {
         return null;
       }
 
-      if (group.IsSuperceded) {
-        // the superceding member in the class is the implementing member for the role member
-        return group.ImplementedMember = AdjustSupercedingMember(group.Supercede, group.ResolveOverridingMembers());
+      if (group.IsSuperseded) {
+        // the superseding member in the class is the implementing member for the role member
+        return group.ImplementedMember = AdjustSupersedingMember(group.Supersede, group.ResolveOverridingMembers());
       }
 
       if (group.IsBaseMethod) {
@@ -140,14 +140,14 @@ namespace NRoles.Engine {
       return false;
     }
 
-    private MethodDefinition AdjustSupercedingMember(ClassMember classMember, IEnumerable<RoleCompositionMember> overrides) {
+    private MethodDefinition AdjustSupersedingMember(ClassMember classMember, IEnumerable<RoleCompositionMember> overrides) {
       if (overrides.Count() == 0) return null;
 
       var member = classMember.Definition;
       var method = member as MethodDefinition;
       if (method == null) return null;
 
-      Tracer.TraceVerbose("Adjust superceding member: {0}", classMember.Definition);
+      Tracer.TraceVerbose("Adjust superseding member: {0}", classMember.Definition);
 
       MethodDefinition targetMethod = null;
       if (!classMember.IsInherited) {
@@ -193,7 +193,7 @@ namespace NRoles.Engine {
       } while (currentType != null);
       if (baseMember == null) throw new InvalidOperationException();
 
-      // TODO: refactor with AdjustSupercedingMember!
+      // TODO: refactor with AdjustSupersedingMember!
       var method = (MethodDefinition)typeMember.Definition;
       var targetMethod = new MemberResolver(baseMember.Class, Module).ResolveMethodDefinition(method, method.Name, MethodAttributes.Private | MethodAttributes.Virtual | MethodAttributes.NewSlot | MethodAttributes.HideBySig);
       CreateCodeToCallBaseClassMethod(targetMethod, baseMember);

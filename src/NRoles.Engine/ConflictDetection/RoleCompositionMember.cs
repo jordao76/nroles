@@ -47,7 +47,7 @@ namespace NRoles.Engine {
     /// The implementing member can be (but might not be limited to):
     ///   1. the member itself
     ///   2. if the member is excluded, the member that remains (in another role, or in the composition)
-    ///   3. if the member is superceded, the class member that superceded it
+    ///   3. if the member is superseded, the class member that superseded it
     /// </remarks>
     /// <returns>Implementing member for this member.</returns>
     public abstract RoleCompositionMember ResolveImplementingMember();

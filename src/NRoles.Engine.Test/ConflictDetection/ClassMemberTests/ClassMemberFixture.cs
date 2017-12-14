@@ -16,13 +16,13 @@ namespace NRoles.Engine.Test.ConflictDetection.ClassMemberTests {
     //   Container (~IConflictClassifier)
     //     ResolveGroup returns MemberGroup 
     //   MemberGroup (~IConflictGroup, none of the following methods are in IConflictGroup)
-    //     MarkAsSuperceded <= this is just like saying: "I win the conflict!" => ResolveConflictWith(this)
+    //     MarkAsSuperseded <= this is just like saying: "I win the conflict!" => ResolveConflictWith(this)
     //       The opposite is to lose the conflict (excluded(overridden), placeholder(~overridden), aliased?(not overridden)) => LoseConflict(this)?
     //     ReuseSlot <= this term is only meaninful when composing
     //     Process just to find out if DoesNotImplementAbstractRoleMember
 
     //  MemberGroup (new interface -> IConflictResolver)
-    //    ResolveConflictWith (~MarkAsSuperceded)
+    //    ResolveConflictWith (~MarkAsSuperseded)
 
     public class ConflictResolutionResult : CompositeOperationResult {
       public bool HasConflict { get { return !Success; } }
@@ -34,7 +34,7 @@ namespace NRoles.Engine.Test.ConflictDetection.ClassMemberTests {
     }
 
     [Test, Ignore("wip")]
-    public void Non_Inherited_Should_Mark_Group_As_Superceded() {
+    public void Non_Inherited_Should_Mark_Group_As_Superseded() {
       // Non_Inherited_Should_Win_Conflict
       var member = GetMethodByName(typeof(Simple), "Method");
 

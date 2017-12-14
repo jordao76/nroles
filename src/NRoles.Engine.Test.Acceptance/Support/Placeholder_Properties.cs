@@ -41,7 +41,7 @@ namespace NRoles.Engine.Test.Support.PlaceholderProperties {
     }
   }
 
-  // TODO: possible bug: test superceded property
+  // TODO: possible bug: test superseded property
 
   // TODO: placeholder in individual getter or setter
 
