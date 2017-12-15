@@ -7,7 +7,7 @@ using Mono.Cecil.Rocks;
 
 namespace NRoles.Engine {
   
-  public class MorphIntoRoleMutator : IMutator {
+  public sealed class MorphIntoRoleMutator : IMutator {
 
     public IOperationResult Morph(MutationParameters parameters) {
       if (parameters.SourceType != null) return MorphType(parameters);

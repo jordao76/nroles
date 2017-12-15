@@ -5,7 +5,7 @@ using Mono.Cecil;
 
 namespace NRoles.Engine {
 
-  public class RoleComposerMutator : IMutator {
+  public sealed class RoleComposerMutator : IMutator {
 
     private TypeDefinition _targetType;
     private RoleCompositionMemberContainer _container;

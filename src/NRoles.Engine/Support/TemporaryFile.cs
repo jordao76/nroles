@@ -7,7 +7,7 @@ namespace NRoles.Engine {
   /// Used to create a temporary, disposable file.
   /// Creates the file on the constructor, deletes it on dispose (<see cref="Dispose"/>).
   /// </summary>
-  public class TemporaryFile : IDisposable {
+  public sealed class TemporaryFile : IDisposable {
 
     /// <summary>
     /// Creates a new instance of this class. 

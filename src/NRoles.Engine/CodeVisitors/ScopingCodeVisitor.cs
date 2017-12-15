@@ -13,7 +13,7 @@ namespace NRoles.Engine {
   /// others are valid for all types;
   /// this class scopes them appropriately.
   /// </summary>
-  public class ScopingCodeVisitor : CompositeCodeVisitorBase, ICodeVisitorRegistry {
+  public sealed class ScopingCodeVisitor : CompositeCodeVisitorBase, ICodeVisitorRegistry {
     public static readonly object AssemblyKey = new object();
     Dictionary<object, CompositeCodeVisitor> _visitors = new Dictionary<object, CompositeCodeVisitor>();
     CompositeCodeVisitor _currentVisitor;
