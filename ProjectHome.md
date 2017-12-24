@@ -57,7 +57,7 @@ radio.Seek(42);
 
 Roles cannot be instantiated, cannot inherit from any classes (only `Object`) and cannot have parameterized constructors. They can [implement interfaces](ImplementInterfaces.md), and these implementations will be carried over to the classes that compose them. They can also compose other roles and [declare self-types](SelfTypes.md). Conflicts in a composition must be [resolved explicitly](ResolveConflicts.md).
 
-More examples with NRoles can be found [here](http://codecrafter.blogspot.com/2011/05/nroles-experiment-with-roles-in-c.html) and [here](http://codecrafter.blogspot.com/2011/06/dci-example-with-nroles.html).
+More examples with NRoles can be found [here](http://codecrafter.blogspot.com/2011/05/nroles-experiment-with-roles-in-c.html) and [here](http://codecrafter.blogspot.com/2011/06/dci-example-with-nroles.html). Some backstory for its inception can be found [here](http://codecrafter.blogspot.ca/2010/10/roles-in-c.html) and [here](http://codecrafter.blogspot.ca/2010/10/roles-in-c-implementation.html).
 
 ## Disclaimer
 
